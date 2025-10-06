@@ -1,0 +1,4 @@
+.idea
+.turbo
+pnpm-lock.yaml
+node_modules
