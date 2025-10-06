@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  # --- Database ---
+  db:
+    image: postgres:16-alpine
+    container_name: hrm-db
+    restart: always
+    environment:
+      POSTGRES_USER: hrm_user
+      POSTGRES_PASSWORD: hrm_password
+      POSTGRES_DB: hrm_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # --- Backend ---
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: hrm-backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://hrm_user:hrm_password@db:5432/hrm_db
+      NODE_ENV: production
+      PORT: 5000
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  # --- Frontend Client ---
+  client:
+    build:
+      context: .
+      dockerfile: ./frontend-client/Dockerfile
+    container_name: hrm-client
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+  # --- Frontend Admin ---
+  admin:
+    build:
+      context: .
+      dockerfile: ./frontend-admin/Dockerfile
+    container_name: hrm-admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
