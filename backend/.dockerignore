@@ -1,6 +1,21 @@
+# Use root .gitignore patterns as baseline manually if docker build context is service folder
 node_modules
 dist
+build
+.turbo
+.vite
+.next
+coverage
 .git
+.gitignore
 .env
-Dockerfile
+.env.*
+Dockerfile*
 *.log
+npm-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+# Exclude tests
+__tests__/
+tests/

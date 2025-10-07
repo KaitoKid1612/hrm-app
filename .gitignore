@@ -1,4 +1,92 @@
-.idea
-.turbo
-pnpm-lock.yaml
-node_modules
+# --- Package Manager / Dependencies ---
+node_modules/
+.pnp.cjs
+.pnp.loader.mjs
+.pnp.data.json
+.pnpm-store/
+
+# Nếu dùng pnpm: giữ pnpm-lock.yaml; ignore lock khác
+package-lock.json
+yarn.lock
+
+# --- Build / Output / Bundles ---
+dist/
+build/
+.next/
+.turbo/
+.vite/
+coverage/
+storybook-static/
+
+# --- TypeScript / Tool Caches ---
+*.tsbuildinfo
+.eslintcache
+.swc/
+.cache/
+.parcel-cache/
+
+# --- Environment / Secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# --- Runtime / Temp ---
+tmp/
+temp/
+*.pid
+*.seed
+*.pid.lock
+
+# --- OS / IDE / Editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# --- Testing / Playwright / Cypress ---
+.playwright-cache/
+playwright-report/
+test-results/
+cypress/videos/
+cypress/screenshots/
+
+# --- Coverage ---
+coverage/
+.lcov-report/
+*.lcov
+
+# --- Misc Tools ---
+.vercel/
+.netlify/
+firebase-debug.log
+.sentryclirc
+.now/
+
+# --- Docker / Container Auxiliary (NOT image definitions) ---
+**/docker-volume/
+.docker-compose.override.yml
+
+# --- Lock or state you don't want ---
+*.orig
+*.rej
+
+# --- Monorepo Specific (optional if using changesets) ---
+.changeset/*.md
+!/.changeset/config.json
+
+# --- Keep prisma migrations (do NOT ignore) ---
+# (Chỉ nhắc: đừng thêm prisma/migrations/* vào ignore)
+
+# --- Tailwind / Next generated (already covered) ---
+# .next/
+# .vite/
