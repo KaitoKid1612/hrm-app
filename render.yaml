@@ -1,0 +1,90 @@
+# ===========================================================
+# Render Deployment Configuration for Job Finding Platform
+# ===========================================================
+# Repo structure:
+#  ├── backend/           → Express + Prisma + TS (API service)
+#  ├── frontend-client/   → React + Vite (client HR/candidate)
+#  ├── frontend-admin/    → Next.js + shadcn/ui (admin dashboard)
+#  ├── shared/            → shared types/utilities
+#  └── pnpm-workspace.yaml
+#
+# Each service runs independently in Render as a Web Service.
+# You can attach a custom domain for each (e.g. api., admin., client.)
+# ===========================================================
+
+services:
+  # ================================
+  # 🧩 Backend Service
+  # ================================
+  - type: web
+    name: hrm-backend
+    env: node
+    rootDir: backend
+    plan: free            # or starter/standard depending on usage
+    buildCommand: |
+      npm install -g pnpm
+      pnpm install --filter ./backend...
+      pnpm --filter @hrm/backend run build
+    startCommand: |
+      pnpm --filter @hrm/backend run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        sync: false       # Add manually in Render dashboard
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+
+  # ================================
+  # 💼 Frontend Client (Vite)
+  # ================================
+  - type: web
+    name: hrm-frontend-client
+    env: node
+    rootDir: frontend-client
+    plan: free
+    buildCommand: |
+      npm install -g pnpm
+      pnpm install --filter ./frontend-client...
+      pnpm --filter @hrm/frontend-client run build
+    startCommand: |
+      pnpm --filter @hrm/frontend-client run preview -- --port $PORT
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: https://hrm-backend.onrender.com  # replace after backend deploy
+      - key: PORT
+        value: 5173
+
+  # ================================
+  # 🧭 Frontend Admin (Next.js)
+  # ================================
+  - type: web
+    name: hrm-frontend-admin
+    env: node
+    rootDir: frontend-admin
+    plan: free
+    buildCommand: |
+      npm install -g pnpm
+      pnpm install --filter ./frontend-admin...
+      pnpm --filter @hrm/frontend-admin run build
+    startCommand: |
+      pnpm --filter @hrm/frontend-admin run start -- -p $PORT
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://hrm-backend.onrender.com  # replace after backend deploy
+      - key: PORT
+        value: 3000
