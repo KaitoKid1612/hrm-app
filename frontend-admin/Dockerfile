@@ -1,8 +1,8 @@
 # ---------- Build ----------
-FROM node:20.17.0-alpine AS builder
+FROM node:22.12.0-alpine AS builder
 WORKDIR /app
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY frontend-admin ./frontend-admin
 COPY shared ./shared
 
@@ -13,7 +13,7 @@ RUN pnpm install --filter frontend-admin...
 RUN pnpm --filter frontend-admin run build
 
 # ---------- Runtime ----------
-FROM node:20.17.0-alpine
+FROM node:22.12.0-alpine
 WORKDIR /app
 
 COPY --from=builder /app/frontend-admin ./

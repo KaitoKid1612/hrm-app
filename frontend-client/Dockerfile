@@ -1,8 +1,8 @@
 # ---------- Build ----------
-FROM node:20.17.0-alpine AS builder
+FROM node:22.12.0-alpine AS builder
 WORKDIR /app
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY frontend-client ./frontend-client
 COPY shared ./shared
 
