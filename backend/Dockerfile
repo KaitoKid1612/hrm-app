@@ -1,9 +1,9 @@
 # ---------- Stage 1: Build ----------
-FROM node:20.17.0-alpine AS builder
+FROM node:22.12.0-alpine AS builder
 WORKDIR /app
 
 # Copy workspace files
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
+COPY pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY backend ./backend
 COPY shared ./shared
 
@@ -19,7 +19,7 @@ WORKDIR /app/backend
 RUN pnpm run build
 
 # ---------- Stage 2: Runtime ----------
-FROM node:20.17.0-alpine
+FROM node:22.12.0-alpine
 WORKDIR /app
 
 # Copy only build output + essential files
