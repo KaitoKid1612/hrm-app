@@ -28,43 +28,9 @@ git clone https://github.com/<your-user>/<your-repo>.git
 cd hrm-app
 ```
 
-### Cài đặt pnpm
-
-```sh
-npm install -g pnpm
-```
-
-### Cài đặt dependencies
-
-```sh
-pnpm install
-```
-
 ### Cấu hình biến môi trường
 
 Tạo file `.env` trong thư mục gốc và các thư mục con `backend`, `frontend-client`, `frontend-admin` dựa trên các file mẫu `.env.example`.
-
-### Chạy dự án
-
-#### Chạy từng phần riêng lẻ
-
-- Chạy backend:
-
-  ```sh
-  pnpm --filter backend dev
-  ```
-
-- Chạy frontend-client:
-
-  ```sh
-  pnpm --filter frontend-client dev
-  ```
-
-- Chạy frontend-admin:
-
-  ```sh
-  pnpm --filter frontend-admin dev
-  ```
 
 #### Chạy toàn bộ dự án với Docker Compose
 
