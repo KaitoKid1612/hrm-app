@@ -2,34 +2,38 @@
 FROM node:22.12.0-alpine AS builder
 WORKDIR /app
 
-# Copy workspace files
-COPY pnpm-workspace.yaml package.json tsconfig.base.json ./
+# Copy only necessary workspace files
+COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.base.json ./
+COPY backend/package.json backend/tsconfig.json backend/prisma ./backend/
+COPY shared/package.json ./shared/
+
+# Copy source
 COPY backend ./backend
 COPY shared ./shared
 
-# Enable corepack and check pnpm
-RUN npm install -g pnpm@9.12.3 && pnpm --version
+# Install pnpm
+RUN npm install -g pnpm@10.18.0
 
-# Install only backend + shared deps
+# Install backend + shared deps only
 RUN pnpm install --filter backend...
 
+# Build backend
 WORKDIR /app/backend
-
-# Build TypeScript
 RUN pnpm run build
 
 # ---------- Stage 2: Runtime ----------
 FROM node:22.12.0-alpine
 WORKDIR /app
 
-# Copy only build output + essential files
+# Copy required build artifacts
 COPY --from=builder /app/backend/dist ./dist
 COPY --from=builder /app/backend/package.json ./
-COPY --from=builder /app/backend/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=builder /app/backend/prisma ./prisma
 COPY --from=builder /app/shared ./shared
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install pnpm manually (bypass Corepack)
-RUN npm install -g pnpm@9.12.3 && pnpm --version
+RUN npm install -g pnpm@10.18.0
+
 RUN pnpm install --filter backend --prod --ignore-scripts
 
 ENV NODE_ENV=production

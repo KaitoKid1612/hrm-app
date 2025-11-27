@@ -8,8 +8,7 @@ import prettier from 'eslint-plugin-prettier';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 
-export default tseslint.config(
-  // 🧱 1️⃣: ignore toàn repo
+export default [
   {
     ignores: [
       '**/node_modules/**',
@@ -20,16 +19,8 @@ export default tseslint.config(
       '**/coverage/**',
       '**/.vscode/**',
       '**/out/**',
-      '**/*.config.js',
-      '**/*.config.cjs',
-      '**/*.config.mjs',
     ],
   },
-
-  // 🧱 2️⃣: cấu hình chung
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-
   {
     files: [
       'backend/**/*.{ts,tsx,js,jsx}',
@@ -37,9 +28,16 @@ export default tseslint.config(
       'frontend-admin/**/*.{ts,tsx,js,jsx}',
       'shared/**/*.{ts,tsx,js,jsx}',
     ],
+    ...js.configs.recommended,
+    ...tseslint.configs.recommended,
     languageOptions: {
+      parser: tseslint.parser,
       ecmaVersion: 2021,
       sourceType: 'module',
+      parserOptions: {
+        project: null,
+        tsconfigRootDir: undefined,
+      },
       globals: {
         ...globals.browser,
         ...globals.node,
@@ -56,7 +54,7 @@ export default tseslint.config(
       react: { version: 'detect' },
     },
     rules: {
-      'prettier/prettier': ['error'],
+      'prettier/prettier': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
@@ -73,28 +71,35 @@ export default tseslint.config(
       'react/prop-types': 'off',
     },
   },
-
-  // 🧱 3️⃣: backend (Node)
   {
     files: ['backend/**/*'],
-    languageOptions: { globals: globals.node },
+    languageOptions: {
+      globals: globals.node,
+    },
     rules: { 'no-console': 'off' },
   },
-
-  // 🧱 4️⃣: frontend (Next.js + Vite)
   {
-    files: ['frontend-client/src/**/*.{ts,tsx}', 'frontend-admin/src/**/*.{ts,tsx}'],
+    files: ['frontend-client/src/**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
-        ecmaVersion: 2021,
-        sourceType: 'module',
-        // ⚠️ Loại bỏ project để không crash với .next/
-        // (nếu bạn muốn type-aware lint sau này, có thể bật lại nhưng chỉ khi dùng `--cache` hoặc lint riêng)
+        project: null,
+        tsconfigRootDir: undefined,
+      },
+    },
+  },
+  {
+    files: ['frontend-admin/src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        project: null,
+        tsconfigRootDir: undefined,
       },
     },
     rules: {
-      'react/jsx-uses-react': 'off',
+      '@next/next/no-img-element': 'off',
+      'react/no-unescaped-entities': 'off',
       'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
     },
   },
-);
+];
