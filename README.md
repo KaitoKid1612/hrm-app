@@ -1,60 +1,101 @@
-# HRM App – Monorepo
+## 🚀 HRM App – Monorepo
 
-Dự án **HRM App** được xây dựng theo kiến trúc **Monorepo** sử dụng **pnpm workspaces**, bao gồm:
+HRM App là hệ thống quản lý nhân sự (Human Resource Management) được phát triển theo kiến trúc Monorepo sử dụng pnpm workspaces và Turborepo, gồm nhiều ứng dụng con dùng chung tài nguyên và code.
 
-- `backend` — API NestJS / Express / Prisma
-- `frontend-client` — Web Client (Vite + React + Tailwind)
-- `frontend-admin` — Admin Panel (Next.js)
-- `shared` — Mã dùng chung (types, helpers)
+Dự án bao gồm:
 
-## 🛠 Công nghệ sử dụng
+- backend — API sử dụng NestJS / Express / Prisma
+- frontend-client — Web Client (Vite + React + Tailwind)
+- frontend-admin — Admin Panel (Next.js 15)
+- shared — Thư viện chia sẻ (types, helpers, constants…)
 
-- **Node.js 22+**
-- **pnpm 10+**
-- **Vite 7**
-- **Next.js 15**
-- **TailwindCSS 4**
-- **Prisma ORM**
-- **Docker & Docker Compose**
+## 🧰 Công nghệ sử dụng
 
----
+Layer Công nghệ:
 
-## 🚀 1. Cài đặt & chạy dự án
+- Backend Node.js 22+, NestJS / Express, Prisma ORM
+- Frontend Client React 19, Vite 7, TailwindCSS 4
+- Admin Next.js 15, App Router, Turbopack
+- Build System pnpm Workspaces, Turborepo
+- DevOps Docker, Docker Compose
+- Shared TypeScript 5, Zod / Types
 
-### Clone repository
+## 📁 Cấu trúc thư mục
 
-```sh
-git clone https://github.com/<your-user>/<your-repo>.git
-cd hrm-app
+```
+hrm-app/
+├── backend/ # Backend API (NestJS / Prisma)
+├── frontend-client/ # Ứng dụng khách hàng (Vite + React)
+├── frontend-admin/ # Admin Panel (Next.js)
+├── shared/ # Mã dùng chung
+├── docker-compose.yml # Cấu hình Docker Compose
+├── pnpm-workspace.yaml # Cấu hình monorepo pnpm
+└── README.md # Tài liệu dự án
 ```
 
-### Cấu hình biến môi trường
+## ⚙️ Cài đặt & chạy dự án
 
-Tạo file `.env` trong thư mục gốc và các thư mục con `backend`, `frontend-client`, `frontend-admin` dựa trên các file mẫu `.env.example`.
+### 1️⃣ Clone dự án
 
-#### Chạy toàn bộ dự án với Docker Compose
+- git clone https://github.com/<your-user>/<your-repo>.git
+- cd hrm-app
 
-```sh
-docker-compose up -d --build
-```
+### 2️⃣ Cài đặt dependencies
 
-### Kiểm tra type & testing
+- pnpm install
 
-```sh
+### 3️⃣ Cấu hình ENV
+
+- Tạo .env cho từng package:
+- backend/.env
+- frontend-client/.env
+- frontend-admin/.env
+
+Dựa trên file:
+
+- .env.example
+
+## 🐳 Chạy toàn bộ dự án bằng Docker Compose
+
+- docker-compose up -d --build
+
+### Sau khi chạy:
+
+- Backend: http://localhost:3001
+- Frontend Client: http://localhost:3000
+- Admin Panel: http://localhost:3002
+
+(Các cổng có thể thay đổi theo cấu hình Compose của bạn.)
+
+## 🧪 Kiểm tra type & lint
+
+Kiểm tra type:
 pnpm --filter backend typecheck
 pnpm --filter frontend-client typecheck
 pnpm --filter frontend-admin typecheck
-```
 
-## 📦 2. Cấu trúc thư mục
+Chạy lint toàn monorepo
+pnpm lint
 
-```hrm-app/
-├── backend/               # Mã nguồn backend (NestJS + Prisma)
-├── frontend-client/       # Mã nguồn frontend client (Vite + React)
-├── frontend-admin/        # Mã nguồn frontend admin (Next.js)
-├── shared/                # Mã dùng chung (types, helpers)
-├── .env.example           # File mẫu biến môi trường
-├── docker-compose.yml     # Cấu hình Docker Compose
-├── pnpm-workspace.yaml    # Cấu hình pnpm workspaces
-└── README.md              # Tài liệu hướng dẫn dự án
-```
+🛠 Phát triển theo từng phần
+Backend
+pnpm --filter backend dev
+
+Frontend Client
+pnpm --filter frontend-client dev
+
+Admin Panel (Next.js)
+pnpm --filter frontend-admin dev
+
+🔗 pnpm Workspace
+
+pnpm-workspace.yaml:
+
+packages:
+
+- "backend"
+- "frontend-client"
+- "frontend-admin"
+- "shared"
+
+Tất cả package có thể chia sẻ code từ shared.
