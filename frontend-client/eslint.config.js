@@ -23,6 +23,8 @@ export default [
       globals: globals.browser,
       parserOptions: {
         ecmaFeatures: { jsx: true },
+        project: './tsconfig.app.json',
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     plugins: {
