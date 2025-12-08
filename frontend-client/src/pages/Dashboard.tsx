@@ -17,8 +17,13 @@ const Dashboard: React.FC = () => {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">HRM App</h1>
+            <div className="flex items-center gap-6">
+              <h1 className="text-xl font-bold text-gray-900">Recruitment Platform</h1>
+              <div className="flex gap-4">
+                <Button variant="ghost" onClick={() => navigate('/dashboard')}>
+                  Dashboard
+                </Button>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-gray-700">
@@ -86,8 +91,11 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 flex gap-4">
             <Button onClick={() => navigate('/profile')}>Cập nhật thông tin</Button>
+            <Button variant="outline" onClick={() => navigate('/employees')}>
+              Quản lý nhân viên
+            </Button>
           </div>
         </div>
       </main>

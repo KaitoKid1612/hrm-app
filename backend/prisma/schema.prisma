@@ -4,6 +4,7 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// Using Prisma 6 - url property is still valid
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,8 +16,8 @@ generator client {
 
 enum Role {
   ADMIN
-  HR
-  EMPLOYEE
+  EMPLOYER
+  CANDIDATE
 }
 
 model User {
@@ -24,7 +25,7 @@ model User {
   email     String   @unique
   password  String
   name      String?
-  role      Role     @default(EMPLOYEE)
+  role      Role     @default(CANDIDATE)
   avatar    String?
   phone     String?
   address   String?

@@ -1,11 +1,10 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import prisma from '../config/database.js';
 import { hashPassword, comparePassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
-import { AuthRequest } from '../middlewares/auth.middleware.js';
 import { RegisterInput, LoginInput } from '../types/auth.types.js';
 
-export const register = async (req: AuthRequest, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, name, phone, address } = req.body as RegisterInput;
 
@@ -61,7 +60,7 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
   }
 };
 
-export const login = async (req: AuthRequest, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body as LoginInput;
 
@@ -108,7 +107,7 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
-export const getProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.user) {
       res.status(401).json({ message: 'Chưa xác thực' });
@@ -146,7 +145,7 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
   }
 };
 
-export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+export const updateProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.user) {
       res.status(401).json({ message: 'Chưa xác thực' });
@@ -185,7 +184,7 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
   }
 };
 
-export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.user) {
       res.status(401).json({ message: 'Chưa xác thực' });

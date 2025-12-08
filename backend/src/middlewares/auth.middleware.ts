@@ -1,12 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken, JWTPayload } from '../utils/jwt.js';
-
-export interface AuthRequest extends Request {
-  user?: JWTPayload;
-}
+import { verifyToken } from '../utils/jwt.js';
 
 export const authenticate = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
@@ -29,7 +25,7 @@ export const authenticate = async (
 };
 
 export const authorize = (...roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({ message: 'Chưa xác thực' });
       return;
