@@ -3,17 +3,33 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import config from './config/index.js';
-import routes from './routes/index.js';
+import config from '@/config/index.js';
+import routes from '@/routes/index.js';
 
 dotenv.config();
 
 const app = express();
 
+// CORS configuration - cho phép nhiều origins
+const allowedOrigins = [
+  'http://localhost:3000', // Admin frontend
+  'http://localhost:5173', // Client frontend (Vite)
+  process.env.FRONTEND_URL, // Additional frontend URL from env
+].filter(Boolean);
+
 // Middlewares
 app.use(
   cors({
-    origin: config.frontendUrl,
+    origin: (origin, callback) => {
+      // Cho phép requests không có origin (như mobile apps, Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );

@@ -7,7 +7,6 @@
 // Using Prisma 6 - url property is still valid
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {

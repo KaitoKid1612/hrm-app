@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import prisma from '../config/database.js';
-import { hashPassword, comparePassword } from '../utils/password.js';
-import { generateToken } from '../utils/jwt.js';
-import { RegisterInput, LoginInput } from '../types/auth.types.js';
+import prisma from '@/config/database.js';
+import { hashPassword, comparePassword } from '@/utils/password.js';
+import { generateToken } from '@/utils/jwt.js';
+import { RegisterInput, LoginInput } from '@/types/auth.types.js';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {

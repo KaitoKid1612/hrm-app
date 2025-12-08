@@ -5,15 +5,15 @@ import {
   getProfile,
   updateProfile,
   changePassword,
-} from '../controllers/auth.controller.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
-import { validate } from '../middlewares/validate.middleware.js';
+} from '@/controllers/auth.controller.js';
+import { authenticate } from '@/middlewares/auth.middleware.js';
+import { validate } from '@/middlewares/validate.middleware.js';
 import {
   registerSchema,
   loginSchema,
   updateUserSchema,
   changePasswordSchema,
-} from '../types/auth.types.js';
+} from '@/types/auth.types.js';
 
 const router = Router();
 

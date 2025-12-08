@@ -14,27 +14,37 @@ COPY shared ./shared
 # Install pnpm
 RUN npm install -g pnpm@10.18.0
 
-# Install backend + shared deps only
-RUN pnpm install --filter backend...
-
-# Build backend
+# Install dependencies
 WORKDIR /app/backend
+RUN pnpm install --frozen-lockfile
+
+# Generate Prisma Client and Build
+RUN pnpm exec prisma generate
 RUN pnpm run build
 
 # ---------- Stage 2: Runtime ----------
 FROM node:22.12.0-alpine
 WORKDIR /app
 
-# Copy required build artifacts
-COPY --from=builder /app/backend/dist ./dist
-COPY --from=builder /app/backend/package.json ./
-COPY --from=builder /app/backend/prisma ./prisma
-COPY --from=builder /app/shared ./shared
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
-
+# Install pnpm
 RUN npm install -g pnpm@10.18.0
 
-RUN pnpm install --filter backend --prod --ignore-scripts
+# Copy package files
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/backend/package.json ./package.json
+COPY --from=builder /app/backend/prisma ./prisma
+
+# Install production dependencies only
+RUN pnpm install --prod
+
+# Install prisma CLI for generation
+RUN pnpm add -D prisma@6.19.0
+
+# Generate Prisma Client
+RUN pnpm exec prisma generate
+
+# Copy build artifacts
+COPY --from=builder /app/backend/dist ./dist
 
 ENV NODE_ENV=production
 EXPOSE 5000

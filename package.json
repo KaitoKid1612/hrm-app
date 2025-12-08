@@ -6,10 +6,15 @@
   "packageManager": "pnpm@10.18.0",
   "scripts": {
     "dev": "turbo run dev --parallel",
+    "dev:db": "docker-compose -f docker-compose.dev.yml up -d",
+    "dev:db:stop": "docker-compose -f docker-compose.dev.yml down",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write .",
+    "docker:prod": "docker-compose up --build -d",
+    "docker:prod:stop": "docker-compose down",
+    "docker:rebuild": "docker-compose down && docker-compose build --no-cache && docker-compose up -d",
     "prepare": "husky"
   },
   "devDependencies": {

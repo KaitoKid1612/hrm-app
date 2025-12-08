@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../lib/axios';
+import api from '@/lib/axios';
 import {
   AuthContextType,
   User,

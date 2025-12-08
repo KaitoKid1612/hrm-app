@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  # --- Database only for dev ---
+  db:
+    image: postgres:16-alpine
+    container_name: hrm-db-dev
+    restart: always
+    environment:
+      POSTGRES_USER: hrm_user
+      POSTGRES_PASSWORD: hrm_password
+      POSTGRES_DB: hrm_db
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+volumes:
+  pgdata_dev:
