@@ -21,6 +21,8 @@ export default [
       '**/out/**',
     ],
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     files: [
       'backend/**/*.{ts,tsx,js,jsx}',
@@ -28,8 +30,6 @@ export default [
       'frontend-admin/**/*.{ts,tsx,js,jsx}',
       'shared/**/*.{ts,tsx,js,jsx}',
     ],
-    ...js.configs.recommended,
-    ...tseslint.configs.recommended,
     languageOptions: {
       parser: tseslint.parser,
       ecmaVersion: 2021,
