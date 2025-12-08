@@ -2,13 +2,35 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import routes from './routes/index.js';
+import routes from '@/routes/index.js';
 
 const app: Application = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+
+// CORS configuration - cho phép nhiều origins
+const allowedOrigins = [
+  'http://localhost:3000', // Admin frontend
+  'http://localhost:5173', // Client frontend (Vite)
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Cho phép requests không có origin (như mobile apps, Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  }),
+);
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -19,6 +19,8 @@ export default [
       '**/coverage/**',
       '**/.vscode/**',
       '**/out/**',
+      '**/next-env.d.ts',
+      '**/.vite/**',
     ],
   },
   js.configs.recommended,
@@ -74,9 +76,17 @@ export default [
   {
     files: ['backend/**/*'],
     languageOptions: {
+      parser: tseslint.parser,
       globals: globals.node,
+      parserOptions: {
+        projectService: false,
+        project: false,
+      },
     },
-    rules: { 'no-console': 'off' },
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
   {
     files: ['frontend-client/src/**/*.{ts,tsx}'],
