@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+      }
+      .content {
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+      }
+      .job-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid #667eea;
+        transition: box-shadow 0.3s;
+      }
+      .job-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      .job-title {
+        color: #667eea;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+      }
+      .company-name {
+        color: #555;
+        font-size: 16px;
+        margin: 5px 0;
+      }
+      .job-meta {
+        display: flex;
+        gap: 15px;
+        margin: 10px 0;
+        font-size: 14px;
+        color: #666;
+      }
+      .tag {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #e0e7ff;
+        color: #3730a3;
+        border-radius: 15px;
+        font-size: 12px;
+        margin: 5px 5px 5px 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🔔 Công việc mới phù hợp với bạn!</h1>
+    </div>
+    <div class="content">
+      <p>Xin chào <strong>{{userName}}</strong>,</p>
+      
+      <p>Chúng tôi tìm thấy <strong>{{jobCount}}</strong> công việc mới có thể phù hợp với bạn:</p>
+      
+      {{#each jobs}}
+      <div class="job-card">
+        <h3 class="job-title">{{this.title}}</h3>
+        <p class="company-name">🏢 {{this.companyName}}</p>
+        
+        <div class="job-meta">
+          <span>📍 {{this.location}}</span>
+          <span>💼 {{this.type}}</span>
+          <span>💰 {{this.salary}}</span>
+        </div>
+        
+        {{#if this.skills}}
+        <div>
+          {{#each this.skills}}
+          <span class="tag">{{this}}</span>
+          {{/each}}
+        </div>
+        {{/if}}
+        
+        <p style="margin: 10px 0; font-size: 14px; color: #666;">
+          {{this.description}}
+        </p>
+        
+        <a href="{{this.url}}" class="button">Xem chi tiết & Ứng tuyển</a>
+      </div>
+      {{/each}}
+      
+      <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 20px;">
+        <p style="margin: 0; font-size: 14px;">
+          💡 <strong>Lưu ý:</strong> Các vị trí này được gợi ý dựa trên hồ sơ và sở thích của bạn. 
+          Hãy ứng tuyển sớm để tăng cơ hội được nhận!
+        </p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <a href="{{allJobsUrl}}" style="color: #667eea; text-decoration: none; font-weight: bold;">
+          Xem tất cả công việc phù hợp →
+        </a>
+      </div>
+    </div>
+    <div class="footer">
+      <p>© 2024 {{appName}}. All rights reserved.</p>
+      <p>Bạn nhận email này vì đã đăng ký nhận thông báo việc làm.</p>
+      <p><a href="{{unsubscribeUrl}}" style="color: #666;">Hủy đăng ký</a></p>
+    </div>
+  </body>
+</html>

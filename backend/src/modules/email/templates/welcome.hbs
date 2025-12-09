@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+      }
+      .content {
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🎉 Chào mừng đến với {{appName}}!</h1>
+    </div>
+    <div class="content">
+      <p>Xin chào <strong>{{userName}}</strong>,</p>
+      
+      <p>Cảm ơn bạn đã đăng ký tài khoản tại <strong>{{appName}}</strong>!</p>
+      
+      <p>Chúng tôi rất vui mừng chào đón bạn tham gia cộng đồng tuyển dụng của chúng tôi.</p>
+      
+      {{#if isEmployer}}
+      <p>Với tài khoản <strong>Nhà tuyển dụng</strong>, bạn có thể:</p>
+      <ul>
+        <li>Đăng tin tuyển dụng không giới hạn</li>
+        <li>Quản lý hồ sơ ứng viên</li>
+        <li>Tìm kiếm ứng viên phù hợp</li>
+        <li>Theo dõi trạng thái tuyển dụng</li>
+      </ul>
+      {{else}}
+      <p>Với tài khoản <strong>Ứng viên</strong>, bạn có thể:</p>
+      <ul>
+        <li>Tìm kiếm hàng nghìn công việc phù hợp</li>
+        <li>Tạo và quản lý hồ sơ cá nhân</li>
+        <li>Ứng tuyển công việc dễ dàng</li>
+        <li>Lưu công việc yêu thích</li>
+        <li>Nhận thông báo việc làm mới</li>
+      </ul>
+      {{/if}}
+      
+      <div style="text-align: center;">
+        <a href="{{dashboardUrl}}" class="button">Khám phá ngay</a>
+      </div>
+      
+      <p>Nếu bạn có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với chúng tôi qua email: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+    </div>
+    <div class="footer">
+      <p>© 2024 {{appName}}. All rights reserved.</p>
+      <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+    </div>
+  </body>
+</html>

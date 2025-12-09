@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+      }
+      .content {
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 0 0 10px 10px;
+      }
+      .candidate-info {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #10b981;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #666;
+        font-size: 14px;
+      }
+      .highlight {
+        background: #fef3c7;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🆕 Đơn ứng tuyển mới</h1>
+    </div>
+    <div class="content">
+      <p>Xin chào <strong>{{employerName}}</strong>,</p>
+      
+      <p>Bạn vừa nhận được một đơn ứng tuyển mới cho vị trí:</p>
+      
+      <h3 style="color: #667eea;">{{jobTitle}}</h3>
+      
+      <div class="candidate-info">
+        <h4>👤 Thông tin ứng viên</h4>
+        <p><strong>Họ tên:</strong> {{candidateName}}</p>
+        <p><strong>Email:</strong> {{candidateEmail}}</p>
+        {{#if candidatePhone}}
+        <p><strong>Số điện thoại:</strong> {{candidatePhone}}</p>
+        {{/if}}
+        <p><strong>Ngày ứng tuyển:</strong> {{appliedDate}}</p>
+      </div>
+      
+      {{#if coverLetter}}
+      <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+        <p><strong>📄 Thư giới thiệu:</strong></p>
+        <p style="font-style: italic;">{{coverLetter}}</p>
+      </div>
+      {{/if}}
+      
+      <p>Đơn ứng tuyển này đang ở trạng thái <span class="highlight">Chờ xử lý</span>. Vui lòng xem xét và cập nhật trạng thái sớm nhất.</p>
+      
+      <div style="text-align: center;">
+        <a href="{{applicationUrl}}" class="button">Xem đơn ứng tuyển</a>
+      </div>
+      
+      <p style="font-size: 14px; color: #666;">
+        💡 <strong>Mẹo:</strong> Hãy phản hồi ứng viên trong vòng 24-48 giờ để tạo ấn tượng tốt và không bỏ lỡ nhân tài!
+      </p>
+    </div>
+    <div class="footer">
+      <p>© 2024 {{appName}}. All rights reserved.</p>
+      <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+    </div>
+  </body>
+</html>
