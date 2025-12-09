@@ -106,8 +106,9 @@ model Company {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs Job[]
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs    Job[]
+  reviews Review[]
 
   @@map("companies")
 }
@@ -356,23 +357,28 @@ model Notification {
 }
 
 model Review {
-  id          String   @id @default(cuid())
-  userId      String
-  companyId   String
-  rating      Int // 1-5 stars
-  title       String
-  content     String   @db.Text
-  pros        String?  @db.Text
-  cons        String?  @db.Text
-  isAnonymous Boolean  @default(false)
-  isVerified  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  userId       String
+  companyId    String
+  rating       Int // 1-5 stars
+  title        String
+  content      String   @db.Text
+  pros         String?  @db.Text
+  cons         String?  @db.Text
+  isAnonymous  Boolean  @default(false)
+  isVerified   Boolean  @default(false) // Admin verified review
+  isApproved   Boolean  @default(true) // Auto-approve, admin can reject
+  helpfulCount Int      @default(0) // How many found this helpful
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, companyId]) // One review per user per company
   @@index([companyId])
   @@index([userId])
+  @@index([rating])
   @@map("reviews")
 }
