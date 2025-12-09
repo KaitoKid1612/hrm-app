@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { ApplicationStatus } from '@prisma/client';
@@ -60,15 +60,16 @@ interface JobAlertEmailData {
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private readonly appName: string;
-  private readonly supportEmail: string;
+  private appName: string;
+  private supportEmail: string;
 
   constructor(
     private readonly mailerService: MailerService,
-    private readonly configService: ConfigService,
+    @Inject(ConfigService) private readonly configService: ConfigService,
   ) {
-    this.appName = this.configService.get<string>('APP_NAME', 'HRM Platform');
-    this.supportEmail = this.configService.get<string>('SUPPORT_EMAIL', 'support@hrm-platform.com');
+    // Initialize config values in constructor body instead of property initializer
+    this.appName = configService.get<string>('APP_NAME', 'HRM Platform');
+    this.supportEmail = configService.get<string>('SUPPORT_EMAIL', 'support@hrm-platform.com');
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { NotificationsService } from '@/modules/notifications/notifications.service';
@@ -10,7 +10,7 @@ export class ApplicationsService {
     private prisma: PrismaService,
     private notificationsService: NotificationsService,
     private emailService: EmailService,
-    private configService: ConfigService,
+    @Inject(ConfigService) private configService: ConfigService,
   ) {}
 
   async create(userId: string, data: any) {
