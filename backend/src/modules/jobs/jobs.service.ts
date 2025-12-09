@@ -45,7 +45,20 @@ export class JobsService {
   }
 
   async findAll(query: QueryJobDto) {
-    const { page = 1, limit = 10, keyword, ...filters } = query;
+    const {
+      page = 1,
+      limit = 10,
+      keyword,
+      skills,
+      cities,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      postedAfter,
+      postedBefore,
+      deadlineAfter,
+      deadlineBefore,
+      ...filters
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {
@@ -55,17 +68,103 @@ export class JobsService {
       },
     };
 
-    if (filters.categoryId) where.categoryId = filters.categoryId;
+    // Category filter
+    if (filters.categoryId) {
+      where.categoryId = filters.categoryId;
+    }
+
+    // Job type, level, experience filters
     if (filters.jobType) where.jobType = filters.jobType;
     if (filters.jobLevel) where.jobLevel = filters.jobLevel;
-    if (filters.city) where.city = filters.city;
-    if (filters.salaryMin) where.salaryMin = { gte: filters.salaryMin };
-    if (filters.salaryMax) where.salaryMax = { lte: filters.salaryMax };
+    if (filters.experience) where.experience = filters.experience;
+
+    // Location filters
+    if (filters.city) {
+      where.city = filters.city;
+    } else if (cities && cities.length > 0) {
+      where.city = { in: cities };
+    }
+
+    // Salary filters
+    if (filters.salaryMin || filters.salaryMax) {
+      where.AND = where.AND || [];
+
+      if (filters.salaryMin) {
+        where.AND.push({
+          OR: [{ salaryMin: { gte: filters.salaryMin } }, { salaryNegotiate: true }],
+        });
+      }
+
+      if (filters.salaryMax) {
+        where.AND.push({
+          OR: [{ salaryMax: { lte: filters.salaryMax } }, { salaryNegotiate: true }],
+        });
+      }
+    }
+
+    // Skills filter (jobs must have at least one of the specified skills)
+    if (skills) {
+      const skillIds = skills.split(',').map((id) => id.trim());
+      where.skills = {
+        some: {
+          skillId: { in: skillIds },
+        },
+      };
+    }
+
+    // Company filter
+    if (filters.companyId) {
+      where.companyId = filters.companyId;
+    }
+
+    // Hot/Featured filters
+    if (filters.isHot !== undefined) {
+      where.isHot = filters.isHot;
+    }
+    if (filters.isUrgent !== undefined) {
+      where.isUrgent = filters.isUrgent;
+    }
+
+    // Date range filters
+    if (postedAfter || postedBefore) {
+      where.createdAt = {};
+      if (postedAfter) where.createdAt.gte = new Date(postedAfter);
+      if (postedBefore) where.createdAt.lte = new Date(postedBefore);
+    }
+
+    if (deadlineAfter || deadlineBefore) {
+      where.deadline = where.deadline || {};
+      if (deadlineAfter) where.deadline.gte = new Date(deadlineAfter);
+      if (deadlineBefore) where.deadline.lte = new Date(deadlineBefore);
+    }
+
+    // Full-text search (keyword)
     if (keyword) {
       where.OR = [
         { title: { contains: keyword, mode: 'insensitive' } },
         { description: { contains: keyword, mode: 'insensitive' } },
+        { requirements: { contains: keyword, mode: 'insensitive' } },
+        {
+          company: {
+            name: { contains: keyword, mode: 'insensitive' },
+          },
+        },
       ];
+    }
+
+    // Sorting
+    let orderBy: any = { createdAt: 'desc' };
+    if (sortBy === 'salary') {
+      orderBy = [{ salaryMax: sortOrder }, { salaryMin: sortOrder }];
+    } else if (sortBy === 'deadline') {
+      orderBy = { deadline: sortOrder };
+    } else if (sortBy === 'views') {
+      orderBy = { viewCount: sortOrder };
+    } else if (sortBy === 'applications') {
+      // Sort by application count (will use raw count from _count)
+      orderBy = { createdAt: sortOrder }; // Fallback, will sort in memory
+    } else {
+      orderBy = { [sortBy]: sortOrder };
     }
 
     const [jobs, total] = await Promise.all([
@@ -73,7 +172,7 @@ export class JobsService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         include: {
           company: {
             select: {
@@ -100,8 +199,18 @@ export class JobsService {
       this.prisma.job.count({ where }),
     ]);
 
+    // If sorting by applications, do it in memory
+    let sortedJobs = jobs;
+    if (sortBy === 'applications') {
+      sortedJobs = jobs.sort((a, b) => {
+        const countA = a._count.applications;
+        const countB = b._count.applications;
+        return sortOrder === 'asc' ? countA - countB : countB - countA;
+      });
+    }
+
     return {
-      data: jobs,
+      data: sortedJobs,
       meta: {
         page,
         limit,
@@ -194,5 +303,292 @@ export class JobsService {
       '-' +
       Date.now()
     );
+  }
+
+  /**
+   * Get search suggestions (autocomplete)
+   */
+  async getSearchSuggestions(query: string, limit = 10) {
+    if (!query || query.length < 2) {
+      return [];
+    }
+
+    const [jobTitles, companyNames, skills] = await Promise.all([
+      // Job titles
+      this.prisma.job.findMany({
+        where: {
+          isActive: true,
+          title: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+        select: { title: true },
+        distinct: ['title'],
+        take: limit,
+      }),
+
+      // Company names
+      this.prisma.company.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+        select: { name: true },
+        take: 5,
+      }),
+
+      // Skills
+      this.prisma.skill.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          },
+        },
+        select: { id: true, name: true },
+        take: 5,
+      }),
+    ]);
+
+    return {
+      jobs: jobTitles.map((j) => j.title),
+      companies: companyNames.map((c) => c.name),
+      skills: skills.map((s) => ({ id: s.id, name: s.name })),
+    };
+  }
+
+  /**
+   * Get similar jobs based on current job
+   */
+  async getSimilarJobs(jobId: string, limit = 5) {
+    const currentJob = await this.prisma.job.findUnique({
+      where: { id: jobId },
+      include: {
+        skills: {
+          select: { skillId: true },
+        },
+      },
+    });
+
+    if (!currentJob) {
+      throw new NotFoundException('Không tìm thấy công việc');
+    }
+
+    const skillIds = currentJob.skills.map((s) => s.skillId);
+
+    // Find jobs with similar skills, category, or level
+    const similarJobs = await this.prisma.job.findMany({
+      where: {
+        id: { not: jobId },
+        isActive: true,
+        deadline: { gte: new Date() },
+        OR: [
+          { categoryId: currentJob.categoryId },
+          { jobLevel: currentJob.jobLevel },
+          {
+            skills: {
+              some: {
+                skillId: { in: skillIds },
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        company: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+            city: true,
+          },
+        },
+        category: true,
+        skills: {
+          include: {
+            skill: true,
+          },
+          take: 3,
+        },
+        _count: {
+          select: {
+            applications: true,
+          },
+        },
+      },
+      take: limit * 2, // Get more to calculate relevance
+    });
+
+    // Calculate relevance score and sort
+    const scoredJobs = similarJobs.map((job) => {
+      let score = 0;
+
+      // Same category: +3 points
+      if (job.categoryId === currentJob.categoryId) score += 3;
+
+      // Same level: +2 points
+      if (job.jobLevel === currentJob.jobLevel) score += 2;
+
+      // Same city: +1 point
+      if (job.city === currentJob.city) score += 1;
+
+      // Matching skills: +1 point per skill
+      const jobSkillIds = job.skills.map((s) => s.skillId);
+      const matchingSkills = skillIds.filter((id) => jobSkillIds.includes(id));
+      score += matchingSkills.length;
+
+      return { ...job, relevanceScore: score };
+    });
+
+    // Sort by relevance score and return top results
+    return scoredJobs.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, limit);
+  }
+
+  /**
+   * Get popular/trending jobs
+   */
+  async getTrendingJobs(limit = 10) {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    return this.prisma.job.findMany({
+      where: {
+        isActive: true,
+        deadline: { gte: new Date() },
+        createdAt: { gte: sevenDaysAgo },
+      },
+      orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+      take: limit,
+      include: {
+        company: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+            city: true,
+          },
+        },
+        category: true,
+        skills: {
+          include: {
+            skill: true,
+          },
+          take: 3,
+        },
+        _count: {
+          select: {
+            applications: true,
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * Get job statistics for filters
+   */
+  async getJobStatistics() {
+    const [totalJobs, byCategory, byCity, byJobType, byJobLevel, salaryRanges] = await Promise.all([
+      // Total active jobs
+      this.prisma.job.count({
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+        },
+      }),
+
+      // Jobs by category
+      this.prisma.job.groupBy({
+        by: ['categoryId'],
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+        },
+        _count: true,
+      }),
+
+      // Jobs by city
+      this.prisma.job.groupBy({
+        by: ['city'],
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+          city: { not: null },
+        },
+        _count: true,
+        orderBy: {
+          _count: {
+            city: 'desc',
+          },
+        },
+        take: 10,
+      }),
+
+      // Jobs by type
+      this.prisma.job.groupBy({
+        by: ['jobType'],
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+        },
+        _count: true,
+      }),
+
+      // Jobs by level
+      this.prisma.job.groupBy({
+        by: ['jobLevel'],
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+        },
+        _count: true,
+      }),
+
+      // Salary ranges
+      this.prisma.job.aggregate({
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+          salaryMin: { not: null },
+        },
+        _min: { salaryMin: true },
+        _max: { salaryMax: true },
+        _avg: { salaryMin: true, salaryMax: true },
+      }),
+    ]);
+
+    // Enrich category data with names
+    const categories = await this.prisma.category.findMany({
+      where: {
+        id: { in: byCategory.map((c) => c.categoryId) },
+      },
+      select: { id: true, name: true },
+    });
+
+    const categoriesWithCount = byCategory.map((stat) => {
+      const category = categories.find((c) => c.id === stat.categoryId);
+      return {
+        id: stat.categoryId,
+        name: category?.name || 'Unknown',
+        count: stat._count,
+      };
+    });
+
+    return {
+      total: totalJobs,
+      byCategory: categoriesWithCount,
+      byCity: byCity.map((c) => ({ city: c.city, count: c._count })),
+      byType: byJobType.map((t) => ({ type: t.jobType, count: t._count })),
+      byLevel: byJobLevel.map((l) => ({ level: l.jobLevel, count: l._count })),
+      salaryRange: {
+        min: salaryRanges._min.salaryMin || 0,
+        max: salaryRanges._max.salaryMax || 0,
+        avgMin: Math.round(salaryRanges._avg.salaryMin || 0),
+        avgMax: Math.round(salaryRanges._avg.salaryMax || 0),
+      },
+    };
   }
 }

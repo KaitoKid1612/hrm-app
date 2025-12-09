@@ -134,6 +134,7 @@ export class UpdateJobDto {
 }
 
 export class QueryJobDto {
+  // Pagination
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -144,10 +145,17 @@ export class QueryJobDto {
   @IsNumber()
   limit?: number;
 
+  // Basic search
+  @IsOptional()
+  @IsString()
+  keyword?: string;
+
+  // Category filter
   @IsOptional()
   @IsString()
   categoryId?: string;
 
+  // Job type & level filters
   @IsOptional()
   @IsEnum(JobType)
   jobType?: JobType;
@@ -157,9 +165,20 @@ export class QueryJobDto {
   jobLevel?: JobLevel;
 
   @IsOptional()
+  @IsEnum(ExperienceLevel)
+  experience?: ExperienceLevel;
+
+  // Location filters
+  @IsOptional()
   @IsString()
   city?: string;
 
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  cities?: string[]; // Multiple cities
+
+  // Salary filters
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -170,7 +189,61 @@ export class QueryJobDto {
   @IsNumber()
   salaryMax?: number;
 
+  // Skills filter (comma-separated skill IDs)
   @IsOptional()
   @IsString()
-  keyword?: string;
+  skills?: string;
+
+  // Company filter
+  @IsOptional()
+  @IsString()
+  companyId?: string;
+
+  // Hot/Featured jobs
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isHot?: boolean;
+
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isUrgent?: boolean;
+
+  // Sorting
+  @IsOptional()
+  @IsEnum(['createdAt', 'salary', 'deadline', 'views', 'applications'])
+  sortBy?: 'createdAt' | 'salary' | 'deadline' | 'views' | 'applications';
+
+  @IsOptional()
+  @IsEnum(['asc', 'desc'])
+  sortOrder?: 'asc' | 'desc';
+
+  // Date range filters
+  @IsOptional()
+  @IsDateString()
+  postedAfter?: string; // Jobs posted after this date
+
+  @IsOptional()
+  @IsDateString()
+  postedBefore?: string; // Jobs posted before this date
+
+  @IsOptional()
+  @IsDateString()
+  deadlineAfter?: string; // Deadline after this date
+
+  @IsOptional()
+  @IsDateString()
+  deadlineBefore?: string; // Deadline before this date
+}
+
+// New DTO for advanced search with autocomplete
+export class SearchSuggestionsDto {
+  @IsString()
+  query: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  limit?: number;
 }
