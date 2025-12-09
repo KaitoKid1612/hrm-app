@@ -1,0 +1,25 @@
+import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import { ResumesService } from './resumes.service';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+
+@Controller('resumes')
+@UseGuards(JwtAuthGuard)
+export class ResumesController {
+  constructor(private resumesService: ResumesService) {}
+
+  @Post()
+  upsert(@CurrentUser() user: any, @Body() data: any) {
+    return this.resumesService.upsert(user.id, data);
+  }
+
+  @Get('my-resume')
+  getMyResume(@CurrentUser() user: any) {
+    return this.resumesService.findByUserId(user.id);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.resumesService.findOne(id);
+  }
+}
