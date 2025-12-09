@@ -1,36 +1,378 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// Using Prisma 6 - url property is still valid
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+// ============= ENUMS =============
 enum Role {
   ADMIN
   EMPLOYER
   CANDIDATE
 }
 
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+}
+
+enum JobLevel {
+  INTERN
+  FRESHER
+  JUNIOR
+  MIDDLE
+  SENIOR
+  LEADER
+  MANAGER
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  INTERVIEWED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ExperienceLevel {
+  NO_EXPERIENCE
+  UNDER_1_YEAR
+  ONE_TO_THREE_YEARS
+  THREE_TO_FIVE_YEARS
+  FIVE_TO_TEN_YEARS
+  OVER_TEN_YEARS
+}
+
+// ============= MODELS =============
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   password  String
-  name      String?
+  name      String
   role      Role     @default(CANDIDATE)
   avatar    String?
   phone     String?
-  address   String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
+  company             Company?
+  resume              Resume?
+  applications        Application[]
+  savedJobs           SavedJob[]
+  conversationsAsUser Conversation[] @relation("UserConversations")
+  messages            Message[]
+  notifications       Notification[]
+  reviews             Review[]
+
   @@map("users")
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  name        String
+  logo        String?
+  coverImage  String?
+  description String?  @db.Text
+  website     String?
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  country     String?  @default("Vietnam")
+  size        String? // 1-50, 51-200, 201-500, 500+
+  taxCode     String?
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs Job[]
+
+  @@map("companies")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  jobs    Job[]
+  resumes Resume[]
+
+  @@map("categories")
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  jobs    JobSkill[]
+  resumes ResumeSkill[]
+
+  @@map("skills")
+}
+
+model Job {
+  id              String           @id @default(cuid())
+  companyId       String
+  categoryId      String
+  title           String
+  slug            String           @unique
+  description     String           @db.Text
+  requirements    String           @db.Text
+  benefits        String?          @db.Text
+  jobType         JobType          @default(FULL_TIME)
+  jobLevel        JobLevel         @default(JUNIOR)
+  salaryMin       Int?
+  salaryMax       Int?
+  salaryNegotiate Boolean          @default(false)
+  positions       Int              @default(1)
+  experience      ExperienceLevel?
+  address         String?
+  city            String?
+  country         String?          @default("Vietnam")
+  deadline        DateTime?
+  isActive        Boolean          @default(true)
+  viewCount       Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relations
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  category     Category      @relation(fields: [categoryId], references: [id])
+  skills       JobSkill[]
+  applications Application[]
+  savedJobs    SavedJob[]
+
+  @@index([companyId])
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([deadline])
+  @@map("jobs")
+}
+
+model JobSkill {
+  id        String   @id @default(cuid())
+  jobId     String
+  skillId   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+model Resume {
+  id             String          @id @default(cuid())
+  userId         String          @unique
+  categoryId     String?
+  title          String
+  objective      String?         @db.Text
+  experience     ExperienceLevel @default(NO_EXPERIENCE)
+  education      String?         @db.Text
+  workHistory    String?         @db.Text
+  certifications String?         @db.Text
+  projects       String?         @db.Text
+  address        String?
+  city           String?
+  country        String?         @default("Vietnam")
+  gender         Gender?
+  dateOfBirth    DateTime?
+  isPublic       Boolean         @default(false)
+  cvFileUrl      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category?     @relation(fields: [categoryId], references: [id])
+  skills       ResumeSkill[]
+  applications Application[]
+
+  @@index([userId])
+  @@index([isPublic])
+  @@map("resumes")
+}
+
+model ResumeSkill {
+  id        String   @id @default(cuid())
+  resumeId  String
+  skillId   String
+  level     String? // beginner, intermediate, advanced, expert
+  createdAt DateTime @default(now())
+
+  // Relations
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  skill  Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, skillId])
+  @@map("resume_skills")
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  jobId       String
+  userId      String
+  resumeId    String?
+  coverLetter String?           @db.Text
+  status      ApplicationStatus @default(PENDING)
+  appliedAt   DateTime          @default(now())
+  reviewedAt  DateTime?
+  note        String?           @db.Text
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relations
+  job    Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume? @relation(fields: [resumeId], references: [id])
+
+  @@unique([jobId, userId])
+  @@index([jobId])
+  @@index([userId])
+  @@index([status])
+  @@map("applications")
+}
+
+model SavedJob {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@map("saved_jobs")
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  userId        String
+  companyId     String?
+  jobId         String?
+  isGroup       Boolean   @default(false)
+  name          String?
+  lastMessage   String?
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user         User                      @relation("UserConversations", fields: [userId], references: [id], onDelete: Cascade)
+  messages     Message[]
+  participants ConversationParticipant[]
+
+  @@index([userId])
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String    @id @default(cuid())
+  conversationId String
+  userId         String
+  joinedAt       DateTime  @default(now())
+  lastReadAt     DateTime?
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String   @db.Text
+  attachments    String[] // Array of file URLs
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@map("messages")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String   @db.Text
+  type      String // application_status, new_job, message, etc.
+  data      Json? // Additional data
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  companyId   String
+  rating      Int // 1-5 stars
+  title       String
+  content     String   @db.Text
+  pros        String?  @db.Text
+  cons        String?  @db.Text
+  isAnonymous Boolean  @default(false)
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([userId])
+  @@map("reviews")
 }
