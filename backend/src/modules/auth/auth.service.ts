@@ -1,6 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/prisma/prisma.service';
+import { EmailService } from '@/modules/email/email.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
@@ -16,6 +18,8 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private emailService: EmailService,
+    private configService: ConfigService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -58,6 +62,18 @@ export class AuthService {
       email: user.email,
       role: user.role,
     });
+
+    // Send welcome email (async, don't wait)
+    this.emailService
+      .sendWelcomeEmail({
+        userName: user.name || 'User',
+        userEmail: user.email,
+        isEmployer: user.role === Role.EMPLOYER,
+        dashboardUrl: `${this.configService.get('FRONTEND_URL', 'http://localhost:5173')}/dashboard`,
+      })
+      .catch((error) => {
+        console.error('Failed to send welcome email:', error);
+      });
 
     return {
       token,
