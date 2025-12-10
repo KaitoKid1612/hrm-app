@@ -1,67 +1,64 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Building2, MapPin, Briefcase } from 'lucide-react';
+import { useTopCompanies } from '../hooks/useCompanies';
 
-interface Company {
-  id: string;
-  name: string;
-  logo: string;
-  location: string;
-  jobCount: number;
-  description: string;
-}
-
-const topCompanies: Company[] = [
+// Fallback companies
+const fallbackCompanies = [
   {
     id: '1',
     name: 'FPT Software',
-    logo: 'https://via.placeholder.com/80',
-    location: 'Hà Nội',
+    logo: '',
+    city: 'Hà Nội',
     jobCount: 156,
     description: 'Công ty phần mềm hàng đầu Việt Nam',
   },
   {
     id: '2',
     name: 'VNG Corporation',
-    logo: 'https://via.placeholder.com/80',
-    location: 'TP. Hồ Chí Minh',
+    logo: '',
+    city: 'TP. HCM',
     jobCount: 89,
     description: 'Tập đoàn công nghệ số hàng đầu',
   },
   {
     id: '3',
     name: 'Shopee Vietnam',
-    logo: 'https://via.placeholder.com/80',
-    location: 'TP. Hồ Chí Minh',
+    logo: '',
+    city: 'TP. HCM',
     jobCount: 124,
     description: 'Nền tảng thương mại điện tử',
   },
   {
     id: '4',
     name: 'Tiki Corporation',
-    logo: 'https://via.placeholder.com/80',
-    location: 'TP. Hồ Chí Minh',
+    logo: '',
+    city: 'TP. HCM',
     jobCount: 67,
     description: 'Công ty thương mại điện tử Việt Nam',
   },
   {
     id: '5',
     name: 'MOMO',
-    logo: 'https://via.placeholder.com/80',
-    location: 'Hà Nội',
+    logo: '',
+    city: 'Hà Nội',
     jobCount: 92,
     description: 'Ví điện tử số 1 Việt Nam',
   },
   {
     id: '6',
     name: 'Viettel Digital',
-    logo: 'https://via.placeholder.com/80',
-    location: 'Hà Nội',
+    logo: '',
+    city: 'Hà Nội',
     jobCount: 178,
     description: 'Tập đoàn viễn thông và công nghệ',
   },
 ];
 
 export const TopCompaniesSection = () => {
+  const { companies: apiCompanies, isLoading } = useTopCompanies(6);
+
+  const companies = apiCompanies.length > 0 ? apiCompanies : fallbackCompanies;
+
   return (
     <section className="py-12 sm:py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -75,40 +72,64 @@ export const TopCompaniesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {topCompanies.map((company) => (
-            <Card
-              key={company.id}
-              className="cursor-pointer hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-gray-200 group"
-            >
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <Building2 className="w-8 h-8 sm:w-10 sm:h-10 text-blue-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-1 truncate group-hover:text-blue-600 transition-colors">
-                      {company.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
-                      {company.description}
-                    </p>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
-                        <span className="truncate">{company.location}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
-                        <span className="font-medium text-blue-600">
-                          {company.jobCount} việc làm
-                        </span>
+          {isLoading
+            ? // Loading skeleton
+              Array.from({ length: 6 }).map((_, index) => (
+                <Card key={index} className="border-gray-200">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gray-200 animate-pulse shrink-0"></div>
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                        <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2"></div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </CardContent>
+                </Card>
+              ))
+            : companies.map((company) => (
+                <Card
+                  key={company.id}
+                  className="cursor-pointer hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-gray-200 group"
+                >
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        {company.logo ? (
+                          <img
+                            src={company.logo}
+                            alt={company.name}
+                            className="w-full h-full object-contain rounded-xl"
+                          />
+                        ) : (
+                          <Building2 className="w-8 h-8 sm:w-10 sm:h-10 text-blue-400" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-1 truncate group-hover:text-blue-600 transition-colors">
+                          {company.name}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
+                          {company.description || 'Công ty công nghệ hàng đầu'}
+                        </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                            <span className="truncate">{company.city || 'Việt Nam'}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                            <span className="font-medium text-blue-600">
+                              {company.jobCount || 0} việc làm
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
         </div>
 
         <div className="text-center mt-6 sm:mt-8">

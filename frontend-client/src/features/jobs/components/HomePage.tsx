@@ -8,8 +8,9 @@ import { JobListSection } from './JobListSection';
 import { TopCompaniesSection } from './TopCompaniesSection';
 import { CTASection } from './CTASection';
 import { Job } from '../types';
+import { useJobs, useTrendingJobs } from '../hooks/useJobs';
 
-// Mock data - sẽ thay bằng API call sau
+// Fallback mock data cho trường hợp API lỗi
 const mockJobs: Job[] = [
   {
     id: '1',
@@ -124,24 +125,41 @@ const mockJobs: Job[] = [
 ];
 
 export const HomePage = () => {
-  const [jobs, setJobs] = useState<Job[]>(mockJobs);
-  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'hot' | 'new'>('all');
+  const [searchParams, setSearchParams] = useState<{ keyword?: string; city?: string }>({});
 
-  const handleSearch = (keyword: string, location: string) => {
-    console.log('Searching:', keyword, location);
-    // TODO: Implement API call
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  };
+  // Fetch jobs based on active tab
+  const {
+    jobs: allJobs,
+    isLoading: isLoadingAll,
+    error: errorAll,
+  } = useJobs({
+    limit: 12,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+    ...searchParams,
+  });
 
-  const filteredJobs = jobs.filter((job) => {
-    if (activeTab === 'hot') return job.isHot;
-    if (activeTab === 'new') return job.isNew;
+  const { jobs: trendingJobs, isLoading: isLoadingTrending } = useTrendingJobs(12);
+
+  // Determine which jobs to display based on active tab
+  const jobs = activeTab === 'hot' ? trendingJobs : allJobs;
+  const isLoading = activeTab === 'hot' ? isLoadingTrending : isLoadingAll;
+
+  // Filter jobs by tab
+  const filteredJobs = jobs.filter((job: Job) => {
+    if (activeTab === 'hot') return job.isHot || true; // Trending API already returns hot jobs
+    if (activeTab === 'new')
+      return job.isNew || new Date(job.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days
     return true;
   });
+
+  // Use mock data as fallback if API fails
+  const displayJobs = filteredJobs.length > 0 ? filteredJobs : errorAll ? mockJobs : [];
+
+  const handleSearch = async (keyword: string, location: string) => {
+    setSearchParams({ keyword: keyword || undefined, city: location || undefined });
+  };
 
   return (
     <MainLayout>
@@ -167,14 +185,10 @@ export const HomePage = () => {
           </div>
 
           {/* Job Tabs */}
-          <JobTabs
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            jobCount={filteredJobs.length}
-          />
+          <JobTabs activeTab={activeTab} onTabChange={setActiveTab} jobCount={displayJobs.length} />
 
           {/* Job List */}
-          <JobListSection jobs={filteredJobs} isLoading={isLoading} />
+          <JobListSection jobs={displayJobs} isLoading={isLoading} />
         </div>
       </section>
 

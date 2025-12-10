@@ -1,22 +1,35 @@
 import { Briefcase, Users, Building2, TrendingUp } from 'lucide-react';
+import { useJobStatistics } from '../hooks/useJobs';
 
 interface StatCardProps {
   icon: React.ReactNode;
   count: string;
   label: string;
+  isLoading?: boolean;
 }
 
-const StatCard = ({ icon, count, label }: StatCardProps) => (
+const StatCard = ({ icon, count, label, isLoading }: StatCardProps) => (
   <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
     <div className="text-white shrink-0">{icon}</div>
     <div>
-      <div className="text-xl sm:text-2xl font-bold text-white">{count}</div>
+      {isLoading ? (
+        <div className="h-7 w-16 bg-white/20 rounded animate-pulse"></div>
+      ) : (
+        <div className="text-xl sm:text-2xl font-bold text-white">{count}</div>
+      )}
       <div className="text-xs sm:text-sm text-white/80">{label}</div>
     </div>
   </div>
 );
 
 export const HeroSection = () => {
+  const { stats, isLoading } = useJobStatistics();
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000) return `${Math.floor(num / 1000)}K+`;
+    return num.toString();
+  };
+
   return (
     <div className="bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 text-white relative overflow-hidden">
       {/* Background Pattern */}
@@ -41,23 +54,27 @@ export const HeroSection = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               icon={<Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count="10K+"
+              count={stats ? formatNumber(stats.totalJobs) : '10K+'}
               label="Việc làm"
+              isLoading={isLoading}
             />
             <StatCard
               icon={<Building2 className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count="5K+"
+              count={stats ? formatNumber(stats.totalCompanies) : '5K+'}
               label="Công ty"
+              isLoading={isLoading}
             />
             <StatCard
               icon={<Users className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count="50K+"
+              count={stats ? formatNumber(stats.totalCandidates) : '50K+'}
               label="Ứng viên"
+              isLoading={isLoading}
             />
             <StatCard
               icon={<TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count="15K+"
+              count={stats ? formatNumber(stats.totalApplications) : '15K+'}
               label="Tuyển dụng"
+              isLoading={isLoading}
             />
           </div>
         </div>
