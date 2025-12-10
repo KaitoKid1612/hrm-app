@@ -1,0 +1,48 @@
+// Enums matching backend
+export enum Role {
+  ADMIN = 'ADMIN',
+  EMPLOYER = 'EMPLOYER',
+  CANDIDATE = 'CANDIDATE',
+}
+
+export enum JobType {
+  FULL_TIME = 'FULL_TIME',
+  PART_TIME = 'PART_TIME',
+  CONTRACT = 'CONTRACT',
+  INTERNSHIP = 'INTERNSHIP',
+  FREELANCE = 'FREELANCE',
+}
+
+export enum JobLevel {
+  INTERN = 'INTERN',
+  FRESHER = 'FRESHER',
+  JUNIOR = 'JUNIOR',
+  MIDDLE = 'MIDDLE',
+  SENIOR = 'SENIOR',
+  LEADER = 'LEADER',
+  MANAGER = 'MANAGER',
+}
+
+export enum ApplicationStatus {
+  PENDING = 'PENDING',
+  REVIEWING = 'REVIEWING',
+  INTERVIEWED = 'INTERVIEWED',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  WITHDRAWN = 'WITHDRAWN',
+}
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
+
+export enum ExperienceLevel {
+  NO_EXPERIENCE = 'NO_EXPERIENCE',
+  UNDER_1_YEAR = 'UNDER_1_YEAR',
+  ONE_TO_THREE_YEARS = 'ONE_TO_THREE_YEARS',
+  THREE_TO_FIVE_YEARS = 'THREE_TO_FIVE_YEARS',
+  FIVE_TO_TEN_YEARS = 'FIVE_TO_TEN_YEARS',
+  OVER_TEN_YEARS = 'OVER_TEN_YEARS',
+}
