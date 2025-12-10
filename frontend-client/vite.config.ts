@@ -5,7 +5,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   server: {
-    host: 'localhost',
+    host: '0.0.0.0', // Cho phép truy cập từ IP
     port: 5173,
     strictPort: true,
     watch: { usePolling: true },
