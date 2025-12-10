@@ -176,6 +176,9 @@ importers:
       prisma:
         specifier: ^6.16.3
         version: 6.19.0(typescript@5.9.3)
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
       tsx:
         specifier: ^4.19.2
         version: 4.21.0
@@ -3639,6 +3642,13 @@ packages:
         integrity: sha512-/+3GRL7dDAGEfM6TseQk/U+mi18TU2Ms9I3UlLdUMhz2hbvGNTKdj9xniwXfUqgYhHxRx0+8UnKkvlNwVU+cWQ==,
       }
 
+  array-union@2.1.0:
+    resolution:
+      {
+        integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==,
+      }
+    engines: { node: '>=8' }
+
   array.prototype.findlast@1.2.5:
     resolution:
       {
@@ -4177,6 +4187,13 @@ packages:
       }
     engines: { node: '>= 6' }
 
+  commander@9.5.0:
+    resolution:
+      {
+        integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==,
+      }
+    engines: { node: ^12.20.0 || >=14 }
+
   comment-json@4.2.5:
     resolution:
       {
@@ -4508,6 +4525,13 @@ packages:
       {
         integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==,
       }
+
+  dir-glob@3.0.1:
+    resolution:
+      {
+        integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==,
+      }
+    engines: { node: '>=8' }
 
   display-notification@2.0.0:
     resolution:
@@ -5552,6 +5576,13 @@ packages:
         integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==,
       }
     engines: { node: '>= 0.4' }
+
+  globby@11.1.0:
+    resolution:
+      {
+        integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==,
+      }
+    engines: { node: '>=10' }
 
   gopd@1.2.0:
     resolution:
@@ -6982,6 +7013,13 @@ packages:
       }
     engines: { node: ^14.17.0 || ^16.13.0 || >=18.0.0 }
 
+  mylas@2.1.14:
+    resolution:
+      {
+        integrity: sha512-BzQguy9W9NJgoVn2mRWzbFrFWWztGCcng2QI9+41frfk+Athwgx3qhqhvStz7ExeUUu7Kzw427sNzHpEZNINog==,
+      }
+    engines: { node: '>=16.0.0' }
+
   nano-spawn@2.0.0:
     resolution:
       {
@@ -7509,6 +7547,13 @@ packages:
         integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==,
       }
 
+  plimit-lit@1.6.1:
+    resolution:
+      {
+        integrity: sha512-B7+VDyb8Tl6oMJT9oSO2CW8XC/T4UcJGrwOVoNGwOQsQYhlpfajmrMj5xeejqaASq3V/EqThyOeATEOMuSEXiA==,
+      }
+    engines: { node: '>=12' }
+
   pluralize@8.0.0:
     resolution:
       {
@@ -7725,6 +7770,13 @@ packages:
         integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==,
       }
     engines: { node: '>=0.6' }
+
+  queue-lit@1.5.2:
+    resolution:
+      {
+        integrity: sha512-tLc36IOPeMAubu8BkW8YDBV+WyIgKlYU7zUNs0J5Vk9skSZ4JfGlPOqplP0aHdfv7HL0B2Pg6nwiq60Qc6M2Hw==,
+      }
+    engines: { node: '>=12' }
 
   queue-microtask@1.2.3:
     resolution:
@@ -8237,6 +8289,13 @@ packages:
       }
     engines: { node: '>=14' }
 
+  slash@3.0.0:
+    resolution:
+      {
+        integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==,
+      }
+    engines: { node: '>=8' }
+
   slice-ansi@7.1.2:
     resolution:
       {
@@ -8635,6 +8694,14 @@ packages:
     engines: { node: '>=18.12' }
     peerDependencies:
       typescript: '>=4.8.4'
+
+  tsc-alias@1.8.16:
+    resolution:
+      {
+        integrity: sha512-QjCyu55NFyRSBAl6+MTFwplpFcnm2Pq01rR/uxfqJoLMm6X3O14KEGtaSDZpJYaE1bJBGDjD0eSuiIWPe2T58g==,
+      }
+    engines: { node: '>=16.20.2' }
+    hasBin: true
 
   tsconfig-paths-webpack-plugin@4.2.0:
     resolution:
@@ -11435,6 +11502,8 @@ snapshots:
 
   array-timsort@1.0.3: {}
 
+  array-union@2.1.0: {}
+
   array.prototype.findlast@1.2.5:
     dependencies:
       call-bind: 1.0.8
@@ -11798,6 +11867,8 @@ snapshots:
   commander@6.2.1:
     optional: true
 
+  commander@9.5.0: {}
+
   comment-json@4.2.5:
     dependencies:
       array-timsort: 1.0.3
@@ -11976,6 +12047,10 @@ snapshots:
 
   detect-node@2.1.0:
     optional: true
+
+  dir-glob@3.0.1:
+    dependencies:
+      path-type: 4.0.0
 
   display-notification@2.0.0:
     dependencies:
@@ -12838,6 +12913,15 @@ snapshots:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.2.0
+
+  globby@11.1.0:
+    dependencies:
+      array-union: 2.1.0
+      dir-glob: 3.0.1
+      fast-glob: 3.3.1
+      ignore: 5.3.2
+      merge2: 1.4.1
+      slash: 3.0.0
 
   gopd@1.2.0: {}
 
@@ -13930,6 +14014,8 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
+  mylas@2.1.14: {}
+
   nano-spawn@2.0.0: {}
 
   nanoid@3.3.11: {}
@@ -14234,6 +14320,10 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
+  plimit-lit@1.6.1:
+    dependencies:
+      queue-lit: 1.5.2
+
   pluralize@8.0.0: {}
 
   possible-typed-array-names@1.1.0: {}
@@ -14396,6 +14486,8 @@ snapshots:
   qs@6.13.0:
     dependencies:
       side-channel: 1.1.0
+
+  queue-lit@1.5.2: {}
 
   queue-microtask@1.2.3: {}
 
@@ -14784,6 +14876,8 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+  slash@3.0.0: {}
+
   slice-ansi@7.1.2:
     dependencies:
       ansi-styles: 6.2.3
@@ -15004,6 +15098,16 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.9.3):
     dependencies:
       typescript: 5.9.3
+
+  tsc-alias@1.8.16:
+    dependencies:
+      chokidar: 3.6.0
+      commander: 9.5.0
+      get-tsconfig: 4.13.0
+      globby: 11.1.0
+      mylas: 2.1.14
+      normalize-path: 3.0.0
+      plimit-lit: 1.6.1
 
   tsconfig-paths-webpack-plugin@4.2.0:
     dependencies:

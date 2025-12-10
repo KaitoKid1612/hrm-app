@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/main.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -58,6 +58,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/streamifier": "^0.1.2",
     "prisma": "^6.16.3",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.19.2",
     "typescript": "^5.9.3"
   }
