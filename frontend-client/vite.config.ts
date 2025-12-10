@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: '/',
   server: {
     host: '0.0.0.0', // Cho phép truy cập từ IP
     port: 5173,
