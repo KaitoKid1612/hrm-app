@@ -12,8 +12,8 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: 4173,
-    strictPort: true,
+    port: process.env.PORT ? parseInt(process.env.PORT) : 4173,
+    strictPort: false,
   },
   plugins: [react(), tailwindcss()],
   resolve: {
