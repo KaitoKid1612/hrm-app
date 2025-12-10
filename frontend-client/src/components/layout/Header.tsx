@@ -19,7 +19,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/95">
+    <header className="border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -30,7 +30,7 @@ export const Header = () => {
             <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
-            <span className="hidden sm:block">JobHub</span>
+            <span className="hidden sm:block">Vũng Áng Jobs</span>
           </Link>
 
           {/* Desktop Navigation */}

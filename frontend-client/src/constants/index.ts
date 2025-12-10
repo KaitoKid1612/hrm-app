@@ -53,8 +53,8 @@ export const API_ENDPOINTS = {
 
 // Other constants
 export const APP_CONFIG = {
-  APP_NAME: 'JobHub',
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+  APP_NAME: 'Vũng Áng Jobs',
+  API_BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   ITEMS_PER_PAGE: 20,
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
   ALLOWED_FILE_TYPES: [

@@ -1,6 +1,7 @@
 {
-  "name": "recruitment-backend",
+  "name": "@vungang-jobs/backend",
   "version": "1.0.0",
+  "description": "Vũng Áng Jobs - Backend API Service",
   "private": true,
   "type": "module",
   "scripts": {

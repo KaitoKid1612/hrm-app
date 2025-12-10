@@ -95,7 +95,7 @@ export const TopCompaniesSection = () => {
                 >
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex items-start gap-3 sm:gap-4">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
                         {company.logo ? (
                           <img
                             src={company.logo}

@@ -25,7 +25,8 @@ const StatCard = ({ icon, count, label, isLoading }: StatCardProps) => (
 export const HeroSection = () => {
   const { stats, isLoading } = useJobStatistics();
 
-  const formatNumber = (num: number) => {
+  const formatNumber = (num?: number) => {
+    if (num === undefined || num === null) return '0';
     if (num >= 1000) return `${Math.floor(num / 1000)}K+`;
     return num.toString();
   };
@@ -42,37 +43,38 @@ export const HeroSection = () => {
         <div className="max-w-4xl mx-auto text-center lg:text-left">
           {/* Main Heading */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 leading-tight">
-            Tìm Việc Làm <span className="text-yellow-300">IT</span> Phù Hợp
+            Tìm Việc Làm Tại <span className="text-yellow-300">Vũng Áng</span>
             <br className="hidden sm:block" />
-            Với Bạn
+            Cơ Hội Nghề Nghiệp Cho Bạn
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-white/90 mb-8 lg:mb-12 max-w-2xl mx-auto lg:mx-0">
-            Hàng nghìn cơ hội việc làm IT đang chờ đón bạn từ các công ty hàng đầu
+            Kết nối với hàng nghìn cơ hội việc làm đa ngành nghề tại Vũng Áng từ các doanh nghiệp uy
+            tín
           </p>
 
           {/* Stats - Responsive Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               icon={<Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count={stats ? formatNumber(stats.totalJobs) : '10K+'}
+              count={formatNumber(stats?.totalJobs)}
               label="Việc làm"
               isLoading={isLoading}
             />
             <StatCard
               icon={<Building2 className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count={stats ? formatNumber(stats.totalCompanies) : '5K+'}
+              count={formatNumber(stats?.totalCompanies)}
               label="Công ty"
               isLoading={isLoading}
             />
             <StatCard
               icon={<Users className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count={stats ? formatNumber(stats.totalCandidates) : '50K+'}
+              count={formatNumber(stats?.totalCandidates)}
               label="Ứng viên"
               isLoading={isLoading}
             />
             <StatCard
               icon={<TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />}
-              count={stats ? formatNumber(stats.totalApplications) : '15K+'}
+              count={formatNumber(stats?.totalApplications)}
               label="Tuyển dụng"
               isLoading={isLoading}
             />

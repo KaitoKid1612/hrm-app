@@ -22,10 +22,11 @@ export const Footer = () => {
               <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <Briefcase className="w-6 h-6 text-white" />
               </div>
-              <span>JobHub</span>
+              <span>Vũng Áng Jobs</span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Nền tảng tuyển dụng hàng đầu Việt Nam, kết nối nhà tuyển dụng và ứng viên tài năng.
+              Nền tảng tuyển dụng hàng đầu tại Vũng Áng, kết nối doanh nghiệp và ứng viên tài năng
+              trong đa dạng các lĩnh vực.
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-3 pt-2">
@@ -148,7 +149,7 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3 hover:text-blue-400 transition-colors">
                 <Mail className="w-5 h-5 shrink-0 mt-0.5 text-blue-500" />
-                <span>contact@jobhub.vn</span>
+                <span>contact@vungangjobs.vn</span>
               </li>
               <li className="flex items-start gap-3 hover:text-blue-400 transition-colors">
                 <Phone className="w-5 h-5 shrink-0 mt-0.5 text-green-500" />
@@ -164,7 +165,7 @@ export const Footer = () => {
 
         <div className="border-t border-gray-800 mt-10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-400 text-center md:text-left">
-            &copy; {new Date().getFullYear()} JobHub. All rights reserved.
+            &copy; {new Date().getFullYear()} Vũng Áng Jobs. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-gray-400">
             <Link to="#" className="hover:text-blue-400 transition-colors">

@@ -48,15 +48,15 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 px-4 py-12">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="space-y-3 text-center">
           <div className="flex justify-center mb-2">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
               <UserPlus className="w-8 h-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Đăng ký
           </CardTitle>
           <CardDescription className="text-base">Tạo tài khoản mới của bạn</CardDescription>
@@ -169,7 +169,7 @@ const Register: React.FC = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 mt-2"
+              className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 mt-2"
             >
               {isLoading ? (
                 <>
