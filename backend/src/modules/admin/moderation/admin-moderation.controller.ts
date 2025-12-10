@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Delete, Param, Query, UseGuards, Inject } from '@nestjs/common';
 import { AdminModerationService } from './admin-moderation.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
@@ -10,7 +10,9 @@ import { AdminQueryReviewsDto } from './dto/admin-moderation.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 export class AdminModerationController {
-  constructor(private adminModerationService: AdminModerationService) {}
+  constructor(
+    @Inject(AdminModerationService) private readonly adminModerationService: AdminModerationService,
+  ) {}
 
   @Get('reviews')
   getAllReviews(@Query() query: AdminQueryReviewsDto) {

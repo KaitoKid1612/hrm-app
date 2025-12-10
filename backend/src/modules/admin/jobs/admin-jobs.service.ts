@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import {
   AdminQueryJobsDto,
@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class AdminJobsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getAllJobs(query: AdminQueryJobsDto) {
     const {

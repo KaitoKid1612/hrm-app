@@ -1,10 +1,23 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { CreateJobDto, UpdateJobDto, QueryJobDto } from './dto/job.dto';
 
 @Injectable()
 export class JobsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+
+  async createJobByUserId(userId: string, dto: CreateJobDto) {
+    // Get company by userId
+    const company = await this.prisma.company.findUnique({
+      where: { userId },
+    });
+
+    if (!company) {
+      throw new ForbiddenException('Vui lòng tạo hồ sơ công ty trước');
+    }
+
+    return this.create(company.id, dto);
+  }
 
   async create(companyId: string, dto: CreateJobDto) {
     const { skillIds, deadline, ...jobData } = dto;
@@ -59,7 +72,11 @@ export class JobsService {
       deadlineBefore,
       ...filters
     } = query;
-    const skip = (page - 1) * limit;
+
+    // Ensure page and limit are numbers
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const where: any = {
       isActive: true,
@@ -90,14 +107,16 @@ export class JobsService {
       where.AND = where.AND || [];
 
       if (filters.salaryMin) {
+        const salaryMinNum = Number(filters.salaryMin);
         where.AND.push({
-          OR: [{ salaryMin: { gte: filters.salaryMin } }, { salaryNegotiate: true }],
+          OR: [{ salaryMin: { gte: salaryMinNum } }, { salaryNegotiate: true }],
         });
       }
 
       if (filters.salaryMax) {
+        const salaryMaxNum = Number(filters.salaryMax);
         where.AND.push({
-          OR: [{ salaryMax: { lte: filters.salaryMax } }, { salaryNegotiate: true }],
+          OR: [{ salaryMax: { lte: salaryMaxNum } }, { salaryNegotiate: true }],
         });
       }
     }
@@ -171,7 +190,7 @@ export class JobsService {
       this.prisma.job.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         orderBy,
         include: {
           company: {
@@ -212,10 +231,10 @@ export class JobsService {
     return {
       data: sortedJobs,
       meta: {
-        page,
-        limit,
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNum),
       },
     };
   }

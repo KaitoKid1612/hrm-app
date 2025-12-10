@@ -10,7 +10,9 @@ import { AdminDateRangeDto } from './dto/dashboard.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 export class AdminDashboardController {
-  constructor(private adminDashboardService: AdminDashboardService) {}
+  constructor(
+    @Inject(AdminDashboardService) private readonly adminDashboardService: AdminDashboardService,
+  ) {}
 
   @Get('dashboard')
   getDashboardStats(@Query() dateRange?: AdminDateRangeDto) {

@@ -1,16 +1,19 @@
-import { Controller, Get, Post, Patch, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, UseGuards, Inject } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
+import { CreateApplicationDto, UpdateApplicationStatusDto } from './dto/application.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 
 @Controller('applications')
 @UseGuards(JwtAuthGuard)
 export class ApplicationsController {
-  constructor(private applicationsService: ApplicationsService) {}
+  constructor(
+    @Inject(ApplicationsService) private readonly applicationsService: ApplicationsService,
+  ) {}
 
   @Post()
-  create(@CurrentUser() user: any, @Body() data: any) {
-    return this.applicationsService.create(user.id, data);
+  create(@CurrentUser() user: any, @Body() dto: CreateApplicationDto) {
+    return this.applicationsService.create(user.id, dto);
   }
 
   @Get('my-applications')
@@ -24,7 +27,7 @@ export class ApplicationsController {
   }
 
   @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body('status') status: any) {
-    return this.applicationsService.updateStatus(id, status);
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateApplicationStatusDto) {
+    return this.applicationsService.updateStatus(id, dto.status);
   }
 }

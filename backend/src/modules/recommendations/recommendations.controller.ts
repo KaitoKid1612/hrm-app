@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, Get, Query, Param, UseGuards, Post, Body, Inject } from '@nestjs/common';
 import { RecommendationsService } from './recommendations.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
@@ -14,7 +14,9 @@ import {
 @Controller('recommendations')
 @UseGuards(JwtAuthGuard)
 export class RecommendationsController {
-  constructor(private readonly recommendationsService: RecommendationsService) {}
+  constructor(
+    @Inject(RecommendationsService) private readonly recommendationsService: RecommendationsService,
+  ) {}
 
   /**
    * Get job recommendations for current candidate

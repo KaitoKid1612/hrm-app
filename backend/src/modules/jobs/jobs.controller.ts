@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Inject,
+} from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto, UpdateJobDto, QueryJobDto, SearchSuggestionsDto } from './dto/job.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
@@ -9,7 +20,7 @@ import { Role } from '@prisma/client';
 
 @Controller('jobs')
 export class JobsController {
-  constructor(private jobsService: JobsService) {}
+  constructor(@Inject(JobsService) private readonly jobsService: JobsService) {}
 
   // ============================================
   // Public Search & Filter Endpoints
@@ -53,16 +64,7 @@ export class JobsController {
   @Roles(Role.EMPLOYER)
   @Post()
   async create(@CurrentUser() user: any, @Body() dto: CreateJobDto) {
-    // Get company by userId
-    const company = await this.jobsService['prisma'].company.findUnique({
-      where: { userId: user.id },
-    });
-
-    if (!company) {
-      throw new Error('Vui lòng tạo hồ sơ công ty trước');
-    }
-
-    return this.jobsService.create(company.id, dto);
+    return this.jobsService.createJobByUserId(user.id, dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

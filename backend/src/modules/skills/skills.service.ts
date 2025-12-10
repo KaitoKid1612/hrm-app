@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
@@ -6,7 +6,7 @@ import { BulkCreateSkillsDto } from './dto/bulk-create-skills.dto';
 
 @Injectable()
 export class SkillsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async create(data: CreateSkillDto) {
     const slug = this.generateSlug(data.name);

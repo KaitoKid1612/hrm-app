@@ -57,6 +57,22 @@ interface JobAlertEmailData {
   unsubscribeUrl: string;
 }
 
+interface PasswordResetEmailData {
+  userName: string;
+  userEmail: string;
+  resetUrl: string;
+}
+
+interface JobInviteEmailData {
+  candidateName: string;
+  candidateEmail: string;
+  jobTitle: string;
+  companyName: string;
+  jobUrl: string;
+  customMessage?: string;
+  hrEmail?: string;
+}
+
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
@@ -64,7 +80,7 @@ export class EmailService {
   private supportEmail: string;
 
   constructor(
-    private readonly mailerService: MailerService,
+    @Inject(MailerService) private readonly mailerService: MailerService,
     @Inject(ConfigService) private readonly configService: ConfigService,
   ) {
     // Initialize config values in constructor body instead of property initializer
@@ -174,6 +190,40 @@ export class EmailService {
         jobCount: data.jobs.length,
         allJobsUrl: data.allJobsUrl,
         unsubscribeUrl: data.unsubscribeUrl,
+      },
+    });
+  }
+
+  /**
+   * Send password reset email
+   */
+  async sendPasswordResetEmail(data: PasswordResetEmailData): Promise<boolean> {
+    return this.sendEmail({
+      to: data.userEmail,
+      subject: `Đặt lại mật khẩu - ${this.appName}`,
+      template: 'password-reset',
+      context: {
+        userName: data.userName,
+        resetUrl: data.resetUrl,
+      },
+    });
+  }
+
+  /**
+   * Send job invitation email to candidate
+   */
+  async sendJobInviteEmail(data: JobInviteEmailData): Promise<boolean> {
+    return this.sendEmail({
+      to: data.candidateEmail,
+      subject: `🎯 Cơ hội việc làm từ ${data.companyName}: ${data.jobTitle}`,
+      template: 'job-invite',
+      context: {
+        candidateName: data.candidateName,
+        jobTitle: data.jobTitle,
+        companyName: data.companyName,
+        jobUrl: data.jobUrl,
+        customMessage: data.customMessage,
+        hrEmail: data.hrEmail,
       },
     });
   }

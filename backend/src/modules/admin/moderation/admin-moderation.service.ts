@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { AdminQueryReviewsDto } from './dto/admin-moderation.dto';
 
 @Injectable()
 export class AdminModerationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getAllReviews(query: AdminQueryReviewsDto) {
     const {

@@ -1,23 +1,51 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { NotificationsService } from '@/modules/notifications/notifications.service';
 import { EmailService } from '@/modules/email/email.service';
+import { CreateApplicationDto } from './dto/application.dto';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
-    private prisma: PrismaService,
-    private notificationsService: NotificationsService,
-    private emailService: EmailService,
-    @Inject(ConfigService) private configService: ConfigService,
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(NotificationsService) private readonly notificationsService: NotificationsService,
+    @Inject(EmailService) private readonly emailService: EmailService,
+    @Inject(ConfigService) private readonly configService: ConfigService,
   ) {}
 
-  async create(userId: string, data: any) {
+  async create(userId: string, data: CreateApplicationDto) {
+    // Verify resume exists and belongs to user
+    const resume = await this.prisma.resume.findFirst({
+      where: {
+        id: data.resumeId,
+        userId,
+      },
+    });
+
+    if (!resume) {
+      throw new BadRequestException('CV không tồn tại. Vui lòng tạo CV trước khi ứng tuyển.');
+    }
+
+    // Check if already applied
+    const existingApplication = await this.prisma.application.findFirst({
+      where: {
+        userId,
+        jobId: data.jobId,
+      },
+    });
+
+    if (existingApplication) {
+      throw new BadRequestException('Bạn đã ứng tuyển công việc này rồi.');
+    }
+
     const application = await this.prisma.application.create({
       data: {
-        ...data,
+        jobId: data.jobId,
         userId,
+        resumeId: data.resumeId,
+        coverLetter: data.coverLetter,
+        status: 'PENDING',
       },
       include: {
         job: {

@@ -15,7 +15,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 @Controller('upload')
 @UseGuards(JwtAuthGuard)
 export class UploadController {
-  constructor(private uploadService: UploadService) {}
+  constructor(@Inject(UploadService) private readonly uploadService: UploadService) {}
 
   @Post('cv')
   @UseInterceptors(FileInterceptor('file'))

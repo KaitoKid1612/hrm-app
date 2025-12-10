@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Inject,
+} from '@nestjs/common';
 import { SavedJobsService } from './saved-jobs.service';
 import { SaveJobDto } from './dto/save-job.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
@@ -7,7 +17,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 @Controller('saved-jobs')
 @UseGuards(JwtAuthGuard)
 export class SavedJobsController {
-  constructor(private savedJobsService: SavedJobsService) {}
+  constructor(@Inject(SavedJobsService) private readonly savedJobsService: SavedJobsService) {}
 
   @Post()
   saveJob(@CurrentUser() user: any, @Body() dto: SaveJobDto) {

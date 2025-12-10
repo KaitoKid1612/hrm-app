@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { CloudinaryService } from './cloudinary.service';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import * as fs from 'fs';
@@ -10,8 +10,8 @@ export class UploadService {
   private readonly useCloudinary: boolean;
 
   constructor(
-    private cloudinaryService: CloudinaryService,
-    private prisma: PrismaService,
+    @Inject(CloudinaryService) private readonly cloudinaryService: CloudinaryService,
+    @Inject(PrismaService) private readonly prisma: PrismaService,
   ) {
     // Check if Cloudinary is configured
     this.useCloudinary = !!(

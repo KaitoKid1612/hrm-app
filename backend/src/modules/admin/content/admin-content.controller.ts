@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Inject,
+} from '@nestjs/common';
 import { AdminContentService } from './admin-content.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
@@ -15,7 +26,9 @@ import {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 export class AdminContentController {
-  constructor(private adminContentService: AdminContentService) {}
+  constructor(
+    @Inject(AdminContentService) private readonly adminContentService: AdminContentService,
+  ) {}
 
   // Categories
   @Get('categories')

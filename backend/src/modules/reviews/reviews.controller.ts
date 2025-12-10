@@ -25,7 +25,7 @@ import { Role } from '@prisma/client';
 
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private reviewsService: ReviewsService) {}
+  constructor(@Inject(ReviewsService) private readonly reviewsService: ReviewsService) {}
 
   // ============================================
   // Public Endpoints

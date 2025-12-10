@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { SaveJobDto } from './dto/save-job.dto';
 
 @Injectable()
 export class SavedJobsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async saveJob(userId: string, dto: SaveJobDto) {
     // Check if job exists

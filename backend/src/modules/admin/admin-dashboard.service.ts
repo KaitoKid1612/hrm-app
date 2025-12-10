@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { AdminDateRangeDto } from './dto/dashboard.dto';
 
 @Injectable()
 export class AdminDashboardService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getDashboardStats(dateRange?: AdminDateRangeDto) {
     const startDate = dateRange?.startDate

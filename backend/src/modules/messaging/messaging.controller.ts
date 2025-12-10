@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Patch,
+  Inject,
 } from '@nestjs/common';
 import { MessagingService } from './messaging.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
@@ -25,7 +26,7 @@ import {
 @Controller('messaging')
 @UseGuards(JwtAuthGuard)
 export class MessagingController {
-  constructor(private readonly messagingService: MessagingService) {}
+  constructor(@Inject(MessagingService) private readonly messagingService: MessagingService) {}
 
   /**
    * Create a new conversation
