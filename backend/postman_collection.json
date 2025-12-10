@@ -1,0 +1,848 @@
+{
+  "info": {
+    "name": "HRM App Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "hrm-app-backend-collection"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "authToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"secret123\",\n  \"name\": \"Nguyen Van A\",\n  \"phone\": \"0901234567\",\n  \"role\": \"CANDIDATE\",\n  \"gender\": \"MALE\",\n  \"dateOfBirth\": \"1995-05-15\",\n  \"city\": \"Hanoi\",\n  \"address\": \"123 Nguyen Trai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nguyen Van B\",\n  \"phone\": \"0909876543\",\n  \"avatar\": \"https://cdn.example.com/avatar.jpg\",\n  \"gender\": \"MALE\",\n  \"dateOfBirth\": \"1995-05-15\",\n  \"address\": \"456 Le Loi\",\n  \"city\": \"Ho Chi Minh\",\n  \"country\": \"Vietnam\",\n  \"bio\": \"Experienced developer with 5 years in web development\",\n  \"currentJobTitle\": \"Senior Frontend Developer\",\n  \"yearsOfExperience\": 5,\n  \"expectedSalary\": 2000,\n  \"linkedinUrl\": \"https://linkedin.com/in/nguyenvanb\",\n  \"portfolioUrl\": \"https://portfolio.nguyenvanb.dev\",\n  \"githubUrl\": \"https://github.com/nguyenvanb\",\n  \"preferredLanguage\": \"vi\",\n  \"timezone\": \"Asia/Ho_Chi_Minh\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"newPassword\": \"newSecret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"secret123\",\n  \"newPassword\": \"newSecret456\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Search All",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/search/all?keyword=react&city=Hanoi&limit=10&page=1&jobType=FULL_TIME&jobLevel=MID&experience=INTERMEDIATE&salaryMin=1000&salaryMax=3000&skills=skillId1,skillId2&companyId=companyId&isHot=true&isUrgent=false&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "search", "all"],
+              "query": [
+                { "key": "keyword", "value": "react" },
+                { "key": "city", "value": "Hanoi" },
+                { "key": "limit", "value": "10" },
+                { "key": "page", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Suggestions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/search/suggestions?query=react&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "search", "suggestions"],
+              "query": [
+                { "key": "query", "value": "react" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Trending",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/search/trending?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "search", "trending"],
+              "query": [{ "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/search/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "search", "statistics"]
+            }
+          }
+        },
+        {
+          "name": "Similar Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/{{jobId}}/similar?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "{{jobId}}", "similar"],
+              "query": [{ "key": "limit", "value": "5" }]
+            }
+          }
+        },
+        {
+          "name": "Get Job",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "{{jobId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Job (EMPLOYER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/jobs", "host": ["{{baseUrl}}"], "path": ["jobs"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"cat_123\",\n  \"title\": \"Frontend Developer\",\n  \"description\": \"Mô tả công việc...\",\n  \"requirements\": \"Yêu cầu công việc...\",\n  \"benefits\": \"Phúc lợi...\",\n  \"jobType\": \"FULL_TIME\",\n  \"jobLevel\": \"MID\",\n  \"salaryMin\": 1000,\n  \"salaryMax\": 2000,\n  \"salaryNegotiate\": false,\n  \"positions\": 2,\n  \"experience\": \"INTERMEDIATE\",\n  \"address\": \"123 Nguyen Trai\",\n  \"city\": \"Hanoi\",\n  \"deadline\": \"2025-12-31\",\n  \"skillIds\": [\"skillId1\", \"skillId2\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Job (EMPLOYER)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "{{jobId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Frontend Developer\",\n  \"salaryMax\": 3000,\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Job (EMPLOYER)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "{{jobId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Create Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/applications",
+              "host": ["{{baseUrl}}"],
+              "path": ["applications"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"job_123\",\n  \"resumeId\": \"resume_123\",\n  \"coverLetter\": \"Tôi quan tâm vị trí này...\"\n}"
+            }
+          }
+        },
+        {
+          "name": "My Applications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/applications/my-applications",
+              "host": ["{{baseUrl}}"],
+              "path": ["applications", "my-applications"]
+            }
+          }
+        },
+        {
+          "name": "Job Applications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/applications/job/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["applications", "job", "{{jobId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/applications/{{applicationId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["applications", "{{applicationId}}", "status"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"REVIEWING\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Frontend\",\n  \"description\": \"Việc làm frontend\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{id}}"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Frontend Updated\"\n}" }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "List Companies",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            }
+          }
+        },
+        {
+          "name": "Get Company",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get My Company Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/companies/my/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "my", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Awesome Co\",\n  \"description\": \"Mô tả công ty...\",\n  \"website\": \"https://awesome.co\",\n  \"location\": \"Hanoi\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{id}}"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Awesome Co Updated\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resumes",
+      "item": [
+        {
+          "name": "Create Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/resumes", "host": ["{{baseUrl}}"], "path": ["resumes"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"CV Frontend\",\n  \"summary\": \"Tóm tắt...\",\n  \"experiences\": [],\n  \"skills\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "My Resume",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/resumes/my-resume",
+              "host": ["{{baseUrl}}"],
+              "path": ["resumes", "my-resume"]
+            }
+          }
+        },
+        {
+          "name": "Get Resume",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/resumes/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["resumes", "{{id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messaging",
+      "item": [
+        {
+          "name": "Create Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"participantId\": \"user_2\"\n}" }
+          }
+        },
+        {
+          "name": "List Conversations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations"]
+            }
+          }
+        },
+        {
+          "name": "Get Conversation",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Conversation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"archived\": true\n}" }
+          }
+        },
+        {
+          "name": "Delete Conversation",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}"]
+            }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}", "messages"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"content\": \"Xin chào!\"\n}" }
+          }
+        },
+        {
+          "name": "List Messages",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}", "messages"]
+            }
+          }
+        },
+        {
+          "name": "Mark Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/conversations/{{id}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "conversations", "{{id}}", "read"]
+            }
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/messaging/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["messaging", "unread-count"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            }
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread-count"]
+            }
+          }
+        },
+        {
+          "name": "Mark Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{id}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "{{id}}", "read"]
+            }
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "read-all"]
+            }
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "{{id}"]
+            }
+          }
+        },
+        {
+          "name": "Clear All",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Saved Jobs",
+      "item": [
+        {
+          "name": "Save Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/saved-jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved-jobs"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"jobId\": \"job_123\"\n}" }
+          }
+        },
+        {
+          "name": "Unsave Job",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/saved-jobs/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved-jobs", "{{id}}"]
+            }
+          }
+        },
+        {
+          "name": "List Saved Jobs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/saved-jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved-jobs"]
+            }
+          }
+        },
+        {
+          "name": "Check Saved",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/saved-jobs/check/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved-jobs", "check", "{{jobId}}"]
+            }
+          }
+        },
+        {
+          "name": "Saved Job IDs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/saved-jobs/ids",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved-jobs", "ids"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Job Invites (EMPLOYER/ADMIN)",
+      "item": [
+        {
+          "name": "Bulk Invite (JSON)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invites/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["invites", "bulk"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"job_123\",\n  \"candidates\": [\n    {\n      \"email\": \"candidate1@example.com\",\n      \"name\": \"Nguyen Van A\",\n      \"phone\": \"0901234567\",\n      \"note\": \"Kinh nghiệm 3 năm\"\n    },\n    {\n      \"email\": \"candidate2@example.com\",\n      \"name\": \"Tran Thi B\",\n      \"phone\": \"0909876543\"\n    }\n  ],\n  \"customMessage\": \"Chúng tôi rất quan tâm đến hồ sơ của bạn\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Upload CSV & Invite",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/invites/upload-csv/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["invites", "upload-csv", "{{jobId}}"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/path/to/candidates.csv",
+                  "description": "CSV file with columns: email, name, phone (optional), note (optional)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job Invites",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/invites/job/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["invites", "job", "{{jobId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get My Invites",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/invites/my-invites",
+              "host": ["{{baseUrl}}"],
+              "path": ["invites", "my-invites"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

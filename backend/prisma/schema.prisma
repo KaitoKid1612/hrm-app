@@ -62,14 +62,56 @@ enum ExperienceLevel {
 // ============= MODELS =============
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(CANDIDATE)
-  avatar    String?
-  phone     String?
-  isActive  Boolean  @default(true)
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String
+  role     Role   @default(CANDIDATE)
+
+  // Basic Info
+  avatar      String?
+  phone       String?
+  gender      Gender?
+  dateOfBirth DateTime?
+
+  // Location
+  address String?
+  city    String?
+  country String? @default("Vietnam")
+
+  // Professional Info (for Candidates)
+  bio               String? @db.Text
+  currentJobTitle   String?
+  yearsOfExperience Int?    @default(0)
+  expectedSalary    Int?
+  linkedinUrl       String?
+  portfolioUrl      String?
+  githubUrl         String?
+
+  // Settings & Preferences
+  preferredLanguage String? @default("vi")
+  timezone          String? @default("Asia/Ho_Chi_Minh")
+
+  // Email Verification
+  emailVerified     Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  verificationToken String?
+
+  // Security
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  twoFactorEnabled     Boolean   @default(false)
+  twoFactorSecret      String?
+  refreshToken         String?   @db.Text
+  refreshTokenExpires  DateTime?
+
+  // Account Status
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  bannedAt    DateTime?
+  banReason   String?
+
+  // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -175,6 +217,7 @@ model Job {
   skills       JobSkill[]
   applications Application[]
   savedJobs    SavedJob[]
+  invites      JobInvite[]
 
   @@index([companyId])
   @@index([categoryId])
@@ -381,4 +424,22 @@ model Review {
   @@index([userId])
   @@index([rating])
   @@map("reviews")
+}
+
+model JobInvite {
+  id     String   @id @default(cuid())
+  jobId  String
+  email  String
+  name   String
+  phone  String?
+  note   String?  @db.Text
+  sentBy String // userId who sent the invite
+  sentAt DateTime @default(now())
+
+  // Relations
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([email])
+  @@map("job_invites")
 }

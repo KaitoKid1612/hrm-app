@@ -19,6 +19,7 @@ import { ReviewsModule } from '@/modules/reviews/reviews.module';
 import { MessagingModule } from '@/modules/messaging/messaging.module';
 import { AnalyticsModule } from '@/modules/analytics/analytics.module';
 import { RecommendationsModule } from '@/modules/recommendations/recommendations.module';
+import { InvitesModule } from '@/modules/invites/invites.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { RecommendationsModule } from '@/modules/recommendations/recommendations
     MessagingModule,
     AnalyticsModule,
     RecommendationsModule,
+    InvitesModule,
   ],
 })
 export class AppModule {}
