@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/context/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import PublicRoute from '@/components/PublicRoute';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import Dashboard from '@/pages/Dashboard';
+import { AuthProvider } from '@/features/auth';
+import { LoginPage, RegisterPage } from '@/features/auth';
+import { DashboardPage } from '@/features/dashboard';
+import { HomePage, JobDetailPage } from '@/features/jobs';
+import ProtectedRoute from '@/routes/ProtectedRoute';
+import PublicRoute from '@/routes/PublicRoute';
+import { MainLayout } from '@/components/layout';
+import { ROUTES } from '@/constants';
 import './App.css';
 
 function App() {
@@ -13,32 +15,42 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+          {/* Public Routes - Không cần đăng nhập */}
+          <Route path={ROUTES.HOME} element={<HomePage />} />
+          <Route path={ROUTES.JOBS} element={<HomePage />} />
+          <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
+
+          {/* Auth Routes - Redirect nếu đã đăng nhập */}
           <Route
-            path="/login"
+            path={ROUTES.LOGIN}
             element={
               <PublicRoute>
-                <Login />
+                <LoginPage />
               </PublicRoute>
             }
           />
           <Route
-            path="/register"
+            path={ROUTES.REGISTER}
             element={
               <PublicRoute>
-                <Register />
+                <RegisterPage />
               </PublicRoute>
             }
           />
+
+          {/* Protected Routes - Cần đăng nhập */}
           <Route
-            path="/dashboard"
+            path={ROUTES.DASHBOARD}
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <MainLayout>
+                  <DashboardPage />
+                </MainLayout>
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+          <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
         </Routes>
       </AuthProvider>
     </Router>
