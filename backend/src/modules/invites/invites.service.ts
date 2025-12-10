@@ -64,7 +64,7 @@ export class InvitesService {
 
   async processCsvInvite(userId: string, jobId: string, file: Express.Multer.File) {
     // Verify job ownership
-    const job = await this.verifyJobOwnership(userId, jobId);
+    await this.verifyJobOwnership(userId, jobId);
 
     // Parse CSV
     const candidates: InviteCandidateDto[] = [];

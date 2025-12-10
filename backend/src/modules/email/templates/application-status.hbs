@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset='UTF-8' />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -30,13 +29,34 @@
         font-weight: bold;
         margin: 10px 0;
       }
-      .status-pending { background: #fef3c7; color: #92400e; }
-      .status-reviewing { background: #dbeafe; color: #1e40af; }
-      .status-shortlisted { background: #d1fae5; color: #065f46; }
-      .status-interviewed { background: #e0e7ff; color: #3730a3; }
-      .status-offered { background: #bbf7d0; color: #14532d; }
-      .status-rejected { background: #fee2e2; color: #991b1b; }
-      .status-withdrawn { background: #f3f4f6; color: #374151; }
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-reviewing {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-shortlisted {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-interviewed {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+      .status-offered {
+        background: #bbf7d0;
+        color: #14532d;
+      }
+      .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-withdrawn {
+        background: #f3f4f6;
+        color: #374151;
+      }
       .job-info {
         background: white;
         padding: 20px;
@@ -62,55 +82,61 @@
     </style>
   </head>
   <body>
-    <div class="header">
+    <div class='header'>
       <h1>📝 Cập nhật trạng thái ứng tuyển</h1>
     </div>
-    <div class="content">
+    <div class='content'>
       <p>Xin chào <strong>{{candidateName}}</strong>,</p>
-      
+
       <p>Đơn ứng tuyển của bạn đã được cập nhật trạng thái:</p>
-      
-      <div class="job-info">
+
+      <div class='job-info'>
         <h3>{{jobTitle}}</h3>
         <p><strong>Công ty:</strong> {{companyName}}</p>
         <p><strong>Trạng thái mới:</strong></p>
-        <span class="status-badge status-{{status}}">
-          {{#if (eq status "PENDING")}}⏳ Chờ xử lý{{/if}}
-          {{#if (eq status "REVIEWING")}}👀 Đang xem xét{{/if}}
-          {{#if (eq status "INTERVIEWED")}}🗣️ Đã phỏng vấn{{/if}}
-          {{#if (eq status "ACCEPTED")}}🎉 Chấp nhận{{/if}}
-          {{#if (eq status "REJECTED")}}❌ Từ chối{{/if}}
-          {{#if (eq status "WITHDRAWN")}}🚫 Rút đơn{{/if}}
+        <span class='status-badge status-{{status}}'>
+          {{#if (eq status 'PENDING')}}⏳ Chờ xử lý{{/if}}
+          {{#if (eq status 'REVIEWING')}}👀 Đang xem xét{{/if}}
+          {{#if (eq status 'INTERVIEWED')}}🗣️ Đã phỏng vấn{{/if}}
+          {{#if (eq status 'ACCEPTED')}}🎉 Chấp nhận{{/if}}
+          {{#if (eq status 'REJECTED')}}❌ Từ chối{{/if}}
+          {{#if (eq status 'WITHDRAWN')}}🚫 Rút đơn{{/if}}
         </span>
         <p><strong>Ngày ứng tuyển:</strong> {{appliedDate}}</p>
       </div>
-      
+
       {{#if message}}
-      <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-        <p><strong>Tin nhắn từ nhà tuyển dụng:</strong></p>
-        <p>{{message}}</p>
+        <div
+          style='background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;'
+        >
+          <p><strong>Tin nhắn từ nhà tuyển dụng:</strong></p>
+          <p>{{message}}</p>
+        </div>
+      {{/if}}
+
+      {{#if (eq status 'ACCEPTED')}}
+        <p>🎊
+          <strong>Chúc mừng!</strong>
+          Bạn đã được chấp nhận cho vị trí này. Vui lòng kiểm tra email hoặc liên hệ với nhà tuyển
+          dụng để biết thêm chi tiết.</p>
+      {{/if}}
+
+      {{#if (eq status 'INTERVIEWED')}}
+        <p>💪 Cảm ơn bạn đã tham gia phỏng vấn. Chúng tôi sẽ thông báo kết quả sớm nhất có thể.</p>
+      {{/if}}
+
+      {{#if (eq status 'REJECTED')}}
+        <p>Rất tiếc, lần này chưa phù hợp. Đừng nản chí! Hãy tiếp tục tìm kiếm cơ hội mới trên nền
+          tảng của chúng tôi.</p>
+      {{/if}}
+
+      <div style='text-align: center;'>
+        <a href='{{applicationUrl}}' class='button'>Xem chi tiết đơn ứng tuyển</a>
       </div>
-      {{/if}}
-      
-      {{#if (eq status "ACCEPTED")}}
-      <p>🎊 <strong>Chúc mừng!</strong> Bạn đã được chấp nhận cho vị trí này. Vui lòng kiểm tra email hoặc liên hệ với nhà tuyển dụng để biết thêm chi tiết.</p>
-      {{/if}}
-      
-      {{#if (eq status "INTERVIEWED")}}
-      <p>💪 Cảm ơn bạn đã tham gia phỏng vấn. Chúng tôi sẽ thông báo kết quả sớm nhất có thể.</p>
-      {{/if}}
-      
-      {{#if (eq status "REJECTED")}}
-      <p>Rất tiếc, lần này chưa phù hợp. Đừng nản chí! Hãy tiếp tục tìm kiếm cơ hội mới trên nền tảng của chúng tôi.</p>
-      {{/if}}
-      
-      <div style="text-align: center;">
-        <a href="{{applicationUrl}}" class="button">Xem chi tiết đơn ứng tuyển</a>
-      </div>
-      
+
       <p>Chúc bạn may mắn trong hành trình tìm việc!</p>
     </div>
-    <div class="footer">
+    <div class='footer'>
       <p>© 2024 {{appName}}. All rights reserved.</p>
       <p>Email này được gửi tự động, vui lòng không trả lời.</p>
     </div>

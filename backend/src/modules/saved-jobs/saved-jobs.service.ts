@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { SaveJobDto } from './dto/save-job.dto';
 

@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset='UTF-8' />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -54,44 +53,49 @@
     </style>
   </head>
   <body>
-    <div class="header">
+    <div class='header'>
       <h1>🆕 Đơn ứng tuyển mới</h1>
     </div>
-    <div class="content">
+    <div class='content'>
       <p>Xin chào <strong>{{employerName}}</strong>,</p>
-      
+
       <p>Bạn vừa nhận được một đơn ứng tuyển mới cho vị trí:</p>
-      
-      <h3 style="color: #667eea;">{{jobTitle}}</h3>
-      
-      <div class="candidate-info">
+
+      <h3 style='color: #667eea;'>{{jobTitle}}</h3>
+
+      <div class='candidate-info'>
         <h4>👤 Thông tin ứng viên</h4>
         <p><strong>Họ tên:</strong> {{candidateName}}</p>
         <p><strong>Email:</strong> {{candidateEmail}}</p>
         {{#if candidatePhone}}
-        <p><strong>Số điện thoại:</strong> {{candidatePhone}}</p>
+          <p><strong>Số điện thoại:</strong> {{candidatePhone}}</p>
         {{/if}}
         <p><strong>Ngày ứng tuyển:</strong> {{appliedDate}}</p>
       </div>
-      
+
       {{#if coverLetter}}
-      <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-        <p><strong>📄 Thư giới thiệu:</strong></p>
-        <p style="font-style: italic;">{{coverLetter}}</p>
-      </div>
+        <div
+          style='background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;'
+        >
+          <p><strong>📄 Thư giới thiệu:</strong></p>
+          <p style='font-style: italic;'>{{coverLetter}}</p>
+        </div>
       {{/if}}
-      
-      <p>Đơn ứng tuyển này đang ở trạng thái <span class="highlight">Chờ xử lý</span>. Vui lòng xem xét và cập nhật trạng thái sớm nhất.</p>
-      
-      <div style="text-align: center;">
-        <a href="{{applicationUrl}}" class="button">Xem đơn ứng tuyển</a>
+
+      <p>Đơn ứng tuyển này đang ở trạng thái
+        <span class='highlight'>Chờ xử lý</span>. Vui lòng xem xét và cập nhật trạng thái sớm nhất.</p>
+
+      <div style='text-align: center;'>
+        <a href='{{applicationUrl}}' class='button'>Xem đơn ứng tuyển</a>
       </div>
-      
-      <p style="font-size: 14px; color: #666;">
-        💡 <strong>Mẹo:</strong> Hãy phản hồi ứng viên trong vòng 24-48 giờ để tạo ấn tượng tốt và không bỏ lỡ nhân tài!
+
+      <p style='font-size: 14px; color: #666;'>
+        💡
+        <strong>Mẹo:</strong>
+        Hãy phản hồi ứng viên trong vòng 24-48 giờ để tạo ấn tượng tốt và không bỏ lỡ nhân tài!
       </p>
     </div>
-    <div class="footer">
+    <div class='footer'>
       <p>© 2024 {{appName}}. All rights reserved.</p>
       <p>Email này được gửi tự động, vui lòng không trả lời.</p>
     </div>

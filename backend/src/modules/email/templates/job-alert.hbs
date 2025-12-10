@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset='UTF-8' />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -32,7 +31,7 @@
         transition: box-shadow 0.3s;
       }
       .job-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       .job-title {
         color: #667eea;
@@ -80,58 +79,60 @@
     </style>
   </head>
   <body>
-    <div class="header">
+    <div class='header'>
       <h1>🔔 Công việc mới phù hợp với bạn!</h1>
     </div>
-    <div class="content">
+    <div class='content'>
       <p>Xin chào <strong>{{userName}}</strong>,</p>
-      
+
       <p>Chúng tôi tìm thấy <strong>{{jobCount}}</strong> công việc mới có thể phù hợp với bạn:</p>
-      
+
       {{#each jobs}}
-      <div class="job-card">
-        <h3 class="job-title">{{this.title}}</h3>
-        <p class="company-name">🏢 {{this.companyName}}</p>
-        
-        <div class="job-meta">
-          <span>📍 {{this.location}}</span>
-          <span>💼 {{this.type}}</span>
-          <span>💰 {{this.salary}}</span>
+        <div class='job-card'>
+          <h3 class='job-title'>{{this.title}}</h3>
+          <p class='company-name'>🏢 {{this.companyName}}</p>
+
+          <div class='job-meta'>
+            <span>📍 {{this.location}}</span>
+            <span>💼 {{this.type}}</span>
+            <span>💰 {{this.salary}}</span>
+          </div>
+
+          {{#if this.skills}}
+            <div>
+              {{#each this.skills}}
+                <span class='tag'>{{this}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          <p style='margin: 10px 0; font-size: 14px; color: #666;'>
+            {{this.description}}
+          </p>
+
+          <a href='{{this.url}}' class='button'>Xem chi tiết & Ứng tuyển</a>
         </div>
-        
-        {{#if this.skills}}
-        <div>
-          {{#each this.skills}}
-          <span class="tag">{{this}}</span>
-          {{/each}}
-        </div>
-        {{/if}}
-        
-        <p style="margin: 10px 0; font-size: 14px; color: #666;">
-          {{this.description}}
-        </p>
-        
-        <a href="{{this.url}}" class="button">Xem chi tiết & Ứng tuyển</a>
-      </div>
       {{/each}}
-      
-      <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 20px;">
-        <p style="margin: 0; font-size: 14px;">
-          💡 <strong>Lưu ý:</strong> Các vị trí này được gợi ý dựa trên hồ sơ và sở thích của bạn. 
-          Hãy ứng tuyển sớm để tăng cơ hội được nhận!
+
+      <div style='background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 20px;'>
+        <p style='margin: 0; font-size: 14px;'>
+          💡
+          <strong>Lưu ý:</strong>
+          Các vị trí này được gợi ý dựa trên hồ sơ và sở thích của bạn. Hãy ứng tuyển sớm để tăng cơ
+          hội được nhận!
         </p>
       </div>
-      
-      <div style="text-align: center; margin-top: 20px;">
-        <a href="{{allJobsUrl}}" style="color: #667eea; text-decoration: none; font-weight: bold;">
+
+      <div style='text-align: center; margin-top: 20px;'>
+        <a href='{{allJobsUrl}}' style='color: #667eea; text-decoration: none; font-weight: bold;'>
           Xem tất cả công việc phù hợp →
         </a>
       </div>
     </div>
-    <div class="footer">
+    <div class='footer'>
       <p>© 2024 {{appName}}. All rights reserved.</p>
       <p>Bạn nhận email này vì đã đăng ký nhận thông báo việc làm.</p>
-      <p><a href="{{unsubscribeUrl}}" style="color: #666;">Hủy đăng ký</a></p>
+      <p><a href='{{unsubscribeUrl}}' style='color: #666;'>Hủy đăng ký</a></p>
     </div>
   </body>
 </html>
