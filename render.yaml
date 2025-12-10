@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: hrm-backend
-    env: node
+    name: vungang-jobs-backend
+    runtime: node
     rootDir: backend
     plan: free
     buildCommand: |
@@ -15,8 +15,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 4000
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
@@ -28,7 +26,7 @@ services:
       - key: JWT_REFRESH_EXPIRES_IN
         value: 30d
       - key: FRONTEND_URL
-        value: https://hrm-frontend-client.onrender.com
+        value: https://vungang-jobs-client.onrender.com
       - key: APP_NAME
         value: Vũng Áng Jobs
       - key: SUPPORT_EMAIL
@@ -43,8 +41,8 @@ services:
         sync: false
 
   - type: web
-    name: hrm-frontend-client
-    env: node
+    name: vungang-jobs-client
+    runtime: node
     rootDir: frontend-client
     plan: free
     buildCommand: |
@@ -55,13 +53,13 @@ services:
       pnpm run preview -- --port $PORT
     envVars:
       - key: VITE_API_URL
-        value: https://hrm-backend.onrender.com/api
+        value: https://vungang-jobs-backend.onrender.com/api
       - key: NODE_ENV
         value: production
 
   - type: web
-    name: hrm-frontend-admin
-    env: node
+    name: vungang-jobs-admin
+    runtime: node
     rootDir: frontend-admin
     plan: free
     buildCommand: |
@@ -72,6 +70,6 @@ services:
       pnpm start -- -p $PORT
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://hrm-backend.onrender.com
+        value: https://vungang-jobs-backend.onrender.com/api
       - key: NODE_ENV
         value: production
