@@ -5,6 +5,7 @@ import { LoginPage, RegisterPage } from '@/features/auth';
 import { DashboardPage } from '@/features/dashboard';
 import { ProfilePage, ResumePage } from '@/features/profile';
 import { HomePage, JobDetailPage, JobListPage, SavedJobsPage } from '@/features/jobs';
+import { MyApplicationsPage } from '@/features/applications';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -75,6 +76,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SavedJobsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.MY_APPLICATIONS}
+            element={
+              <ProtectedRoute>
+                <MyApplicationsPage />
               </ProtectedRoute>
             }
           />
