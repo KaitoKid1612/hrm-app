@@ -42,20 +42,21 @@ services:
 
   - type: web
     name: vungang-jobs-client
-    runtime: node
-    rootDir: frontend-client
-    plan: free
     buildCommand: |
+      cd frontend-client
       npm install -g pnpm
       pnpm install
       pnpm run build
-    startCommand: |
-      pnpm run preview -- --port $PORT
+    staticPublishPath: ./frontend-client/dist
     envVars:
       - key: VITE_API_URL
         value: https://vungang-jobs-backend.onrender.com/api
       - key: NODE_ENV
         value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
   - type: web
     name: vungang-jobs-admin

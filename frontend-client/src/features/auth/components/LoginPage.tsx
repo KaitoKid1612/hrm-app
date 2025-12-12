@@ -4,15 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Mail, Lock, Loader2, UserCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Loader2, Briefcase, AlertCircle, ArrowLeft } from 'lucide-react';
 import { ROUTES } from '@/constants';
 
 const Login: React.FC = () => {
@@ -31,7 +23,6 @@ const Login: React.FC = () => {
 
     try {
       await login({ email, password });
-      // Redirect to returnUrl if exists, otherwise go to dashboard
       const returnUrl = searchParams.get('returnUrl');
       navigate(returnUrl || ROUTES.DASHBOARD);
     } catch (err) {
@@ -42,60 +33,69 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="space-y-3 text-center">
-          <div className="flex justify-center mb-2">
-            <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <UserCircle2 className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full max-w-md space-y-8">
+          {/* Header */}
+          <div className="text-center">
+            <Link
+              to={ROUTES.HOME}
+              className="inline-flex items-center text-sm text-gray-600 hover:text-blue-600 mb-8 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Về trang chủ
+            </Link>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+                <Briefcase className="w-8 h-8 text-white" />
+              </div>
             </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h1>
+            <p className="text-gray-600">Chào mừng bạn quay trở lại!</p>
           </div>
-          <CardTitle className="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Đăng nhập
-          </CardTitle>
-          <CardDescription className="text-base">Chào mừng bạn quay trở lại!</CardDescription>
-        </CardHeader>
 
-        <CardContent>
+          {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
-              <span className="text-sm">{error}</span>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-in slide-in-from-top-5">
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <span className="text-sm text-red-800">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-2 block">
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="pl-10"
+                  className="pl-12 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="email@example.com"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-semibold">
+            <div>
+              <Label htmlFor="password" className="text-sm font-medium text-gray-700 mb-2 block">
                 Mật khẩu
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="pl-10"
+                  className="pl-12 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="••••••••"
                 />
               </div>
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               {isLoading ? (
                 <>
@@ -116,20 +116,43 @@ const Login: React.FC = () => {
               )}
             </Button>
           </form>
-        </CardContent>
 
-        <CardFooter className="flex justify-center border-t pt-6">
-          <p className="text-sm text-gray-600">
-            Chưa có tài khoản?{' '}
-            <Link
-              to={ROUTES.REGISTER}
-              className="text-blue-600 hover:text-indigo-600 font-semibold transition-colors"
-            >
-              Đăng ký ngay
-            </Link>
+          {/* Footer */}
+          <div className="text-center pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-600">
+              Chưa có tài khoản?{' '}
+              <Link
+                to={ROUTES.REGISTER}
+                className="text-blue-600 hover:text-indigo-600 font-semibold transition-colors"
+              >
+                Đăng ký ngay
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Image/Illustration */}
+      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
+        <div className="max-w-md text-white space-y-6">
+          <h2 className="text-4xl font-bold">Vũng Áng Jobs</h2>
+          <p className="text-lg text-blue-100">
+            Nền tảng tuyển dụng hàng đầu tại Vũng Áng. Kết nối ứng viên với các cơ hội việc làm tốt
+            nhất.
           </p>
-        </CardFooter>
-      </Card>
+          <div className="space-y-4 pt-8">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                <Briefcase className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-1">Hàng ngàn việc làm</h3>
+                <p className="text-blue-100">Khám phá cơ hội nghề nghiệp phù hợp với bạn</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -6,17 +6,10 @@ import { resolve } from 'path';
 export default defineConfig({
   base: '/',
   server: {
-    host: '0.0.0.0', // Cho phép truy cập từ IP
+    host: true, // Listen on all addresses including localhost
     port: 5173,
     strictPort: true,
     watch: { usePolling: true },
-    allowedHosts: true,
-  },
-  preview: {
-    host: '0.0.0.0',
-    port: process.env.PORT ? parseInt(process.env.PORT) : 4173,
-    strictPort: false,
-    allowedHosts: true,
   },
   plugins: [react(), tailwindcss()],
   resolve: {
