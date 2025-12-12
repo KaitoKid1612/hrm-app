@@ -6,7 +6,7 @@ import { DashboardPage } from '@/features/dashboard';
 import { ProfilePage, ResumePage } from '@/features/profile';
 import { HomePage, JobDetailPage, JobListPage, SavedJobsPage } from '@/features/jobs';
 import { MyApplicationsPage } from '@/features/applications';
-import { EmployerDashboardPage } from '@/features/company';
+import { EmployerDashboardPage, CompanyProfilePage } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -97,6 +97,16 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <EmployerDashboardPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.COMPANY_PROFILE}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <CompanyProfilePage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }
