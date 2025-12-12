@@ -46,6 +46,16 @@ export const API_ENDPOINTS = {
     CREATE: '/companies',
     UPDATE: (id: string) => `/companies/${id}`,
   },
+  COMPANIES: {
+    APPLICATIONS: '/companies/applications',
+  },
+  CANDIDATES: {
+    SEARCH: '/candidates/search',
+    PROFILE: (userId: string) => `/candidates/${userId}`,
+    SAVE: '/candidates/save',
+    SAVED: '/candidates/saved',
+    REMOVE_SAVED: (candidateId: string) => `/candidates/saved/${candidateId}`,
+  },
   SAVED_JOBS: {
     LIST: '/saved-jobs',
     SAVE: '/saved-jobs',

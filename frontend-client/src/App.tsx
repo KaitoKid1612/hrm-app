@@ -13,6 +13,7 @@ import {
   ManageJobsPage,
   ManageApplicationsPage,
   ApplicationDetailPage,
+  SearchCandidatesPage,
 } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -154,6 +155,16 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <ApplicationDetailPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.CANDIDATES}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <SearchCandidatesPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }
