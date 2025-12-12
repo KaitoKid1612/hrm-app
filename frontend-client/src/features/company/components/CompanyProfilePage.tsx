@@ -164,7 +164,7 @@ export const CompanyProfilePage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -174,7 +174,11 @@ export const CompanyProfilePage = () => {
           </h1>
           <p className="text-gray-600 mt-1">Quản lý thông tin công ty của bạn</p>
         </div>
-        <Button onClick={handleSubmit} disabled={isSaving} className="gap-2">
+        <Button
+          onClick={handleSubmit}
+          disabled={isSaving}
+          className="gap-2 bg-blue-500 hover:bg-blue-600"
+        >
           <Save className="w-4 h-4" />
           {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>
@@ -545,7 +549,7 @@ export const CompanyProfilePage = () => {
 
         {/* Save Button */}
         <div className="flex justify-end gap-3">
-          <Button type="submit" disabled={isSaving} className="gap-2">
+          <Button type="submit" disabled={isSaving} className="gap-2 bg-blue-500 hover:bg-blue-600">
             <Save className="w-4 h-4" />
             {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
           </Button>

@@ -87,7 +87,7 @@ export const ManageJobsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -97,7 +97,10 @@ export const ManageJobsPage = () => {
           </h1>
           <p className="text-gray-600 mt-1">Quản lý tất cả tin tuyển dụng của bạn</p>
         </div>
-        <Button onClick={() => navigate(ROUTES.POST_JOB)} className="gap-2">
+        <Button
+          onClick={() => navigate(ROUTES.POST_JOB)}
+          className="gap-2 bg-blue-500 hover:bg-blue-600"
+        >
           <Plus className="w-4 h-4" />
           Đăng tin mới
         </Button>
@@ -270,7 +273,10 @@ export const ManageJobsPage = () => {
                 ? 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm'
                 : 'Bắt đầu đăng tin tuyển dụng để tìm ứng viên phù hợp'}
             </p>
-            <Button onClick={() => navigate(ROUTES.POST_JOB)}>
+            <Button
+              onClick={() => navigate(ROUTES.POST_JOB)}
+              className="bg-blue-500 hover:bg-blue-600"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Đăng tin tuyển dụng
             </Button>

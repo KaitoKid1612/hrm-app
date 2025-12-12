@@ -164,7 +164,7 @@ export const PostJobPage = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -540,7 +540,7 @@ export const PostJobPage = () => {
           <Button type="button" variant="outline" onClick={() => navigate(ROUTES.MANAGE_JOBS)}>
             Hủy
           </Button>
-          <Button type="submit" disabled={isSaving} className="gap-2">
+          <Button type="submit" disabled={isSaving} className="gap-2 bg-blue-500 hover:bg-blue-600">
             <Save className="w-4 h-4" />
             {isSaving ? 'Đang đăng...' : 'Đăng tin tuyển dụng'}
           </Button>
