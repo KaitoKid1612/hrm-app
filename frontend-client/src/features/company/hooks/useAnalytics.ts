@@ -19,7 +19,7 @@ export const useCompanyAnalytics = (query?: AnalyticsQuery) => {
     } finally {
       setIsLoading(false);
     }
-  }, [query]);
+  }, [JSON.stringify(query)]);
 
   useEffect(() => {
     fetchAnalytics();

@@ -24,7 +24,7 @@ export const useInterviews = (filters?: InterviewFilters) => {
     } finally {
       setIsLoading(false);
     }
-  }, [filters]);
+  }, [JSON.stringify(filters)]);
 
   useEffect(() => {
     fetchInterviews();
