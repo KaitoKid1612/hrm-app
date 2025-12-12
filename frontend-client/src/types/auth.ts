@@ -2,6 +2,7 @@ export interface User {
   id: string;
   email: string;
   name: string | null;
+  fullName?: string | null;
   role: 'ADMIN' | 'EMPLOYER' | 'CANDIDATE';
   avatar: string | null;
   phone: string | null;
@@ -9,6 +10,10 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  company?: {
+    name: string;
+    logo?: string | null;
+  } | null;
 }
 
 export interface AuthContextType {

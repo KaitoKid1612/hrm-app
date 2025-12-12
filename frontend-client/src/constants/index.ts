@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/jobs/${id}`,
     DELETE: (id: string) => `/jobs/${id}`,
     SEARCH: '/jobs/search/all',
+    MY_JOBS: '/jobs/my-jobs',
     TRENDING: '/jobs/search/trending',
     STATISTICS: '/jobs/search/statistics',
     SUGGESTIONS: '/jobs/search/suggestions',
@@ -29,6 +30,7 @@ export const API_ENDPOINTS = {
     JOB_APPLICATIONS: (jobId: string) => `/applications/job/${jobId}`,
     CREATE: '/applications',
     UPDATE_STATUS: (id: string) => `/applications/${id}/status`,
+    DETAIL: (id: string) => `/applications/${id}`,
   },
   PROFILE: {
     GET: '/auth/profile',
@@ -48,6 +50,12 @@ export const API_ENDPOINTS = {
   },
   COMPANIES: {
     APPLICATIONS: '/companies/applications',
+    PROFILE: '/companies/my-profile',
+  },
+  UPLOAD: {
+    COMPANY_LOGO: '/upload/company-logo',
+    AVATAR: '/upload/avatar',
+    RESUME: '/upload/resume',
   },
   CANDIDATES: {
     SEARCH: '/candidates/search',
