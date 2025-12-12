@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MainLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,13 @@ import {
   Users,
   CheckCircle2,
   Gift,
+  Bookmark,
+  BookmarkCheck,
+  Share2,
 } from 'lucide-react';
+import { ApplyJobModal } from './ApplyJobModal';
+import { useJobApplication } from '../hooks/useJobApplication';
+import { useSavedJob } from '../hooks/useSavedJob';
 
 // Mock data - sẽ thay bằng API sau
 const mockJobDetail = {
@@ -71,16 +78,54 @@ export const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [shareMessage, setShareMessage] = useState('');
 
   const job = mockJobDetail; // TODO: Fetch from API
+  const { hasApplied, applyJob } = useJobApplication(id || '');
+  const { isSaved, toggleSave } = useSavedJob(id || '');
 
   const handleApply = () => {
     if (!isAuthenticated) {
-      // Redirect to login with return URL
       navigate(`${ROUTES.LOGIN}?returnUrl=${ROUTES.JOB_DETAIL.replace(':id', id || '')}`);
     } else {
-      // TODO: Navigate to application form
-      alert('Chức năng nộp đơn đang được phát triển');
+      setIsApplyModalOpen(true);
+    }
+  };
+
+  const handleApplySubmit = async (data: { resumeId?: string; coverLetter?: string }) => {
+    await applyJob(data);
+    alert('Nộp đơn thành công! Bạn có thể xem trạng thái tại "Đơn ứng tuyển của tôi"');
+  };
+
+  const handleSave = async () => {
+    if (!isAuthenticated) {
+      navigate(`${ROUTES.LOGIN}?returnUrl=${ROUTES.JOB_DETAIL.replace(':id', id || '')}`);
+      return;
+    }
+
+    try {
+      await toggleSave();
+    } catch (error) {
+      console.error('Error toggling save:', error);
+      alert('Có lỗi xảy ra. Vui lòng thử lại');
+    }
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator
+        .share({
+          title: job.title,
+          text: `${job.title} tại ${job.company.name}`,
+          url: url,
+        })
+        .catch((error) => console.log('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(url);
+      setShareMessage('Đã sao chép link!');
+      setTimeout(() => setShareMessage(''), 2000);
     }
   };
 
@@ -186,14 +231,41 @@ export const JobDetailPage = () => {
                     </div>
                   </div>
 
-                  {/* Apply Button */}
-                  <Button
-                    onClick={handleApply}
-                    size="lg"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-lg"
-                  >
-                    {isAuthenticated ? 'Ứng tuyển ngay' : 'Đăng nhập để ứng tuyển'}
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleApply}
+                      size="lg"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-lg"
+                      disabled={hasApplied}
+                    >
+                      {hasApplied
+                        ? 'Đã ứng tuyển'
+                        : isAuthenticated
+                          ? 'Ứng tuyển ngay'
+                          : 'Đăng nhập để ứng tuyển'}
+                    </Button>
+                    <Button onClick={handleSave} size="lg" variant="outline" className="px-6">
+                      {isSaved ? (
+                        <BookmarkCheck className="w-5 h-5 text-blue-600" />
+                      ) : (
+                        <Bookmark className="w-5 h-5" />
+                      )}
+                    </Button>
+                    <Button
+                      onClick={handleShare}
+                      size="lg"
+                      variant="outline"
+                      className="px-6 relative"
+                    >
+                      <Share2 className="w-5 h-5" />
+                      {shareMessage && (
+                        <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded whitespace-nowrap">
+                          {shareMessage}
+                        </span>
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -330,6 +402,14 @@ export const JobDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Apply Modal */}
+      <ApplyJobModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        jobTitle={job.title}
+        onSubmit={handleApplySubmit}
+      />
     </MainLayout>
   );
 };

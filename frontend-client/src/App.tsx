@@ -4,7 +4,7 @@ import { AuthProvider } from '@/features/auth';
 import { LoginPage, RegisterPage } from '@/features/auth';
 import { DashboardPage } from '@/features/dashboard';
 import { ProfilePage, ResumePage } from '@/features/profile';
-import { HomePage, JobDetailPage } from '@/features/jobs';
+import { HomePage, JobDetailPage, JobListPage, SavedJobsPage } from '@/features/jobs';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -18,7 +18,7 @@ function App() {
         <Routes>
           {/* Public Routes - Không cần đăng nhập */}
           <Route path={ROUTES.HOME} element={<HomePage />} />
-          <Route path={ROUTES.JOBS} element={<HomePage />} />
+          <Route path={ROUTES.JOBS} element={<JobListPage />} />
           <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
 
           {/* Auth Routes - Redirect nếu đã đăng nhập */}
@@ -67,6 +67,14 @@ function App() {
                 <DashboardLayout>
                   <ResumePage />
                 </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.SAVED_JOBS}
+            element={
+              <ProtectedRoute>
+                <SavedJobsPage />
               </ProtectedRoute>
             }
           />
