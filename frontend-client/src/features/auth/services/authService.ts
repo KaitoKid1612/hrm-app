@@ -5,12 +5,12 @@ import { AuthResponse, LoginFormData, RegisterFormData, AuthUser } from '../type
 export const authService = {
   async login(data: LoginFormData): Promise<AuthResponse> {
     const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, data);
-    return response.data.data;
+    return response.data;
   },
 
   async register(data: RegisterFormData): Promise<AuthResponse> {
     const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, data);
-    return response.data.data;
+    return response.data;
   },
 
   async logout(): Promise<void> {
@@ -19,12 +19,12 @@ export const authService = {
 
   async getProfile(): Promise<AuthUser> {
     const response = await api.get(API_ENDPOINTS.AUTH.ME);
-    return response.data.data;
+    return response.data;
   },
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const response = await api.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, { refreshToken });
-    return response.data.data;
+    return response.data;
   },
 
   async forgotPassword(email: string): Promise<void> {
