@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from '@/features/auth';
 import { LoginPage, RegisterPage } from '@/features/auth';
 import { DashboardPage } from '@/features/dashboard';
+import { ProfilePage, ResumePage } from '@/features/profile';
 import { HomePage, JobDetailPage } from '@/features/jobs';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -45,6 +46,26 @@ function App() {
               <ProtectedRoute>
                 <DashboardLayout>
                   <DashboardPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.PROFILE}
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <ProfilePage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.MY_RESUME}
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <ResumePage />
                 </DashboardLayout>
               </ProtectedRoute>
             }
