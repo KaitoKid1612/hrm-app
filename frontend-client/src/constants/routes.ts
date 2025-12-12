@@ -28,6 +28,7 @@ export const ROUTES = {
   INVITE_CANDIDATES: '/company/invite-candidates',
   COMPANY_INTERVIEWS: '/company/interviews',
   COMPANY_SCHEDULE_INTERVIEW: '/company/interviews/schedule',
+  COMPANY_ANALYTICS: '/company/analytics',
   NOTIFICATIONS: '/notifications',
 
   // Other

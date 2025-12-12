@@ -9,6 +9,7 @@ import {
   Bell,
   UserPlus,
   Calendar,
+  BarChart3,
 } from 'lucide-react';
 import { ROUTES } from '@/constants';
 
@@ -42,6 +43,11 @@ const menuItems = [
     icon: Calendar,
     label: 'Lịch phỏng vấn',
     path: ROUTES.COMPANY_INTERVIEWS,
+  },
+  {
+    icon: BarChart3,
+    label: 'Thống kê phân tích',
+    path: ROUTES.COMPANY_ANALYTICS,
   },
   {
     icon: UserPlus,

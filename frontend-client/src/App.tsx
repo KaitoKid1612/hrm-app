@@ -17,6 +17,7 @@ import {
   InterviewsPage,
   InterviewDetailPage,
   ScheduleInterviewPage,
+  AnalyticsDashboardPage,
 } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -198,6 +199,16 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <ScheduleInterviewPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.COMPANY_ANALYTICS}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <AnalyticsDashboardPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }
