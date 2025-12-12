@@ -11,6 +11,8 @@ import {
   CompanyProfilePage,
   PostJobPage,
   ManageJobsPage,
+  ManageApplicationsPage,
+  ApplicationDetailPage,
 } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -132,6 +134,26 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <ManageJobsPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.MANAGE_APPLICATIONS}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <ManageApplicationsPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={`${ROUTES.MANAGE_APPLICATIONS}/:id`}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <ApplicationDetailPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }
