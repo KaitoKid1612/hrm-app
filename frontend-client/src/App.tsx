@@ -6,7 +6,7 @@ import { DashboardPage } from '@/features/dashboard';
 import { HomePage, JobDetailPage } from '@/features/jobs';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
-import { MainLayout } from '@/components/layout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ROUTES } from '@/constants';
 import './App.css';
 
@@ -43,9 +43,9 @@ function App() {
             path={ROUTES.DASHBOARD}
             element={
               <ProtectedRoute>
-                <MainLayout>
+                <DashboardLayout>
                   <DashboardPage />
-                </MainLayout>
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
