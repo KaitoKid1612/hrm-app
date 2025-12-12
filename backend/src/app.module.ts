@@ -20,6 +20,7 @@ import { MessagingModule } from '@/modules/messaging/messaging.module';
 import { AnalyticsModule } from '@/modules/analytics/analytics.module';
 import { RecommendationsModule } from '@/modules/recommendations/recommendations.module';
 import { InvitesModule } from '@/modules/invites/invites.module';
+import { InterviewsModule } from '@/modules/interviews/interviews.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { InvitesModule } from '@/modules/invites/invites.module';
     AnalyticsModule,
     RecommendationsModule,
     InvitesModule,
+    InterviewsModule,
   ],
 })
 export class AppModule {}

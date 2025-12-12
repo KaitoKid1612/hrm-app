@@ -59,6 +59,15 @@ enum ExperienceLevel {
   OVER_TEN_YEARS
 }
 
+enum InterviewStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
 // ============= MODELS =============
 
 model User {
@@ -301,9 +310,11 @@ model Application {
   updatedAt   DateTime          @updatedAt
 
   // Relations
-  job    Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume Resume? @relation(fields: [resumeId], references: [id])
+  job           Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume        Resume?        @relation(fields: [resumeId], references: [id])
+  notifications Notification[]
+  interviews    Interview[]
 
   @@unique([jobId, userId])
   @@index([jobId])
@@ -392,7 +403,9 @@ model Notification {
   createdAt DateTime @default(now())
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application   Application? @relation(fields: [applicationId], references: [id])
+  applicationId String?
 
   @@index([userId])
   @@index([isRead])
@@ -442,4 +455,28 @@ model JobInvite {
   @@index([jobId])
   @@index([email])
   @@map("job_invites")
+}
+
+model Interview {
+  id            String          @id @default(cuid())
+  applicationId String
+  scheduledAt   DateTime
+  duration      Int             @default(60) // minutes
+  location      String? // Physical location or empty for online
+  meetingLink   String? // Video call link
+  interviewers  String? // JSON array of interviewer names/emails
+  notes         String?         @db.Text
+  status        InterviewStatus @default(SCHEDULED)
+  feedback      String?         @db.Text
+  createdBy     String // userId who created the interview
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@map("interviews")
 }

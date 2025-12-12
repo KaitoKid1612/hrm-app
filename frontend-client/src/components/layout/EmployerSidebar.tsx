@@ -8,6 +8,7 @@ import {
   Settings,
   Bell,
   UserPlus,
+  Calendar,
 } from 'lucide-react';
 import { ROUTES } from '@/constants';
 
@@ -36,6 +37,11 @@ const menuItems = [
     icon: Users,
     label: 'Ứng viên',
     path: ROUTES.CANDIDATES,
+  },
+  {
+    icon: Calendar,
+    label: 'Lịch phỏng vấn',
+    path: ROUTES.COMPANY_INTERVIEWS,
   },
   {
     icon: UserPlus,

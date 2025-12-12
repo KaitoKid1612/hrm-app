@@ -6,12 +6,16 @@ export { ManageApplicationsPage } from './components/ManageApplicationsPage';
 export { ApplicationDetailPage } from './components/ApplicationDetailPage';
 export { SearchCandidatesPage } from './components/SearchCandidatesPage';
 export { CandidateDetailModal } from './components/CandidateDetailModal';
+export { InterviewsPage } from './components/InterviewsPage';
+export { InterviewDetailPage } from './components/InterviewDetailPage';
+export { ScheduleInterviewPage } from './components/ScheduleInterviewPage';
 
 // Hooks
 export { useCompanyProfile } from './hooks/useCompanyProfile';
 export { useJobManagement, useJobDetail } from './hooks/useJobManagement';
 export { useApplicationManagement, useApplicationDetail } from './hooks/useApplicationManagement';
 export { useCandidateSearch, useSavedCandidates } from './hooks/useCandidateSearch';
+export { useInterviews, useUpcomingInterviews } from './hooks/useInterviews';
 
 // Services
 export { companyProfileService } from './services/companyProfileService';
@@ -22,3 +26,10 @@ export { applicationManagementService } from './services/applicationManagementSe
 export type { ApplicationDetail } from './services/applicationManagementService';
 export { candidateSearchService } from './services/candidateSearchService';
 export type { CandidateProfile, CandidateSearchFilters } from './services/candidateSearchService';
+export { interviewService } from './services/interviewService';
+export type {
+  Interview,
+  CreateInterviewData,
+  UpdateInterviewData,
+  InterviewFilters,
+} from './types/interview.types';

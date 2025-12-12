@@ -14,6 +14,9 @@ import {
   ManageApplicationsPage,
   ApplicationDetailPage,
   SearchCandidatesPage,
+  InterviewsPage,
+  InterviewDetailPage,
+  ScheduleInterviewPage,
 } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -165,6 +168,36 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <SearchCandidatesPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.COMPANY_INTERVIEWS}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <InterviewsPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={`${ROUTES.COMPANY_INTERVIEWS}/:id`}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <InterviewDetailPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.COMPANY_SCHEDULE_INTERVIEW}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <ScheduleInterviewPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }

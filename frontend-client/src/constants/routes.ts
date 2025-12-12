@@ -26,6 +26,8 @@ export const ROUTES = {
   MANAGE_APPLICATIONS: '/company/applications',
   CANDIDATES: '/company/candidates',
   INVITE_CANDIDATES: '/company/invite-candidates',
+  COMPANY_INTERVIEWS: '/company/interviews',
+  COMPANY_SCHEDULE_INTERVIEW: '/company/interviews/schedule',
   NOTIFICATIONS: '/notifications',
 
   // Other
