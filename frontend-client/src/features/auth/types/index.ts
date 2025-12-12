@@ -7,6 +7,7 @@ export interface RegisterFormData {
   email: string;
   password: string;
   name: string;
+  role?: 'EMPLOYER' | 'CANDIDATE';
   phone?: string;
   address?: string;
 }

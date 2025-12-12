@@ -22,9 +22,19 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await login({ email, password });
+      const response = await login({ email, password });
       const returnUrl = searchParams.get('returnUrl');
-      navigate(returnUrl || ROUTES.DASHBOARD);
+
+      // Role-based redirect
+      if (returnUrl) {
+        navigate(returnUrl);
+      } else if (response?.role === 'EMPLOYER') {
+        navigate(ROUTES.COMPANY_DASHBOARD);
+      } else if (response?.role === 'CANDIDATE') {
+        navigate(ROUTES.DASHBOARD);
+      } else {
+        navigate(ROUTES.DASHBOARD);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lỗi không xác định');
     } finally {

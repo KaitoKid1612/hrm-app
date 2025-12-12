@@ -24,6 +24,7 @@ const Register: React.FC = () => {
     email: '',
     password: '',
     name: '',
+    role: 'CANDIDATE' as 'CANDIDATE' | 'EMPLOYER',
     phone: '',
     address: '',
   });
@@ -40,8 +41,14 @@ const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await register(formData);
-      navigate(ROUTES.DASHBOARD);
+      const response = await register(formData);
+
+      // Role-based redirect
+      if (response?.role === 'EMPLOYER') {
+        navigate(ROUTES.COMPANY_DASHBOARD);
+      } else {
+        navigate(ROUTES.DASHBOARD);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lỗi không xác định');
     } finally {
@@ -103,6 +110,51 @@ const Register: React.FC = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Role Selection */}
+            <div>
+              <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                Bạn là? <span className="text-red-500">*</span>
+              </Label>
+              <div className="grid grid-cols-2 gap-3">
+                <label
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.role === 'CANDIDATE'
+                      ? 'border-purple-600 bg-purple-50 text-purple-700'
+                      : 'border-gray-200 hover:border-purple-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="CANDIDATE"
+                    checked={formData.role === 'CANDIDATE'}
+                    onChange={handleChange}
+                    className="sr-only"
+                  />
+                  <User className="w-5 h-5" />
+                  <span className="font-medium">Ứng viên</span>
+                </label>
+                <label
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.role === 'EMPLOYER'
+                      ? 'border-purple-600 bg-purple-50 text-purple-700'
+                      : 'border-gray-200 hover:border-purple-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="EMPLOYER"
+                    checked={formData.role === 'EMPLOYER'}
+                    onChange={handleChange}
+                    className="sr-only"
+                  />
+                  <Briefcase className="w-5 h-5" />
+                  <span className="font-medium">Nhà tuyển dụng</span>
+                </label>
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="name" className="text-sm font-medium text-gray-700 mb-2 block">
                 Họ và tên <span className="text-red-500">*</span>

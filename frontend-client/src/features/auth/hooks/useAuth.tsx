@@ -7,8 +7,8 @@ interface AuthContextValue {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (data: LoginFormData) => Promise<void>;
-  register: (data: RegisterFormData) => Promise<void>;
+  login: (data: LoginFormData) => Promise<AuthUser>;
+  register: (data: RegisterFormData) => Promise<AuthUser>;
   logout: () => void;
 }
 
@@ -50,7 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(response.user);
     setToken(response.accessToken);
     localStorage.setItem('token', response.accessToken);
+    localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
+    return response.user;
   };
 
   const register = async (data: RegisterFormData) => {
@@ -58,13 +60,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(response.user);
     setToken(response.accessToken);
     localStorage.setItem('token', response.accessToken);
+    localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
+    return response.user;
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   };
 
