@@ -49,7 +49,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </div>
                 <button
                   onClick={() => navigate(ROUTES.PROFILE)}
-                  className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center hover:shadow-lg transition-shadow"
+                  className="w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center hover:shadow-lg transition-shadow"
                 >
                   {user?.avatar ? (
                     <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full" />
