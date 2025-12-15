@@ -27,7 +27,7 @@ const tabs: TabItem[] = [
 export const JobTabs = ({ activeTab, onTabChange, jobCount }: JobTabsProps) => {
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-      <div className="flex gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+      <div className="flex gap-2 w-full sm:w-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
