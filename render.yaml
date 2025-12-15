@@ -27,6 +27,8 @@ services:
         value: 30d
       - key: FRONTEND_URL
         value: https://vungang-jobs-client.onrender.com
+      - key: ADMIN_URL
+        value: https://vungang-jobs-admin.onrender.com
       - key: APP_NAME
         value: Vũng Áng Jobs
       - key: SUPPORT_EMAIL
