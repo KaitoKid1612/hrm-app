@@ -515,11 +515,17 @@ async function main() {
   console.log(`- ${reviewCount} reviews`);
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Error seeding database:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// Export main for use by seed-safe.ts
+export default main;
+
+// Auto-run if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main()
+    .catch((e) => {
+      console.error('❌ Error seeding database:', e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}

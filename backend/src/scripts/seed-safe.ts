@@ -1,5 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const prisma = new PrismaClient();
 
@@ -27,16 +31,20 @@ async function main() {
 
   console.log('✨ Database is empty. Running seed...\n');
 
-  // Run the regular seed script
-  execSync('tsx src/scripts/seed.ts', {
-    stdio: 'inherit',
-    cwd: process.cwd(),
-  });
+  // Import and run the seed function directly
+  try {
+    const { default: seedMain } = await import('./seed.js');
+    await seedMain();
+    console.log('\n✅ Seed completed successfully!');
+  } catch (error) {
+    console.error('❌ Error running seed:', error);
+    throw error;
+  }
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error checking database:', e);
+    console.error('❌ Error in seed-safe:', e);
     process.exit(1);
   })
   .finally(async () => {
