@@ -257,7 +257,7 @@ export const JobListPage = () => {
                 <p className="text-gray-600 mb-4">
                   Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác
                 </p>
-                <Button onClick={clearFilters} variant="outline">
+                <Button onClick={clearFilters} className="bg-blue-600 text-white hover:bg-blue-700">
                   Xóa bộ lọc
                 </Button>
               </CardContent>
