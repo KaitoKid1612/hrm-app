@@ -54,7 +54,7 @@ export const JobCard = ({ job }: JobCardProps) => {
           <div className="flex items-start justify-between mb-4">
             <div className="flex gap-3">
               {/* Company Logo */}
-              <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 shrink-0 bg-linear-to-br from-blue-50 to-indigo-50 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 shrink-0 bg-gradient-to-br from-blue-50 to-indigo-50 group-hover:scale-110 transition-transform duration-300">
                 {job.company.logo ? (
                   <img
                     src={job.company.logo}
@@ -80,13 +80,13 @@ export const JobCard = ({ job }: JobCardProps) => {
             {(isHot() || isNew()) && (
               <div className="flex flex-col gap-1">
                 {isHot() && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-linear-to-r from-red-500 to-orange-500 text-white shadow-lg">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg">
                     <TrendingUp className="w-3 h-3" />
                     HOT
                   </span>
                 )}
                 {isNew() && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-linear-to-r from-green-500 to-emerald-500 text-white shadow-lg">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg">
                     <Sparkles className="w-3 h-3" />
                     MỚI
                   </span>

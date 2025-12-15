@@ -5,59 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { JobCard } from './JobCard';
-import { Search, MapPin, DollarSign, Briefcase, SlidersHorizontal } from 'lucide-react';
-
-// Mock data - sẽ thay bằng API sau
-const mockJobs = [
-  {
-    id: '1',
-    title: 'Senior Frontend Developer',
-    companyName: 'FPT Software',
-    companyLogo: 'https://via.placeholder.com/50',
-    location: 'Hà Nội',
-    salary: { min: 25000000, max: 35000000 },
-    type: 'FULL_TIME' as const,
-    level: 'SENIOR' as const,
-    isHot: true,
-    isNew: true,
-    createdAt: '2025-12-10',
-    description: 'We are looking for a Senior Frontend Developer to join our team.',
-    requirements: ['5+ years of experience', 'React, TypeScript', 'Team leadership skills'],
-    company: { id: '1', name: 'FPT Software', logo: 'https://via.placeholder.com/50' },
-  },
-  {
-    id: '2',
-    title: 'Backend Developer (NodeJS)',
-    companyName: 'VNG Corporation',
-    companyLogo: 'https://via.placeholder.com/50',
-    location: 'Hồ Chí Minh',
-    salary: { min: 20000000, max: 30000000 },
-    type: 'FULL_TIME' as const,
-    level: 'MIDDLE' as const,
-    isHot: false,
-    isNew: true,
-    createdAt: '2025-12-09',
-    description: 'Join our backend team to build scalable applications.',
-    requirements: ['3+ years of experience', 'NodeJS, Express', 'Database design'],
-    company: { id: '2', name: 'VNG Corporation', logo: 'https://via.placeholder.com/50' },
-  },
-  {
-    id: '3',
-    title: 'Full Stack Developer',
-    companyName: 'Viettel Solutions',
-    companyLogo: 'https://via.placeholder.com/50',
-    location: 'Hà Nội',
-    salary: { min: 18000000, max: 28000000 },
-    type: 'FULL_TIME' as const,
-    level: 'MIDDLE' as const,
-    isHot: false,
-    isNew: false,
-    createdAt: '2025-12-08',
-    description: 'Looking for a Full Stack Developer with strong technical skills.',
-    requirements: ['2+ years of experience', 'React, Node.js', 'Problem-solving skills'],
-    company: { id: '3', name: 'Viettel Solutions', logo: 'https://via.placeholder.com/50' },
-  },
-];
+import { useJobs } from '../hooks/useJobs';
+import { Loader2, Search, MapPin, DollarSign, Briefcase, SlidersHorizontal } from 'lucide-react';
 
 const jobTypes = [
   { value: '', label: 'Tất cả' },
@@ -98,7 +47,21 @@ export const JobListPage = () => {
   const [level, setLevel] = useState(searchParams.get('level') || '');
   const [salaryRange, setSalaryRange] = useState(searchParams.get('salary') || '');
 
-  const [jobs] = useState(mockJobs); // TODO: Fetch from API with filters
+  // Parse salary range for API
+  const getSalaryParams = () => {
+    if (!salaryRange) return {};
+    const [min, max] = salaryRange.split('-').map((v) => parseInt(v) * 1000000);
+    return { salaryMin: min, salaryMax: max === 999000000 ? undefined : max };
+  };
+
+  // Fetch jobs with filters
+  const { jobs, total, isLoading, error } = useJobs({
+    search: keyword || undefined,
+    city: location || undefined,
+    jobType: type || undefined,
+    jobLevel: level || undefined,
+    ...getSalaryParams(),
+  });
 
   useEffect(() => {
     // Update URL params when filters change
@@ -113,8 +76,7 @@ export const JobListPage = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Fetch jobs with filters
-    console.log('Searching with filters:', { keyword, location, type, level, salaryRange });
+    // Search will trigger automatically via useEffect when params change
   };
 
   const clearFilters = () => {
@@ -250,19 +212,42 @@ export const JobListPage = () => {
           {/* Results */}
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">
-              Tìm thấy {jobs.length} việc làm
-              {hasActiveFilters && ' phù hợp'}
+              {isLoading
+                ? 'Đang tìm kiếm...'
+                : `Tìm thấy ${total} việc làm${hasActiveFilters ? ' phù hợp' : ''}`}
             </h2>
           </div>
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="py-12 text-center">
+                <p className="text-red-600 font-medium mb-2">
+                  Có lỗi xảy ra khi tải danh sách việc làm
+                </p>
+                <p className="text-red-500 text-sm">{error.message}</p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Job List */}
-          {jobs.length > 0 ? (
+          {!isLoading && !error && jobs.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {jobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
             </div>
-          ) : (
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && jobs.length === 0 && (
             <Card>
               <CardContent className="py-12 text-center">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
