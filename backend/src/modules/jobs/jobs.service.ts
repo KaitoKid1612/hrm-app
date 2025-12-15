@@ -7,13 +7,15 @@ export class JobsService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async createJobByUserId(userId: string, dto: CreateJobDto) {
-    // Get company by userId
+    // Check if user has a company
     const company = await this.prisma.company.findUnique({
       where: { userId },
     });
 
     if (!company) {
-      throw new ForbiddenException('Vui lòng tạo hồ sơ công ty trước');
+      throw new ForbiddenException(
+        'Bạn cần tạo hồ sơ công ty trước khi đăng tin tuyển dụng. Vui lòng truy cập trang Quản lý công ty để tạo hồ sơ.'
+      );
     }
 
     return this.create(company.id, dto);
@@ -22,22 +24,72 @@ export class JobsService {
   async create(companyId: string, dto: CreateJobDto) {
     const { skillIds, deadline, ...jobData } = dto;
 
+    // If no categoryId provided, get or create a default category
+    let categoryId = jobData.categoryId;
+    if (!categoryId) {
+      let defaultCategory = await this.prisma.category.findFirst({
+        where: { name: 'Khác' },
+      });
+
+      if (!defaultCategory) {
+        defaultCategory = await this.prisma.category.create({
+          data: {
+            name: 'Khác',
+            slug: 'khac',
+            description: 'Danh mục chung',
+            isActive: true,
+          },
+        });
+      }
+
+      categoryId = defaultCategory.id;
+    }
+
+    // Transform array fields to strings if needed
+    const requirements = Array.isArray(jobData.requirements)
+      ? jobData.requirements.join('\n')
+      : jobData.requirements;
+    
+    const benefits = jobData.benefits
+      ? Array.isArray(jobData.benefits)
+        ? jobData.benefits.join('\n')
+        : jobData.benefits
+      : undefined;
+
     const slug = this.generateSlug(dto.title);
 
+    // Map only valid schema fields
+    const jobCreateData: any = {
+      title: dto.title,
+      description: dto.description,
+      requirements,
+      benefits,
+      categoryId,
+      slug,
+      companyId,
+      jobType: jobData.jobType,
+      jobLevel: jobData.jobLevel,
+      salaryMin: jobData.salaryMin,
+      salaryMax: jobData.salaryMax,
+      salaryNegotiate: jobData.salaryNegotiate,
+      positions: jobData.positions,
+      experience: jobData.experience,
+      address: jobData.address,
+      city: jobData.city,
+      deadline: deadline ? new Date(deadline) : undefined,
+    };
+
+    // Add skills if provided
+    if (skillIds) {
+      jobCreateData.skills = {
+        create: skillIds.map((skillId) => ({
+          skill: { connect: { id: skillId } },
+        })),
+      };
+    }
+
     return this.prisma.job.create({
-      data: {
-        ...jobData,
-        slug,
-        companyId,
-        deadline: deadline ? new Date(deadline) : undefined,
-        skills: skillIds
-          ? {
-              create: skillIds.map((skillId) => ({
-                skill: { connect: { id: skillId } },
-              })),
-            }
-          : undefined,
-      },
+      data: jobCreateData,
       include: {
         company: {
           select: {
@@ -239,6 +291,79 @@ export class JobsService {
     };
   }
 
+  async findJobsByUserId(userId: string, query: QueryJobDto = {}) {
+    // Get company of the user
+    const company = await this.prisma.company.findUnique({
+      where: { userId },
+    });
+
+    if (!company) {
+      return {
+        data: [],
+        meta: {
+          total: 0,
+        },
+      };
+    }
+
+    const { sortBy = 'createdAt', sortOrder = 'desc', ...filters } = query;
+
+    const where: any = {
+      companyId: company.id,
+    };
+
+    // Add status filter
+    if (filters.isActive !== undefined) {
+      where.isActive = filters.isActive === true;
+    }
+
+    // Add other filters if provided
+    if (query.keyword) {
+      where.OR = [
+        { title: { contains: query.keyword, mode: 'insensitive' } },
+        { description: { contains: query.keyword, mode: 'insensitive' } },
+      ];
+    }
+
+    const orderBy: any = { [sortBy]: sortOrder };
+
+    const [jobs, total] = await Promise.all([
+      this.prisma.job.findMany({
+        where,
+        orderBy,
+        include: {
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logo: true,
+              city: true,
+            },
+          },
+          category: true,
+          skills: {
+            include: {
+              skill: true,
+            },
+          },
+          _count: {
+            select: {
+              applications: true,
+            },
+          },
+        },
+      }),
+      this.prisma.job.count({ where }),
+    ]);
+
+    return {
+      data: jobs,
+      meta: {
+        total,
+      },
+    };
+  }
+
   async findOne(id: string) {
     const job = await this.prisma.job.findUnique({
       where: { id },
@@ -274,7 +399,7 @@ export class JobsService {
   async update(id: string, userId: string, dto: UpdateJobDto) {
     const job = await this.findOne(id);
 
-    if (job.company.userId !== userId) {
+    if (!job.company || job.company.userId !== userId) {
       throw new ForbiddenException('Bạn không có quyền chỉnh sửa công việc này');
     }
 
@@ -301,7 +426,7 @@ export class JobsService {
   async remove(id: string, userId: string) {
     const job = await this.findOne(id);
 
-    if (job.company.userId !== userId) {
+    if (!job.company || job.company.userId !== userId) {
       throw new ForbiddenException('Bạn không có quyền xóa công việc này');
     }
 

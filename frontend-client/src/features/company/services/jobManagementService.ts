@@ -50,7 +50,27 @@ export const jobManagementService = {
 
   async getMyJobs(params?: { page?: number; limit?: number; status?: string }) {
     const response = await api.get(API_ENDPOINTS.JOBS.MY_JOBS, { params });
-    return response.data.data;
+    
+    // Transform backend data to match frontend interface
+    const transformedData = response.data.data?.map((job: Job & { salaryMin?: number; salaryMax?: number; positions?: number; _count?: { applications?: number }; viewCount?: number; isActive?: boolean }) => ({
+      ...job,
+      salary: {
+        min: job.salaryMin || 0,
+        max: job.salaryMax || 0,
+        currency: 'VND',
+      },
+      location: job.city || job.address || 'Chưa cập nhật',
+      numberOfPositions: job.positions || 1,
+      expiresAt: job.deadline || job.createdAt,
+      status: job.isActive ? 'ACTIVE' : 'CLOSED',
+      applications: job._count?.applications || 0,
+      views: job.viewCount || 0,
+    })) || [];
+    
+    return {
+      data: transformedData,
+      meta: response.data.meta,
+    };
   },
 
   async getJobById(id: string) {

@@ -200,7 +200,7 @@ model Skill {
 
 model Job {
   id              String           @id @default(cuid())
-  companyId       String
+  companyId       String?
   categoryId      String
   title           String
   slug            String           @unique
@@ -224,7 +224,7 @@ model Job {
   updatedAt       DateTime         @updatedAt
 
   // Relations
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   category     Category      @relation(fields: [categoryId], references: [id])
   skills       JobSkill[]
   applications Application[]

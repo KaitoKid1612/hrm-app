@@ -35,6 +35,8 @@ export const ManageJobsPage = () => {
   const { jobs, isLoading, loadJobs } = useJobManagement();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10;
 
   useEffect(() => {
     loadJobs({ status: statusFilter });
@@ -43,6 +45,17 @@ export const ManageJobsPage = () => {
   const filteredJobs = jobs.filter((job) =>
     job.title.toLowerCase().includes(searchKeyword.toLowerCase()),
   );
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const startIndex = (currentPage - 1) * jobsPerPage;
+  const endIndex = startIndex + jobsPerPage;
+  const currentJobs = filteredJobs.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchKeyword, statusFilter]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc chắn muốn xóa tin tuyển dụng này?')) return;
@@ -142,7 +155,7 @@ export const ManageJobsPage = () => {
       {/* Jobs List */}
       {filteredJobs.length > 0 ? (
         <div className="space-y-4">
-          {filteredJobs.map((job) => {
+          {currentJobs.map((job) => {
             const status = statusConfig[job.status];
             const StatusIcon = status?.icon || Clock;
 
@@ -280,6 +293,55 @@ export const ManageJobsPage = () => {
               <Plus className="w-4 h-4 mr-2" />
               Đăng tin tuyển dụng
             </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pagination */}
+      {filteredJobs.length > jobsPerPage && (
+        <Card>
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-600">
+                Hiển thị {startIndex + 1} - {Math.min(endIndex, filteredJobs.length)} trong tổng số{' '}
+                {filteredJobs.length} tin tuyển dụng
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Trước
+                </Button>
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      size="sm"
+                      variant={currentPage === page ? 'default' : 'outline'}
+                      onClick={() => setCurrentPage(page)}
+                      className={
+                        currentPage === page
+                          ? 'bg-blue-500 hover:bg-blue-600'
+                          : 'hover:bg-gray-100'
+                      }
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Sau
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}

@@ -46,6 +46,26 @@ export class AdminContentService {
     };
   }
 
+  async getCategoryById(id: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            jobs: true,
+            resumes: true,
+          },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Không tìm thấy danh mục');
+    }
+
+    return category;
+  }
+
   async createCategory(dto: AdminCreateCategoryDto) {
     const existing = await this.prisma.category.findUnique({
       where: { slug: dto.slug },

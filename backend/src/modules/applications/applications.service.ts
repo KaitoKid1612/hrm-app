@@ -67,7 +67,7 @@ export class ApplicationsService {
       select: { name: true, email: true, phone: true },
     });
 
-    if (candidateInfo && application.job.company.userId) {
+    if (candidateInfo && application.job.company?.userId) {
       // Create notification
       await this.notificationsService.notifyNewApplication(
         application.job.company.userId,
@@ -79,7 +79,7 @@ export class ApplicationsService {
       // Send email to employer
       const employer = await this.prisma.user.findUnique({
         where: { id: application.job.company.userId },
-        select: { name: true, email: true },
+        select: { email: true, name: true },
       });
 
       if (employer) {
@@ -159,7 +159,7 @@ export class ApplicationsService {
       await this.notificationsService.notifyApplicationStatus(
         application.userId,
         application.job.title,
-        application.job.company.name,
+        application.job.company?.name || 'Công ty',
         status,
         application.id,
       );
@@ -176,7 +176,7 @@ export class ApplicationsService {
             candidateName: candidate.name || 'Candidate',
             candidateEmail: candidate.email,
             jobTitle: application.job.title,
-            companyName: application.job.company.name,
+            companyName: application.job.company?.name || 'Công ty',
             status: status,
             appliedDate: application.createdAt.toLocaleDateString('vi-VN'),
             applicationUrl: `${this.configService.get('FRONTEND_URL', 'http://localhost:5173')}/applications/${application.id}`,

@@ -2,36 +2,55 @@ import api from '@/lib/axios';
 import { API_ENDPOINTS } from '@/constants';
 
 export interface CompanyProfileData {
+  id?: string;
   name: string;
-  description: string;
+  description?: string;
   logo?: string;
+  coverImage?: string;
   website?: string;
-  industry?: string;
-  size?: string;
-  address: string;
+  email?: string;
+  phone?: string;
+  address?: string;
   city?: string;
   country?: string;
-  phone?: string;
+  size?: string;
+  taxCode?: string;
+  isVerified?: boolean;
+}
+
+export interface CreateCompanyData {
+  name: string;
   email?: string;
-  foundedYear?: number;
-  benefits?: string[];
-  culture?: string;
-  socialLinks?: {
-    facebook?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
+  phone?: string;
+  address?: string;
+  city?: string;
+  description?: string;
+  website?: string;
+  size?: string;
 }
 
 export const companyProfileService = {
-  async getProfile() {
-    const response = await api.get(API_ENDPOINTS.COMPANIES.PROFILE);
-    return response.data.data;
+  async getMyProfile() {
+    try {
+      const response = await api.get(API_ENDPOINTS.COMPANY.MY_PROFILE);
+      return response.data;
+    } catch (error) {
+      const err = error as { response?: { status?: number } };
+      if (err.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
   },
 
-  async updateProfile(data: Partial<CompanyProfileData>) {
-    const response = await api.patch(API_ENDPOINTS.COMPANIES.PROFILE, data);
-    return response.data.data;
+  async createCompany(data: CreateCompanyData) {
+    const response = await api.post(API_ENDPOINTS.COMPANY.CREATE, data);
+    return response.data;
+  },
+
+  async updateProfile(id: string, data: Partial<CompanyProfileData>) {
+    const response = await api.put(API_ENDPOINTS.COMPANY.UPDATE(id), data);
+    return response.data;
   },
 
   async uploadLogo(file: File) {

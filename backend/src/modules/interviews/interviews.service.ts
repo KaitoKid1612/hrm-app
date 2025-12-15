@@ -26,7 +26,7 @@ export class InterviewsService {
       throw new NotFoundException('Application not found');
     }
 
-    if (application.job.company.userId !== userId) {
+    if (!application.job.company || application.job.company.userId !== userId) {
       throw new ForbiddenException(
         'You do not have permission to schedule interview for this application',
       );
@@ -176,7 +176,7 @@ export class InterviewsService {
     }
 
     // Verify user owns the company
-    if (interview.application.job.company.userId !== userId) {
+    if (!interview.application.job.company || interview.application.job.company.userId !== userId) {
       throw new ForbiddenException('You do not have permission to view this interview');
     }
 
@@ -203,7 +203,7 @@ export class InterviewsService {
       throw new NotFoundException('Interview not found');
     }
 
-    if (interview.application.job.company.userId !== userId) {
+    if (!interview.application.job.company || interview.application.job.company.userId !== userId) {
       throw new ForbiddenException('You do not have permission to update this interview');
     }
 
@@ -261,7 +261,7 @@ export class InterviewsService {
       throw new NotFoundException('Interview not found');
     }
 
-    if (interview.application.job.company.userId !== userId) {
+    if (!interview.application.job.company || interview.application.job.company.userId !== userId) {
       throw new ForbiddenException('You do not have permission to delete this interview');
     }
 

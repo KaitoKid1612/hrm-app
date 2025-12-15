@@ -206,11 +206,11 @@ async function main() {
         isPublic: true,
         skills: {
           create: [
-            { skillId: skillMap.get('JavaScript')?.id, level: 'advanced' },
-            { skillId: skillMap.get('TypeScript')?.id, level: 'advanced' },
-            { skillId: skillMap.get('React')?.id, level: 'expert' },
-            { skillId: skillMap.get('Node.js')?.id, level: 'advanced' },
-          ].filter((s) => s.skillId),
+            { skill: { connect: { id: skillMap.get('JavaScript')?.id } }, level: 'advanced' },
+            { skill: { connect: { id: skillMap.get('TypeScript')?.id } }, level: 'advanced' },
+            { skill: { connect: { id: skillMap.get('React')?.id } }, level: 'expert' },
+            { skill: { connect: { id: skillMap.get('Node.js')?.id } }, level: 'advanced' },
+          ].filter((s) => s.skill.connect.id),
         },
       },
     });

@@ -171,7 +171,7 @@ export class InvitesService {
     }
 
     // Check if user owns this job's company
-    if (job.company.userId !== userId) {
+    if (!job.company || job.company.userId !== userId) {
       throw new ForbiddenException('You do not have permission to invite for this job');
     }
 

@@ -4,7 +4,7 @@ import { Role } from '@prisma/client';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
@@ -17,6 +17,10 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
+
+    if (!user) {
+      return true; // Let JwtAuthGuard handle authentication
+    }
 
     if (!requiredRoles.includes(user.role)) {
       throw new ForbiddenException('Bạn không có quyền truy cập');

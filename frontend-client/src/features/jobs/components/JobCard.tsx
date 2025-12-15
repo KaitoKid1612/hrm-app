@@ -55,7 +55,7 @@ export const JobCard = ({ job }: JobCardProps) => {
             <div className="flex gap-3">
               {/* Company Logo */}
               <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 shrink-0 bg-gradient-to-br from-blue-50 to-indigo-50 group-hover:scale-110 transition-transform duration-300">
-                {job.company.logo ? (
+                {job.company?.logo ? (
                   <img
                     src={job.company.logo}
                     alt={job.company.name}
@@ -72,7 +72,7 @@ export const JobCard = ({ job }: JobCardProps) => {
                 <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-1">
                   {job.title}
                 </h3>
-                <p className="text-sm text-gray-600 font-medium">{job.company.name}</p>
+                <p className="text-sm text-gray-600 font-medium">{job.company?.name || 'Nhà tuyển dụng'}</p>
               </div>
             </div>
 

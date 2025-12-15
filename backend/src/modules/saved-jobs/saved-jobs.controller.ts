@@ -21,12 +21,12 @@ export class SavedJobsController {
 
   @Post()
   saveJob(@CurrentUser() user: any, @Body() dto: SaveJobDto) {
-    return this.savedJobsService.saveJob(user.userId, dto);
+    return this.savedJobsService.saveJob(user.id, dto);
   }
 
   @Delete(':id')
   unsaveJob(@CurrentUser() user: any, @Param('id') id: string) {
-    return this.savedJobsService.unsaveJob(user.userId, id);
+    return this.savedJobsService.unsaveJob(user.id, id);
   }
 
   @Get()
@@ -36,7 +36,7 @@ export class SavedJobsController {
     @Query('limit') limit?: string,
   ) {
     return this.savedJobsService.getMySavedJobs(
-      user.userId,
+      user.id,
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 20,
     );
@@ -44,11 +44,11 @@ export class SavedJobsController {
 
   @Get('check/:jobId')
   checkSaved(@CurrentUser() user: any, @Param('jobId') jobId: string) {
-    return this.savedJobsService.checkSaved(user.userId, jobId);
+    return this.savedJobsService.checkSaved(user.id, jobId);
   }
 
   @Get('ids')
   getSavedJobIds(@CurrentUser() user: any) {
-    return this.savedJobsService.getSavedJobIds(user.userId);
+    return this.savedJobsService.getSavedJobIds(user.id);
   }
 }

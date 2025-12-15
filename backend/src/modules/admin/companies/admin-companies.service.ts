@@ -176,7 +176,7 @@ export class AdminCompaniesService {
     });
   }
 
-  async rejectCompany(id: string, reason?: string) {
+  async rejectCompany(id: string) {
     const company = await this.prisma.company.findUnique({ where: { id } });
     if (!company) {
       throw new NotFoundException('Không tìm thấy công ty');
@@ -186,7 +186,6 @@ export class AdminCompaniesService {
       where: { id },
       data: {
         isVerified: false,
-        rejectionReason: reason || 'Company rejected by admin',
       },
       include: {
         user: {

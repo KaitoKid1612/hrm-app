@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from '@/core/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { UsersModule } from '@/modules/users/users.module';
 import { JobsModule } from '@/modules/jobs/jobs.module';
 import { CompaniesModule } from '@/modules/companies/companies.module';
@@ -49,5 +50,6 @@ import { InterviewsModule } from '@/modules/interviews/interviews.module';
     InvitesModule,
     InterviewsModule,
   ],
+  providers: [RolesGuard],
 })
 export class AppModule {}

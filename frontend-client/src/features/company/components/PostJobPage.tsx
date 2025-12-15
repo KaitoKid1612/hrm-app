@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { jobManagementService, JobFormData } from '../services/jobManagementService';
+import { companyProfileService, CompanyProfileData } from '../services/companyProfileService';
+import { CreateCompanyModal } from './CreateCompanyModal';
 import { ROUTES } from '@/constants';
 import {
   Briefcase,
@@ -18,6 +20,8 @@ import {
   Calendar,
   Clock,
   TrendingUp,
+  Building2,
+  CheckCircle,
 } from 'lucide-react';
 
 const jobTypes = [
@@ -41,6 +45,9 @@ export const PostJobPage = () => {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [company, setCompany] = useState<CompanyProfileData | null>(null);
+  const [showCreateCompanyModal, setShowCreateCompanyModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -63,6 +70,32 @@ export const PostJobPage = () => {
 
   const [benefits, setBenefits] = useState<string[]>([]);
   const [newBenefit, setNewBenefit] = useState('');
+
+  // Check if user has company on mount
+  useEffect(() => {
+    checkCompanyProfile();
+  }, []);
+
+  const checkCompanyProfile = async () => {
+    setIsLoading(true);
+    try {
+      const profile = await companyProfileService.getMyProfile();
+      setCompany(profile);
+      if (!profile) {
+        setShowCreateCompanyModal(true);
+      }
+    } catch (err) {
+      console.error('Error checking company profile:', err);
+      setShowCreateCompanyModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCompanyCreated = () => {
+    setShowCreateCompanyModal(false);
+    checkCompanyProfile();
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -163,6 +196,26 @@ export const PostJobPage = () => {
     }
   };
 
+  // Show create company modal
+  if (showCreateCompanyModal) {
+    return (
+      <CreateCompanyModal
+        onSuccess={handleCompanyCreated}
+        onCancel={() => navigate(ROUTES.MANAGE_JOBS)}
+      />
+    );
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto py-12 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="text-gray-600 mt-4">Đang kiểm tra hồ sơ công ty...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
@@ -179,6 +232,30 @@ export const PostJobPage = () => {
           Hủy
         </Button>
       </div>
+
+      {/* Company Info Banner */}
+      {company && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900">{company.name}</h3>
+                  {company.isVerified && (
+                    <CheckCircle className="w-4 h-4 text-blue-600" />
+                  )}
+                </div>
+                <p className="text-sm text-gray-600">
+                  Tin tuyển dụng sẽ được đăng dưới tên công ty này
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Error Message */}
       {error && (

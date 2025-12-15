@@ -67,7 +67,7 @@ export const JobDetailPage = () => {
       navigator
         .share({
           title: job.title,
-          text: `${job.title} tại ${job.company.name}`,
+          text: `${job.title}${job.company ? ` tại ${job.company.name}` : ''}`,
           url: url,
         })
         .catch((error) => console.log('Error sharing:', error));
@@ -78,7 +78,10 @@ export const JobDetailPage = () => {
     }
   };
 
-  const formatSalary = (min: number, max: number) => {
+  const formatSalary = (min: number | null, max: number | null) => {
+    if (!min && !max) return 'Thỏa thuận';
+    if (!min) return `Lên đến ${max?.toLocaleString('vi-VN')} VNĐ`;
+    if (!max) return `Từ ${min?.toLocaleString('vi-VN')} VNĐ`;
     return `${min.toLocaleString('vi-VN')} - ${max.toLocaleString('vi-VN')} VNĐ`;
   };
 
@@ -161,7 +164,7 @@ export const JobDetailPage = () => {
                 <CardHeader>
                   <div className="flex items-start gap-4">
                     <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
-                      {job.company.logo ? (
+                      {job.company?.logo ? (
                         <img
                           src={job.company.logo}
                           alt={job.company.name}
@@ -177,12 +180,16 @@ export const JobDetailPage = () => {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h1 className="text-2xl font-bold text-gray-900 mb-2">{job.title}</h1>
-                          <Link
-                            to={`/companies/${job.company.id}`}
-                            className="text-lg text-blue-600 hover:text-blue-700 font-medium"
-                          >
-                            {job.company.name}
-                          </Link>
+                          {job.company ? (
+                            <Link
+                              to={`/companies/${job.company.id}`}
+                              className="text-lg text-blue-600 hover:text-blue-700 font-medium"
+                            >
+                              {job.company.name}
+                            </Link>
+                          ) : (
+                            <p className="text-lg text-gray-600 font-medium">Nhà tuyển dụng</p>
+                          )}
                         </div>
                         <div className="flex gap-2">
                           {isJobHot() && (
@@ -341,7 +348,7 @@ export const JobDetailPage = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-white">
-                      {job.company.logo ? (
+                      {job.company?.logo ? (
                         <img
                           src={job.company.logo}
                           alt={job.company.name}
@@ -354,8 +361,8 @@ export const JobDetailPage = () => {
                       )}
                     </div>
                     <div>
-                      <h3 className="font-semibold">{job.company.name}</h3>
-                      {job.company.city && (
+                      <h3 className="font-semibold">{job.company?.name || 'Nhà tuyển dụng'}</h3>
+                      {job.company?.city && (
                         <p className="text-sm text-gray-600">{job.company.city}</p>
                       )}
                     </div>
@@ -368,11 +375,13 @@ export const JobDetailPage = () => {
                       </div>
                     </div>
                   )}
-                  <Link to={`/companies/${job.company.id}`}>
-                    <Button variant="outline" className="w-full">
-                      Xem trang công ty
-                    </Button>
-                  </Link>
+                  {job.company && (
+                    <Link to={`/companies/${job.company.id}`}>
+                      <Button variant="outline" className="w-full">
+                        Xem trang công ty
+                      </Button>
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
 

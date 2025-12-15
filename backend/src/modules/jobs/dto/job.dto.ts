@@ -11,8 +11,9 @@ import { JobType, JobLevel, ExperienceLevel } from '@prisma/client';
 import { Type } from 'class-transformer';
 
 export class CreateJobDto {
+  @IsOptional()
   @IsString()
-  categoryId: string;
+  categoryId?: string;
 
   @IsString()
   title: string;
@@ -20,12 +21,10 @@ export class CreateJobDto {
   @IsString()
   description: string;
 
-  @IsString()
-  requirements: string;
+  requirements: string | string[];
 
   @IsOptional()
-  @IsString()
-  benefits?: string;
+  benefits?: string | string[];
 
   @IsEnum(JobType)
   jobType: JobType;
@@ -209,6 +208,11 @@ export class QueryJobDto {
   @Type(() => Boolean)
   @IsBoolean()
   isUrgent?: boolean;
+
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isActive?: boolean;
 
   // Sorting
   @IsOptional()

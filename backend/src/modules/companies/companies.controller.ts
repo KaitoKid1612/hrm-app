@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Body, Param, UseGuards, Inject } from '@nes
 import { CompaniesService } from './companies.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { CreateCompanyDto, UpdateCompanyDto } from './dto/company.dto';
 
 @Controller('companies')
 export class CompaniesController {
@@ -25,13 +26,13 @@ export class CompaniesController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@CurrentUser() user: any, @Body() data: any) {
-    return this.companiesService.create(user.id, data);
+  create(@CurrentUser() user: any, @Body() dto: CreateCompanyDto) {
+    return this.companiesService.create(user.id, dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: any) {
-    return this.companiesService.update(id, data);
+  update(@Param('id') id: string, @Body() dto: UpdateCompanyDto) {
+    return this.companiesService.update(id, dto);
   }
 }

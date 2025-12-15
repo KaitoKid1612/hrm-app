@@ -9,12 +9,11 @@ import {
   Query,
   UseGuards,
   Inject,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto, UpdateJobDto, QueryJobDto, SearchSuggestionsDto } from './dto/job.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
-import { RolesGuard } from '@/modules/auth/guards/roles.guard';
-import { Roles } from '@/modules/auth/decorators/roles.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { Role } from '@prisma/client';
 
@@ -46,6 +45,32 @@ export class JobsController {
     return this.jobsService.getJobStatistics();
   }
 
+  // ============================================
+  // Employer Endpoints (Protected) - MUST BE BEFORE :id routes
+  // ============================================
+
+  @UseGuards(JwtAuthGuard)
+  @Get('my-jobs')
+  getMyJobs(@CurrentUser() user: any, @Query() query: QueryJobDto) {
+    if (user.role !== Role.EMPLOYER) {
+      throw new ForbiddenException('Chỉ nhà tuyển dụng mới có thể xem danh sách công việc');
+    }
+    return this.jobsService.findJobsByUserId(user.id, query);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('my-jobs')
+  async createMyJob(@CurrentUser() user: any, @Body() dto: CreateJobDto) {
+    if (user.role !== Role.EMPLOYER) {
+      throw new ForbiddenException('Chỉ nhà tuyển dụng mới có thể tạo công việc');
+    }
+    return this.jobsService.createJobByUserId(user.id, dto);
+  }
+
+  // ============================================
+  // Public Detail & Related Endpoints
+  // ============================================
+
   @Get(':id/similar')
   getSimilarJobs(@Param('id') id: string, @Query('limit') limit?: number) {
     return this.jobsService.getSimilarJobs(id, limit ? +limit : 5);
@@ -57,27 +82,33 @@ export class JobsController {
   }
 
   // ============================================
-  // Employer Endpoints (Protected)
+  // Employer Job Management (Protected)
   // ============================================
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.EMPLOYER)
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@CurrentUser() user: any, @Body() dto: CreateJobDto) {
+    if (user.role !== Role.EMPLOYER) {
+      throw new ForbiddenException('Chỉ nhà tuyển dụng mới có thể tạo công việc');
+    }
     return this.jobsService.createJobByUserId(user.id, dto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.EMPLOYER)
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @CurrentUser() user: any, @Body() dto: UpdateJobDto) {
+    if (user.role !== Role.EMPLOYER) {
+      throw new ForbiddenException('Chỉ nhà tuyển dụng mới có thể cập nhật công việc');
+    }
     return this.jobsService.update(id, user.id, dto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.EMPLOYER)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @CurrentUser() user: any) {
+    if (user.role !== Role.EMPLOYER) {
+      throw new ForbiddenException('Chỉ nhà tuyển dụng mới có thể xóa công việc');
+    }
     return this.jobsService.remove(id, user.id);
   }
 }

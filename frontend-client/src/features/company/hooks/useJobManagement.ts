@@ -10,9 +10,9 @@ export const useJobManagement = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await jobManagementService.getMyJobs(params);
-      setJobs(data);
-      return data;
+      const response = await jobManagementService.getMyJobs(params);
+      setJobs(response.data || []); // Extract data array from response
+      return response.data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
       throw err;

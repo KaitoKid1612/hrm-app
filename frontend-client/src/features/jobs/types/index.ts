@@ -1,6 +1,6 @@
 export interface Job {
   id: string;
-  companyId: string;
+  companyId?: string;
   categoryId: string;
   title: string;
   slug: string;
@@ -38,7 +38,7 @@ export interface Job {
   viewCount: number;
   createdAt: string;
   updatedAt: string;
-  company: {
+  company?: {
     id: string;
     name: string;
     logo?: string;

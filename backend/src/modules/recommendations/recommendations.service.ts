@@ -86,6 +86,9 @@ export class RecommendationsService {
         [JobLevel.SENIOR]: 4,
         [JobLevel.LEADER]: 5,
         [JobLevel.MANAGER]: 6,
+        [JobLevel.ENTRY_LEVEL]: 1,
+        [JobLevel.EXPERIENCED]: 3,
+        [JobLevel.NOT_REQUIRED]: 0,
       };
 
       const jobLevelScore = (levelScores as any)[job.jobLevel] ?? 0;
