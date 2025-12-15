@@ -18,9 +18,9 @@ interface JobCardProps {
 }
 
 export const JobCard = ({ job }: JobCardProps) => {
-  const formatSalary = (min: number, max: number) => {
-    if (min === max) return `${(min / 1000000).toFixed(0)}M`;
-    return `${(min / 1000000).toFixed(0)}M - ${(max / 1000000).toFixed(0)}M`;
+  const formatSalary = (salaryMin: number, salaryMax: number) => {
+    if (salaryMin === salaryMax) return `${(salaryMin / 1000000).toFixed(0)}M`;
+    return `${(salaryMin / 1000000).toFixed(0)}M - ${(salaryMax / 1000000).toFixed(0)}M`;
   };
 
   const getJobTypeLabel = (type: string) => {
@@ -32,6 +32,18 @@ export const JobCard = ({ job }: JobCardProps) => {
       FREELANCE: 'Freelance',
     };
     return labels[type as keyof typeof labels] || type;
+  };
+
+  // Check if job is new (created within last 7 days)
+  const isNew = () => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return new Date(job.createdAt) > sevenDaysAgo;
+  };
+
+  // Check if job is hot (has many applications or high salary)
+  const isHot = () => {
+    return job._count.applications > 10 || job.salaryMax > 20000000;
   };
 
   return (
@@ -65,15 +77,15 @@ export const JobCard = ({ job }: JobCardProps) => {
             </div>
 
             {/* Badges */}
-            {(job.isHot || job.isNew) && (
+            {(isHot() || isNew()) && (
               <div className="flex flex-col gap-1">
-                {job.isHot && (
+                {isHot() && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-linear-to-r from-red-500 to-orange-500 text-white shadow-lg">
                     <TrendingUp className="w-3 h-3" />
                     HOT
                   </span>
                 )}
-                {job.isNew && (
+                {isNew() && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-linear-to-r from-green-500 to-emerald-500 text-white shadow-lg">
                     <Sparkles className="w-3 h-3" />
                     MỚI
@@ -89,7 +101,7 @@ export const JobCard = ({ job }: JobCardProps) => {
             <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 border border-green-200">
               <DollarSign className="w-4 h-4 text-green-600" />
               <span className="font-bold text-green-700 text-base">
-                {formatSalary(job.salary.min, job.salary.max)} VNĐ
+                {formatSalary(job.salaryMin, job.salaryMax)} VNĐ
               </span>
             </div>
 
@@ -97,28 +109,28 @@ export const JobCard = ({ job }: JobCardProps) => {
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2 text-gray-600">
                 <MapPin className="w-4 h-4 text-blue-500" />
-                <span className="font-medium">{job.location}</span>
+                <span className="font-medium">{job.city || 'Chưa cập nhật'}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <Clock className="w-4 h-4 text-purple-500" />
-                <span className="font-medium">{getJobTypeLabel(job.type)}</span>
+                <span className="font-medium">{getJobTypeLabel(job.jobType)}</span>
               </div>
             </div>
 
             {/* Skills */}
-            {job.requirements && job.requirements.length > 0 && (
+            {job.skills && job.skills.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
-                {job.requirements.slice(0, 3).map((skill, index) => (
+                {job.skills.slice(0, 3).map((jobSkill) => (
                   <span
-                    key={index}
+                    key={jobSkill.id}
                     className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
                   >
-                    {skill}
+                    {jobSkill.skill.name}
                   </span>
                 ))}
-                {job.requirements.length > 3 && (
+                {job.skills.length > 3 && (
                   <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                    +{job.requirements.length - 3}
+                    +{job.skills.length - 3}
                   </span>
                 )}
               </div>

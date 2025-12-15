@@ -12,11 +12,9 @@ interface SavedJob {
   createdAt: string;
   job?: {
     title?: string;
-    location?: string;
-    salary?: {
-      min?: number;
-      max?: number;
-    };
+    city?: string;
+    salaryMin?: number;
+    salaryMax?: number;
     company?: {
       name?: string;
       logo?: string;
@@ -124,11 +122,11 @@ export const SavedJobsPage = () => {
                     </div>
 
                     <div className="space-y-1 text-sm text-gray-600">
-                      <p>📍 {savedJob.job?.location || 'N/A'}</p>
+                      <p>📍 {savedJob.job?.city || 'N/A'}</p>
                       <p>
                         💰{' '}
-                        {savedJob.job?.salary?.min && savedJob.job?.salary?.max
-                          ? `${(savedJob.job.salary.min / 1000000).toFixed(0)} - ${(savedJob.job.salary.max / 1000000).toFixed(0)} triệu`
+                        {savedJob.job?.salaryMin && savedJob.job?.salaryMax
+                          ? `${(savedJob.job.salaryMin / 1000000).toFixed(0)} - ${(savedJob.job.salaryMax / 1000000).toFixed(0)} triệu`
                           : 'Thỏa thuận'}
                       </p>
                       <p className="text-xs text-gray-500">
