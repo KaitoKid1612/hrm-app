@@ -87,3 +87,30 @@ export const useTrendingJobs = (limit: number = 6) => {
 
   return { jobs, isLoading, error };
 };
+
+export const useJobDetail = (id: string) => {
+  const [job, setJob] = useState<Job | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchJobDetail = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const result = await jobService.getJobById(id);
+        setJob(result);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch job detail'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobDetail();
+  }, [id]);
+
+  return { job, isLoading, error };
+};

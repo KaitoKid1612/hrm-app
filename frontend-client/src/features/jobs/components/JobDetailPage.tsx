@@ -14,8 +14,6 @@ import {
   Building2,
   Calendar,
   Users,
-  CheckCircle2,
-  Gift,
   Bookmark,
   BookmarkCheck,
   Share2,
@@ -23,56 +21,7 @@ import {
 import { ApplyJobModal } from './ApplyJobModal';
 import { useJobApplication } from '../hooks/useJobApplication';
 import { useSavedJob } from '../hooks/useSavedJob';
-
-// Mock data - sẽ thay bằng API sau
-const mockJobDetail = {
-  id: '1',
-  title: 'Senior Frontend Developer (ReactJS)',
-  description:
-    'Chúng tôi đang tìm kiếm một Senior Frontend Developer có kinh nghiệm với ReactJS để tham gia đội ngũ phát triển sản phẩm của chúng tôi. Bạn sẽ làm việc trong một môi trường năng động, sáng tạo và có cơ hội phát triển bản thân.',
-  salary: { min: 25000000, max: 35000000 },
-  location: 'Hà Nội',
-  type: 'FULL_TIME',
-  level: 'SENIOR',
-  requirements: [
-    'Có ít nhất 4 năm kinh nghiệm phát triển Frontend với ReactJS',
-    'Thành thạo TypeScript, NextJS, Redux/Context API',
-    'Hiểu biết sâu về HTML5, CSS3, responsive design',
-    'Kinh nghiệm làm việc với RESTful API, GraphQL',
-    'Kỹ năng debug và tối ưu performance',
-    'Có khả năng làm việc nhóm và giao tiếp tốt',
-  ],
-  benefits: [
-    'Lương tháng 13, thưởng theo dự án',
-    'Bảo hiểm sức khỏe cao cấp',
-    'Du lịch công ty 2 lần/năm',
-    'Làm việc remote 2 ngày/tuần',
-    'Đào tạo và phát triển kỹ năng',
-    'Môi trường làm việc trẻ trung, năng động',
-  ],
-  responsibilities: [
-    'Phát triển và maintain các tính năng frontend',
-    'Tối ưu hiệu suất ứng dụng web',
-    'Review code và hỗ trợ team members',
-    'Tham gia vào việc thiết kế kiến trúc hệ thống',
-    'Làm việc chặt chẽ với Backend và UX/UI team',
-  ],
-  isHot: true,
-  isNew: true,
-  createdAt: '2025-12-10',
-  expiresAt: '2026-01-10',
-  numberOfPositions: 3,
-  company: {
-    id: '1',
-    name: 'FPT Software',
-    logo: 'https://via.placeholder.com/100',
-    address: 'Tòa nhà FPT, Cầu Giấy, Hà Nội',
-    description:
-      'FPT Software là công ty phần mềm hàng đầu Việt Nam với hơn 20 năm kinh nghiệm trong lĩnh vực công nghệ thông tin.',
-    size: '1000+ nhân viên',
-    website: 'https://fptsoftware.com',
-  },
-};
+import { useJobDetail } from '../hooks/useJobs';
 
 export const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -81,7 +30,7 @@ export const JobDetailPage = () => {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [shareMessage, setShareMessage] = useState('');
 
-  const job = mockJobDetail; // TODO: Fetch from API
+  const { job, isLoading, error } = useJobDetail(id || '');
   const { hasApplied, applyJob } = useJobApplication(id || '');
   const { isSaved, toggleSave } = useSavedJob(id || '');
 
@@ -144,6 +93,62 @@ export const JobDetailPage = () => {
     return labels[type as keyof typeof labels] || type;
   };
 
+  const getJobLevelLabel = (level: string) => {
+    const labels = {
+      INTERN: 'Thực tập sinh',
+      FRESHER: 'Fresher',
+      JUNIOR: 'Junior',
+      MIDDLE: 'Middle',
+      SENIOR: 'Senior',
+      LEADER: 'Leader',
+      MANAGER: 'Manager',
+      ENTRY_LEVEL: 'Nhập môn',
+      EXPERIENCED: 'Có kinh nghiệm',
+      NOT_REQUIRED: 'Không yêu cầu',
+    };
+    return labels[level as keyof typeof labels] || level;
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Đang tải thông tin việc làm...</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Error state
+  if (error || !job) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Không thể tải thông tin việc làm</p>
+            <Button onClick={() => navigate(ROUTES.JOBS)}>Quay lại danh sách</Button>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Check if job is new
+  const isJobNew = () => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return new Date(job.createdAt) > sevenDaysAgo;
+  };
+
+  // Check if job is hot
+  const isJobHot = () => {
+    return job._count.applications > 10 || job.salaryMax > 20000000;
+  };
+
   return (
     <MainLayout>
       <div className="bg-gray-50 min-h-screen">
@@ -180,13 +185,13 @@ export const JobDetailPage = () => {
                           </Link>
                         </div>
                         <div className="flex gap-2">
-                          {job.isHot && (
+                          {isJobHot() && (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-700">
                               <TrendingUp className="w-4 h-4" />
                               Hot
                             </span>
                           )}
-                          {job.isNew && (
+                          {isJobNew() && (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
                               ✨ Mới
                             </span>
@@ -204,7 +209,7 @@ export const JobDetailPage = () => {
                       <div>
                         <p className="text-xs text-gray-500">Mức lương</p>
                         <p className="font-semibold text-green-600 text-sm">
-                          {formatSalary(job.salary.min, job.salary.max)}
+                          {formatSalary(job.salaryMin, job.salaryMax)}
                         </p>
                       </div>
                     </div>
@@ -212,21 +217,21 @@ export const JobDetailPage = () => {
                       <MapPin className="w-5 h-5 text-blue-600" />
                       <div>
                         <p className="text-xs text-gray-500">Địa điểm</p>
-                        <p className="font-semibold text-sm">{job.location}</p>
+                        <p className="font-semibold text-sm">{job.city || 'Chưa cập nhật'}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="w-5 h-5 text-purple-600" />
                       <div>
                         <p className="text-xs text-gray-500">Hình thức</p>
-                        <p className="font-semibold text-sm">{getJobTypeLabel(job.type)}</p>
+                        <p className="font-semibold text-sm">{getJobTypeLabel(job.jobType)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-orange-600" />
                       <div>
                         <p className="text-xs text-gray-500">Số lượng</p>
-                        <p className="font-semibold text-sm">{job.numberOfPositions} vị trí</p>
+                        <p className="font-semibold text-sm">{job.positions} vị trí</p>
                       </div>
                     </div>
                   </div>
@@ -279,56 +284,48 @@ export const JobDetailPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Responsibilities */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Trách nhiệm công việc</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {job.responsibilities.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                        <span className="text-gray-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
               {/* Requirements */}
               <Card>
                 <CardHeader>
                   <CardTitle>Yêu cầu ứng viên</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
-                    {job.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
-                        <span className="text-gray-700">{req}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-gray-700 whitespace-pre-line">{job.requirements}</p>
                 </CardContent>
               </Card>
 
               {/* Benefits */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quyền lợi</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {job.benefits.map((benefit, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <Gift className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
-                        <span className="text-gray-700">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+              {job.benefits && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Quyền lợi</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 whitespace-pre-line">{job.benefits}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Skills */}
+              {job.skills && job.skills.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Kỹ năng yêu cầu</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {job.skills.map((jobSkill) => (
+                        <span
+                          key={jobSkill.id}
+                          className="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100"
+                        >
+                          {jobSkill.skill.name}
+                        </span>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -344,24 +341,33 @@ export const JobDetailPage = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-white">
-                      <img
-                        src={job.company.logo}
-                        alt={job.company.name}
-                        className="w-full h-full object-cover"
-                      />
+                      {job.company.logo ? (
+                        <img
+                          src={job.company.logo}
+                          alt={job.company.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Building2 className="w-8 h-8" />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <h3 className="font-semibold">{job.company.name}</h3>
-                      <p className="text-sm text-gray-600">{job.company.size}</p>
+                      {job.company.city && (
+                        <p className="text-sm text-gray-600">{job.company.city}</p>
+                      )}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-700">{job.company.description}</p>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
-                      <span className="text-gray-600">{job.company.address}</span>
+                  {job.address && (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <span className="text-gray-600">{job.address}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <Link to={`/companies/${job.company.id}`}>
                     <Button variant="outline" className="w-full">
                       Xem trang công ty
@@ -376,13 +382,15 @@ export const JobDetailPage = () => {
                   <CardTitle>Thông tin chung</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">
-                      Hạn nộp:{' '}
-                      <strong>{new Date(job.expiresAt).toLocaleDateString('vi-VN')}</strong>
-                    </span>
-                  </div>
+                  {job.deadline && (
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-600">
+                        Hạn nộp:{' '}
+                        <strong>{new Date(job.deadline).toLocaleDateString('vi-VN')}</strong>
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-600">
@@ -393,7 +401,19 @@ export const JobDetailPage = () => {
                   <div className="flex items-center gap-2">
                     <Briefcase className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-600">
-                      Cấp bậc: <strong>{job.level}</strong>
+                      Cấp bậc: <strong>{getJobLevelLabel(job.jobLevel)}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gray-400" />
+                    <span className="text-gray-600">
+                      Lượt xem: <strong>{job.viewCount}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gray-400" />
+                    <span className="text-gray-600">
+                      Ứng viên: <strong>{job._count.applications}</strong>
                     </span>
                   </div>
                 </CardContent>
