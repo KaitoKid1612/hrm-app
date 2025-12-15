@@ -21,6 +21,16 @@ import { AdminContentService } from '@/modules/admin/content/admin-content.servi
 import { AdminModerationController } from '@/modules/admin/moderation/admin-moderation.controller';
 import { AdminModerationService } from '@/modules/admin/moderation/admin-moderation.service';
 
+import { AdminApplicationsController } from '@/modules/admin/applications/admin-applications.controller';
+import { AdminApplicationsService } from '@/modules/admin/applications/admin-applications.service';
+
+import { AdminCategoriesController } from '@/modules/admin/categories/admin-categories.controller';
+
+import { AdminSkillsController } from '@/modules/admin/skills/admin-skills.controller';
+
+import { AdminInterviewsController } from '@/modules/admin/interviews/admin-interviews.controller';
+import { AdminInterviewsService } from '@/modules/admin/interviews/admin-interviews.service';
+
 @Module({
   imports: [PrismaModule],
   controllers: [
@@ -30,6 +40,10 @@ import { AdminModerationService } from '@/modules/admin/moderation/admin-moderat
     AdminJobsController,
     AdminContentController,
     AdminModerationController,
+    AdminApplicationsController,
+    AdminCategoriesController,
+    AdminSkillsController,
+    AdminInterviewsController,
   ],
   providers: [
     AdminDashboardService,
@@ -38,6 +52,8 @@ import { AdminModerationService } from '@/modules/admin/moderation/admin-moderat
     AdminJobsService,
     AdminContentService,
     AdminModerationService,
+    AdminApplicationsService,
+    AdminInterviewsService,
   ],
   exports: [
     AdminDashboardService,
@@ -46,6 +62,7 @@ import { AdminModerationService } from '@/modules/admin/moderation/admin-moderat
     AdminJobsService,
     AdminContentService,
     AdminModerationService,
+    AdminApplicationsService,
   ],
 })
 export class AdminModule {}

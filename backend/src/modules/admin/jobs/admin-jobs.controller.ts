@@ -62,4 +62,19 @@ export class AdminJobsController {
   deleteApplication(@Param('id') id: string) {
     return this.adminJobsService.deleteApplication(id);
   }
+
+  @Get('stats/overview')
+  getJobStats() {
+    return this.adminJobsService.getJobStats();
+  }
+
+  @Post(':id/close')
+  closeJob(@Param('id') id: string) {
+    return this.adminJobsService.closeJob(id);
+  }
+
+  @Post(':id/reopen')
+  reopenJob(@Param('id') id: string) {
+    return this.adminJobsService.reopenJob(id);
+  }
 }

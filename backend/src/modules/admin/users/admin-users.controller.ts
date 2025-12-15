@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -50,5 +51,15 @@ export class AdminUsersController {
   @Post('bulk')
   bulkAction(@Body() dto: AdminBulkActionUsersDto) {
     return this.adminUsersService.bulkAction(dto);
+  }
+
+  @Get('stats/overview')
+  getUserStats() {
+    return this.adminUsersService.getUserStats();
+  }
+
+  @Patch(':id/status')
+  toggleUserStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.adminUsersService.toggleUserStatus(id, status);
   }
 }

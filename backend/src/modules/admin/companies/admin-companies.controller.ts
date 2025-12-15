@@ -53,4 +53,19 @@ export class AdminCompaniesController {
   bulkAction(@Body() dto: AdminBulkActionCompaniesDto) {
     return this.adminCompaniesService.bulkAction(dto);
   }
+
+  @Post(':id/verify')
+  verifyCompany(@Param('id') id: string) {
+    return this.adminCompaniesService.verifyCompany(id);
+  }
+
+  @Post(':id/reject')
+  rejectCompany(@Param('id') id: string, @Body('reason') reason?: string) {
+    return this.adminCompaniesService.rejectCompany(id, reason);
+  }
+
+  @Get('stats/overview')
+  getCompanyStats() {
+    return this.adminCompaniesService.getCompanyStats();
+  }
 }

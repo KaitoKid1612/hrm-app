@@ -155,6 +155,66 @@ export class AdminCompaniesService {
     return { message: 'Xóa công ty thành công' };
   }
 
+  async verifyCompany(id: string) {
+    const company = await this.prisma.company.findUnique({ where: { id } });
+    if (!company) {
+      throw new NotFoundException('Không tìm thấy công ty');
+    }
+
+    return this.prisma.company.update({
+      where: { id },
+      data: { isVerified: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async rejectCompany(id: string, reason?: string) {
+    const company = await this.prisma.company.findUnique({ where: { id } });
+    if (!company) {
+      throw new NotFoundException('Không tìm thấy công ty');
+    }
+
+    return this.prisma.company.update({
+      where: { id },
+      data: {
+        isVerified: false,
+        rejectionReason: reason || 'Company rejected by admin',
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getCompanyStats() {
+    const [total, verified, pending] = await Promise.all([
+      this.prisma.company.count(),
+      this.prisma.company.count({ where: { isVerified: true } }),
+      this.prisma.company.count({ where: { isVerified: false } }),
+    ]);
+
+    return {
+      total,
+      verified,
+      pending,
+      rejected: 0, // Can add rejected status later if needed
+    };
+  }
+
   async bulkAction(dto: AdminBulkActionCompaniesDto) {
     const { ids, action } = dto;
 

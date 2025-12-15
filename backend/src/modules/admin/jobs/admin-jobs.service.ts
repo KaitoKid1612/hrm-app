@@ -279,4 +279,82 @@ export class AdminJobsService {
 
     return { message: 'Xóa đơn ứng tuyển thành công' };
   }
+
+  async getJobStats() {
+    const [total, active, closed] = await Promise.all([
+      this.prisma.job.count(),
+      this.prisma.job.count({
+        where: {
+          isActive: true,
+          deadline: { gte: new Date() },
+        },
+      }),
+      this.prisma.job.count({
+        where: {
+          OR: [{ isActive: false }, { deadline: { lt: new Date() } }],
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      active,
+      closed,
+      draft: 0, // Can add draft status later if needed
+    };
+  }
+
+  async closeJob(id: string) {
+    const job = await this.prisma.job.findUnique({ where: { id } });
+    if (!job) {
+      throw new NotFoundException('Không tìm thấy công việc');
+    }
+
+    return this.prisma.job.update({
+      where: { id },
+      data: { isActive: false },
+      include: {
+        company: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async reopenJob(id: string) {
+    const job = await this.prisma.job.findUnique({ where: { id } });
+    if (!job) {
+      throw new NotFoundException('Không tìm thấy công việc');
+    }
+
+    return this.prisma.job.update({
+      where: { id },
+      data: { isActive: true },
+      include: {
+        company: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
 }
