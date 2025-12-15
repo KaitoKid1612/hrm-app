@@ -172,7 +172,7 @@ export const PostJobPage = () => {
             <Briefcase className="w-6 h-6 text-blue-600" />
             Đăng tin tuyển dụng
           </h1>
-          <p className="text-gray-600 mt-1">Tạo tin tuyển dụng mới để tìm kiếm ứng viên</p>
+          <p className="text-gray-100 mt-1">Tạo tin tuyển dụng mới để tìm kiếm ứng viên</p>
         </div>
         <Button variant="outline" onClick={() => navigate(ROUTES.MANAGE_JOBS)}>
           <X className="w-4 h-4 mr-2" />

@@ -74,7 +74,7 @@ export const Header = () => {
                   <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-medium text-gray-700">{user?.name}</span>
+                  <span className="font-medium text-gray-100">{user?.name}</span>
                   <ChevronDown className="w-4 h-4 text-gray-400" />
                 </button>
 

@@ -98,7 +98,7 @@ export const JobListPage = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <form onSubmit={handleSearch} className="space-y-4">
               {/* Main Search */}
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
@@ -129,7 +129,7 @@ export const JobListPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
+                  className="flex items-center gap-2 text-gray-100 hover:text-gray-900 font-medium"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                   {showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc'}

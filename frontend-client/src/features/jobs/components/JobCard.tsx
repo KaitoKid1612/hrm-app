@@ -139,10 +139,7 @@ export const JobCard = ({ job }: JobCardProps) => {
         </CardContent>
 
         <CardFooter className="px-6 py-4 bg-gray-50 border-t border-gray-100 group-hover:bg-blue-50 transition-colors">
-          <Button
-            variant="ghost"
-            className="w-full font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-100"
-          >
+          <Button className="w-full font-semibold bg-blue-600 text-white hover:bg-blue-700">
             Xem chi tiết
             <Briefcase className="w-4 h-4 ml-2" />
           </Button>
