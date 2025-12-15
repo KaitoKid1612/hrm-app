@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '@/core/prisma/prisma.module';
 import { AuthModule } from '@/modules/auth/auth.module';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 
 // Main dashboard
 import { AdminDashboardController } from '@/modules/admin/admin-dashboard.controller';
@@ -55,6 +56,7 @@ import { AdminInterviewsService } from '@/modules/admin/interviews/admin-intervi
     AdminModerationService,
     AdminApplicationsService,
     AdminInterviewsService,
+    RolesGuard,
   ],
   exports: [
     AdminDashboardService,
