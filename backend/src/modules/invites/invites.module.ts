@@ -3,9 +3,10 @@ import { InvitesController } from './invites.controller';
 import { InvitesService } from './invites.service';
 import { PrismaModule } from '@/core/prisma/prisma.module';
 import { EmailModule } from '@/modules/email/email.module';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, EmailModule],
+  imports: [PrismaModule, EmailModule, AuthModule],
   controllers: [InvitesController],
   providers: [InvitesService],
   exports: [InvitesService],

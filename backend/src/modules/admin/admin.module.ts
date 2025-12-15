@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '@/core/prisma/prisma.module';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 // Main dashboard
 import { AdminDashboardController } from '@/modules/admin/admin-dashboard.controller';
@@ -32,7 +33,7 @@ import { AdminInterviewsController } from '@/modules/admin/interviews/admin-inte
 import { AdminInterviewsService } from '@/modules/admin/interviews/admin-interviews.service';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [
     AdminDashboardController,
     AdminUsersController,
