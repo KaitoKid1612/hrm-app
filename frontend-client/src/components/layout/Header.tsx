@@ -20,14 +20,14 @@ export const Header = () => {
 
   return (
     <header className="border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto">
+        <div className="flex items-center justify-between h-16 px-4">
           {/* Logo */}
           <Link
             to={ROUTES.HOME}
             className="flex items-center gap-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
-            <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <span className="hidden sm:block">Vũng Áng Jobs</span>
