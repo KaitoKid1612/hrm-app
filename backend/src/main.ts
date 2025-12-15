@@ -15,14 +15,14 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // Enable CORS - Allow both client and admin frontends
-  const allowedOrigins = [
+  const allowedOrigins: string[] = [
     process.env.FRONTEND_URL || 'https://vungang-jobs-client.onrender.com',
     process.env.ADMIN_URL,
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:3000',
     'http://localhost:3001',
-  ].filter(Boolean); // Remove undefined values
+  ].filter(Boolean) as string[]; // Remove undefined values
 
   app.enableCors({
     origin: (origin, callback) => {
