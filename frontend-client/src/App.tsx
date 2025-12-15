@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { AuthProvider } from '@/features/auth';
 import { LoginPage, RegisterPage } from '@/features/auth';
 import { DashboardPage } from '@/features/dashboard';
@@ -30,6 +31,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <Toaster position="top-right" richColors closeButton />
         <Routes>
           {/* Public Routes - Không cần đăng nhập */}
           <Route path={ROUTES.HOME} element={<HomePage />} />

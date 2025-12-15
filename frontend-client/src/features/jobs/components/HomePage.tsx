@@ -17,7 +17,7 @@ export const HomePage = () => {
   // Fetch jobs based on active tab
   const { jobs: allJobs, isLoading: isLoadingAll } = useJobs({
     limit: 12,
-    sort: 'createdAt',
+    sortBy: 'createdAt',
     sortOrder: 'desc',
     ...searchParams,
   });

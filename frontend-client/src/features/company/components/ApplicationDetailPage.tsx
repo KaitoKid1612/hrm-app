@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useApplicationDetail } from '../hooks/useApplicationManagement';
 import type { ApplicationDetail } from '../services/applicationManagementService';
+import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import {
   ArrowLeft,
@@ -57,8 +58,9 @@ export const ApplicationDetailPage = () => {
     setIsUpdating(true);
     try {
       await updateStatus(newStatus as ApplicationDetail['status']);
-    } catch {
-      alert('Có lỗi xảy ra khi cập nhật trạng thái');
+      toast.success('Đã cập nhật trạng thái đơn ứng tuyển');
+    } catch (error) {
+      toast.error(error);
     } finally {
       setIsUpdating(false);
     }

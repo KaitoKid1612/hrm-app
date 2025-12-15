@@ -4,6 +4,7 @@ import { MainLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/features/auth';
+import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import {
   MapPin,
@@ -44,7 +45,7 @@ export const JobDetailPage = () => {
 
   const handleApplySubmit = async (data: { resumeId?: string; coverLetter?: string }) => {
     await applyJob(data);
-    alert('Nộp đơn thành công! Bạn có thể xem trạng thái tại "Đơn ứng tuyển của tôi"');
+    toast.success('Nộp đơn thành công! Bạn có thể xem trạng thái tại "Đơn ứng tuyển của tôi"');
   };
 
   const handleSave = async () => {
@@ -57,7 +58,7 @@ export const JobDetailPage = () => {
       await toggleSave();
     } catch (error) {
       console.error('Error toggling save:', error);
-      alert('Có lỗi xảy ra. Vui lòng thử lại');
+      toast.error(error);
     }
   };
 

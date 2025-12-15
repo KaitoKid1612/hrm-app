@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useJobManagement } from '../hooks/useJobManagement';
 import { jobManagementService } from '../services/jobManagementService';
+import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import {
   Briefcase,
@@ -63,8 +64,9 @@ export const ManageJobsPage = () => {
     try {
       await jobManagementService.deleteJob(id);
       loadJobs({ status: statusFilter });
-    } catch {
-      alert('Có lỗi xảy ra khi xóa tin tuyển dụng');
+      toast.success('Đã xóa tin tuyển dụng');
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -74,8 +76,9 @@ export const ManageJobsPage = () => {
     try {
       await jobManagementService.closeJob(id);
       loadJobs({ status: statusFilter });
-    } catch {
-      alert('Có lỗi xảy ra khi đóng tin tuyển dụng');
+      toast.success('Đã đóng tin tuyển dụng');
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -83,8 +86,9 @@ export const ManageJobsPage = () => {
     try {
       await jobManagementService.reopenJob(id);
       loadJobs({ status: statusFilter });
-    } catch {
-      alert('Có lỗi xảy ra khi mở lại tin tuyển dụng');
+      toast.success('Đã mở lại tin tuyển dụng');
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -323,9 +327,7 @@ export const ManageJobsPage = () => {
                       variant={currentPage === page ? 'default' : 'outline'}
                       onClick={() => setCurrentPage(page)}
                       className={
-                        currentPage === page
-                          ? 'bg-blue-500 hover:bg-blue-600'
-                          : 'hover:bg-gray-100'
+                        currentPage === page ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100'
                       }
                     >
                       {page}

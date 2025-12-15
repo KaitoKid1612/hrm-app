@@ -1,13 +1,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export', // Export static HTML
+  // Remove 'output: export' - use standalone for Web Service
+  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
     dirs: ['src'],
   },
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true,
   },
 };
 

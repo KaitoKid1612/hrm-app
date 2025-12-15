@@ -87,6 +87,6 @@ export interface JobFilters {
 export interface JobSearchParams extends JobFilters {
   page?: number;
   limit?: number;
-  sort?: 'latest' | 'salary' | 'hot' | 'createdAt';
+  sortBy?: 'createdAt' | 'salary' | 'deadline' | 'views' | 'applications';
   sortOrder?: 'asc' | 'desc';
 }

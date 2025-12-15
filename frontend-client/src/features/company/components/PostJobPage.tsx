@@ -244,9 +244,7 @@ export const PostJobPage = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-gray-900">{company.name}</h3>
-                  {company.isVerified && (
-                    <CheckCircle className="w-4 h-4 text-blue-600" />
-                  )}
+                  {company.isVerified && <CheckCircle className="w-4 h-4 text-blue-600" />}
                 </div>
                 <p className="text-sm text-gray-600">
                   Tin tuyển dụng sẽ được đăng dưới tên công ty này

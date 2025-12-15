@@ -14,7 +14,7 @@ export class JobsService {
 
     if (!company) {
       throw new ForbiddenException(
-        'Bạn cần tạo hồ sơ công ty trước khi đăng tin tuyển dụng. Vui lòng truy cập trang Quản lý công ty để tạo hồ sơ.'
+        'Bạn cần tạo hồ sơ công ty trước khi đăng tin tuyển dụng. Vui lòng truy cập trang Quản lý công ty để tạo hồ sơ.',
       );
     }
 
@@ -49,7 +49,7 @@ export class JobsService {
     const requirements = Array.isArray(jobData.requirements)
       ? jobData.requirements.join('\n')
       : jobData.requirements;
-    
+
     const benefits = jobData.benefits
       ? Array.isArray(jobData.benefits)
         ? jobData.benefits.join('\n')

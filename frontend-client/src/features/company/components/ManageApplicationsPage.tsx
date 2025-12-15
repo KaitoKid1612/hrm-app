@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApplicationManagement } from '../hooks/useApplicationManagement';
 import { applicationManagementService } from '../services/applicationManagementService';
+import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import {
   FileText,
@@ -107,8 +108,9 @@ export const ManageApplicationsPage = () => {
         newStatus as ApplicationDetail['status'],
       );
       loadApplications({ status: statusFilter || undefined });
-    } catch {
-      alert('Có lỗi xảy ra khi cập nhật trạng thái');
+      toast.success('Đã cập nhật trạng thái đơn ứng tuyển');
+    } catch (error) {
+      toast.error(error);
     }
   };
 

@@ -3,6 +3,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { savedJobsService } from '../services/jobActionsService';
+import { toast } from '@/lib/toast';
 import { Bookmark, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,9 +48,10 @@ export const SavedJobsPage = () => {
     try {
       await savedJobsService.unsaveJob(id);
       setSavedJobs((prev) => prev.filter((job) => job.id !== id));
+      toast.success('Đã bỏ lưu tin tuyển dụng');
     } catch (error) {
       console.error('Error unsaving job:', error);
-      alert('Có lỗi xảy ra. Vui lòng thử lại');
+      toast.error(error);
     }
   };
 

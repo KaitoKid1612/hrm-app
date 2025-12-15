@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useCandidateSearch, useSavedCandidates } from '../hooks/useCandidateSearch';
 import { CandidateDetailModal } from './CandidateDetailModal';
 import { CandidateProfile } from '../services/candidateSearchService';
+import { toast } from '@/lib/toast';
 import {
   Search,
   MapPin,
@@ -83,11 +84,13 @@ export const SearchCandidatesPage = () => {
     try {
       if (isSaved(candidateId)) {
         await unsaveCandidate(candidateId);
+        toast.success('Đã bỏ lưu ứng viên');
       } else {
         await saveCandidate(candidateId);
+        toast.success('Đã lưu ứng viên');
       }
-    } catch {
-      alert('Có lỗi xảy ra');
+    } catch (error) {
+      toast.error(error);
     }
   };
 
