@@ -307,7 +307,7 @@ export const EmployerDashboardPage = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Tìm ứng viên</h3>
-                <p className="text-sm text-gray-100">Tìm kiếm ứng viên phù hợp</p>
+                <p className="text-sm text-gray-600">Tìm kiếm ứng viên phù hợp</p>
               </div>
             </div>
           </CardContent>

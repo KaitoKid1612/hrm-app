@@ -33,25 +33,25 @@ export const Footer = () => {
               <div className="flex items-center gap-3 pt-2">
                 <a
                   href="#"
-                  className="w-9 h-9 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"
+                  className="w-9 h-9 bg-white/10 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-all backdrop-blur-sm border border-white/20"
                 >
                   <Facebook className="w-4 h-4" />
                 </a>
                 <a
                   href="#"
-                  className="w-9 h-9 bg-gray-800 hover:bg-blue-400 rounded-lg flex items-center justify-center transition-colors"
+                  className="w-9 h-9 bg-white/10 hover:bg-blue-400 rounded-lg flex items-center justify-center transition-all backdrop-blur-sm border border-white/20"
                 >
                   <Twitter className="w-4 h-4" />
                 </a>
                 <a
                   href="#"
-                  className="w-9 h-9 bg-gray-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition-colors"
+                  className="w-9 h-9 bg-white/10 hover:bg-blue-700 rounded-lg flex items-center justify-center transition-all backdrop-blur-sm border border-white/20"
                 >
                   <Linkedin className="w-4 h-4" />
                 </a>
                 <a
                   href="#"
-                  className="w-9 h-9 bg-gray-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-colors"
+                  className="w-9 h-9 bg-white/10 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-all backdrop-blur-sm border border-white/20"
                 >
                   <Instagram className="w-4 h-4" />
                 </a>

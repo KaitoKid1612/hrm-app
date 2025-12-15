@@ -129,7 +129,7 @@ export const JobListPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-2 text-gray-100 hover:text-gray-900 font-medium"
+                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                   {showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc'}

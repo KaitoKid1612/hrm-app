@@ -113,7 +113,7 @@ export const SearchCandidatesPage = () => {
             <User className="w-6 h-6 text-blue-600" />
             Tìm kiếm ứng viên
           </h1>
-          <p className="text-gray-100 mt-1">Tìm kiếm và kết nối với ứng viên phù hợp</p>
+          <p className="text-gray-600 mt-1">Tìm kiếm và kết nối với ứng viên phù hợp</p>
         </div>
       </div>
 
@@ -153,7 +153,7 @@ export const SearchCandidatesPage = () => {
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 text-gray-100 hover:text-gray-900 font-medium"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium"
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 {showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc'}

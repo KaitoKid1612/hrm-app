@@ -265,7 +265,7 @@ export const JobDetailPage = () => {
                     >
                       <Share2 className="w-5 h-5" />
                       {shareMessage && (
-                        <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded whitespace-nowrap">
+                        <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded whitespace-nowrap shadow-lg">
                           {shareMessage}
                         </span>
                       )}
