@@ -28,7 +28,7 @@ const mockJobs: Job[] = [
     company: {
       id: '1',
       name: 'FPT Software',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'Hà Nội',
     },
   },
@@ -46,7 +46,7 @@ const mockJobs: Job[] = [
     company: {
       id: '2',
       name: 'VNG Corporation',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'TP.HCM',
     },
   },
@@ -64,7 +64,7 @@ const mockJobs: Job[] = [
     company: {
       id: '3',
       name: 'Teko Vietnam',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'Đà Nẵng',
     },
   },
@@ -82,7 +82,7 @@ const mockJobs: Job[] = [
     company: {
       id: '4',
       name: 'VinTech',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'Hà Nội',
     },
   },
@@ -100,7 +100,7 @@ const mockJobs: Job[] = [
     company: {
       id: '5',
       name: 'Shopee Vietnam',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'TP.HCM',
     },
   },
@@ -118,7 +118,7 @@ const mockJobs: Job[] = [
     company: {
       id: '6',
       name: 'Tech Startup Hub',
-      logo: 'https://via.placeholder.com/64',
+      logo: '',
       address: 'Hà Nội',
     },
   },

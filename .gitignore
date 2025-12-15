@@ -87,6 +87,9 @@ firebase-debug.log
 # --- Keep prisma migrations (do NOT ignore) ---
 # (Chỉ nhắc: đừng thêm prisma/migrations/* vào ignore)
 
+# --- Backend uploads folder ---
+backend/uploads/
+
 # --- Tailwind / Next generated (already covered) ---
 # .next/
 # .vite/
