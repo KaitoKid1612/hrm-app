@@ -13,14 +13,14 @@ import {
 
 export const Footer = () => {
   return (
-    <footer className="bg-gradient-to-b from-gray-900 to-black text-gray-300">
+    <footer className="bg-linear-to-b from-gray-900 to-black text-gray-300">
       <div className="container mx-auto">
         <div className="px-4 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {/* About */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-white text-xl font-bold mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                   <Briefcase className="w-6 h-6 text-white" />
                 </div>
                 <span>Vũng Áng Jobs</span>
@@ -154,11 +154,11 @@ export const Footer = () => {
                 </li>
                 <li className="flex items-start gap-3 hover:text-blue-400 transition-colors">
                   <Phone className="w-5 h-5 shrink-0 mt-0.5 text-green-500" />
-                  <span>1900 xxxx</span>
+                  <span>+84 343699738</span>
                 </li>
                 <li className="flex items-start gap-3 hover:text-blue-400 transition-colors">
                   <MapPin className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
-                  <span>Tòa nhà FPT, Hà Nội, Việt Nam</span>
+                  <span>Phường Vũng Áng, Tỉnh Hà Tĩnh</span>
                 </li>
               </ul>
             </div>

@@ -2,62 +2,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Building2, MapPin, Briefcase } from 'lucide-react';
 import { useTopCompanies } from '../hooks/useCompanies';
 
-// Fallback companies
-const fallbackCompanies = [
-  {
-    id: '1',
-    name: 'FPT Software',
-    logo: '',
-    city: 'Hà Nội',
-    jobCount: 156,
-    description: 'Công ty phần mềm hàng đầu Việt Nam',
-  },
-  {
-    id: '2',
-    name: 'VNG Corporation',
-    logo: '',
-    city: 'TP. HCM',
-    jobCount: 89,
-    description: 'Tập đoàn công nghệ số hàng đầu',
-  },
-  {
-    id: '3',
-    name: 'Shopee Vietnam',
-    logo: '',
-    city: 'TP. HCM',
-    jobCount: 124,
-    description: 'Nền tảng thương mại điện tử',
-  },
-  {
-    id: '4',
-    name: 'Tiki Corporation',
-    logo: '',
-    city: 'TP. HCM',
-    jobCount: 67,
-    description: 'Công ty thương mại điện tử Việt Nam',
-  },
-  {
-    id: '5',
-    name: 'MOMO',
-    logo: '',
-    city: 'Hà Nội',
-    jobCount: 92,
-    description: 'Ví điện tử số 1 Việt Nam',
-  },
-  {
-    id: '6',
-    name: 'Viettel Digital',
-    logo: '',
-    city: 'Hà Nội',
-    jobCount: 178,
-    description: 'Tập đoàn viễn thông và công nghệ',
-  },
-];
-
 export const TopCompaniesSection = () => {
-  const { companies: apiCompanies, isLoading } = useTopCompanies(6);
-
-  const companies = apiCompanies.length > 0 ? apiCompanies : fallbackCompanies;
+  const { companies, isLoading } = useTopCompanies(6);
 
   return (
     <section className="py-12 sm:py-16 bg-white">

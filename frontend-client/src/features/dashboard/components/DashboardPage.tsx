@@ -13,40 +13,26 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
+interface Application {
+  id: string;
+  jobTitle: string;
+  company: string;
+  appliedAt: string;
+  status: string;
+}
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   // TODO: Replace with real data from API
   const stats = {
-    totalApplications: 12,
-    savedJobs: 8,
-    acceptedApplications: 3,
-    pendingApplications: 5,
+    totalApplications: 0,
+    savedJobs: 0,
+    acceptedApplications: 0,
+    pendingApplications: 0,
   };
 
-  const recentApplications = [
-    {
-      id: '1',
-      jobTitle: 'Senior Frontend Developer',
-      company: 'FPT Software',
-      status: 'REVIEWING',
-      appliedAt: '2025-12-10',
-    },
-    {
-      id: '2',
-      jobTitle: 'Backend Developer',
-      company: 'VNG Corporation',
-      status: 'PENDING',
-      appliedAt: '2025-12-09',
-    },
-    {
-      id: '3',
-      jobTitle: 'Full-stack Developer',
-      company: 'Teko Vietnam',
-      status: 'INTERVIEWED',
-      appliedAt: '2025-12-08',
-    },
-  ];
+  const recentApplications: Application[] = [];
 
   const statusColors: Record<string, string> = {
     PENDING: 'text-yellow-600 bg-yellow-50',
@@ -91,7 +77,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+      <div className="bg-linear-to-br from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <h3 className="text-xl font-semibold mb-2">Tìm việc làm phù hợp</h3>

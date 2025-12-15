@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ApplicationStatus, InterviewStatus } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -23,6 +23,26 @@ function loadJsonData(filename: string): any[] {
 
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // Clean up existing data
+  console.log('🧹 Cleaning up existing data...');
+  await prisma.notification.deleteMany();
+  await prisma.message.deleteMany();
+  await prisma.conversation.deleteMany();
+  await prisma.review.deleteMany();
+  await prisma.interview.deleteMany();
+  await prisma.application.deleteMany();
+  await prisma.savedJob.deleteMany();
+  await prisma.jobInvite.deleteMany();
+  await prisma.resumeSkill.deleteMany();
+  await prisma.resume.deleteMany();
+  await prisma.jobSkill.deleteMany();
+  await prisma.job.deleteMany();
+  await prisma.company.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.skill.deleteMany();
+  await prisma.category.deleteMany();
+  console.log('✅ Cleaned up existing data');
 
   // Load data from JSON files
   const categoriesData = loadJsonData('categories.json');
@@ -218,16 +238,281 @@ async function main() {
 
   console.log('✅ Created candidate and resume');
 
+  // Create more candidates
+  console.log('👥 Creating more candidates...');
+  const candidatesData = [
+    {
+      email: 'nguyenvana@example.com',
+      name: 'Nguyễn Văn A',
+      phone: '0987654321',
+      city: 'Hà Nội',
+      bio: 'Lập trình viên với 3 năm kinh nghiệm',
+      currentJobTitle: 'Full Stack Developer',
+      yearsOfExperience: 3,
+    },
+    {
+      email: 'tranthib@example.com',
+      name: 'Trần Thị B',
+      phone: '0976543210',
+      city: 'Đà Nẵng',
+      bio: 'Chuyên viên marketing với kinh nghiệm trong digital marketing',
+      currentJobTitle: 'Marketing Specialist',
+      yearsOfExperience: 2,
+    },
+    {
+      email: 'lequangc@example.com',
+      name: 'Lê Quang C',
+      phone: '0965432109',
+      city: 'Hồ Chí Minh',
+      bio: 'Designer với đam mê sáng tạo',
+      currentJobTitle: 'UI/UX Designer',
+      yearsOfExperience: 4,
+    },
+    {
+      email: 'phamthid@example.com',
+      name: 'Phạm Thị D',
+      phone: '0954321098',
+      city: 'Hồ Chí Minh',
+      bio: 'Nhân viên kinh doanh năng động',
+      currentJobTitle: 'Sales Executive',
+      yearsOfExperience: 1,
+    },
+    {
+      email: 'hoangvane@example.com',
+      name: 'Hoàng Văn E',
+      phone: '0943210987',
+      city: 'Hà Nội',
+      bio: 'Data Analyst với kinh nghiệm phân tích dữ liệu',
+      currentJobTitle: 'Data Analyst',
+      yearsOfExperience: 2,
+    },
+  ];
+
+  const candidates = [candidate];
+  for (const candData of candidatesData) {
+    const cand = await prisma.user.create({
+      data: {
+        email: candData.email,
+        password: await hashPassword('Candidate@123'),
+        name: candData.name,
+        role: 'CANDIDATE',
+        phone: candData.phone,
+        city: candData.city,
+        bio: candData.bio,
+        currentJobTitle: candData.currentJobTitle,
+        yearsOfExperience: candData.yearsOfExperience,
+      },
+    });
+    candidates.push(cand);
+  }
+  console.log(`✅ Created ${candidates.length} candidates`);
+
+  // Get all jobs for applications
+  const allJobs = await prisma.job.findMany({
+    take: 20,
+  });
+
+  // Create applications
+  console.log('📝 Creating applications...');
+  const applicationStatuses: ApplicationStatus[] = [
+    'PENDING',
+    'REVIEWING',
+    'INTERVIEWED',
+    'ACCEPTED',
+    'REJECTED',
+  ];
+  let applicationCount = 0;
+
+  for (const cand of candidates) {
+    const numApplications = Math.floor(Math.random() * 5) + 1; // 1-5 applications per candidate
+    const candidateJobs = allJobs.sort(() => 0.5 - Math.random()).slice(0, numApplications);
+
+    for (const job of candidateJobs) {
+      const status = applicationStatuses[Math.floor(Math.random() * applicationStatuses.length)];
+      await prisma.application.create({
+        data: {
+          userId: cand.id,
+          jobId: job.id,
+          resumeId: null,
+          coverLetter: `Tôi rất quan tâm đến vị trí ${job.title} tại công ty. Với kinh nghiệm của mình, tôi tin rằng tôi có thể đóng góp tích cực cho đội ngũ.`,
+          status: status,
+        },
+      });
+      applicationCount++;
+    }
+  }
+  console.log(`✅ Created ${applicationCount} applications`);
+
+  // Create saved jobs
+  console.log('💾 Creating saved jobs...');
+  let savedJobCount = 0;
+  for (const cand of candidates.slice(0, 3)) {
+    const numSaved = Math.floor(Math.random() * 8) + 2; // 2-10 saved jobs
+    const savedJobsList = allJobs.sort(() => 0.5 - Math.random()).slice(0, numSaved);
+
+    for (const job of savedJobsList) {
+      await prisma.savedJob.create({
+        data: {
+          userId: cand.id,
+          jobId: job.id,
+        },
+      });
+      savedJobCount++;
+    }
+  }
+  console.log(`✅ Created ${savedJobCount} saved jobs`);
+
+  // Create interviews
+  console.log('🗓️  Creating interviews...');
+  const applications = await prisma.application.findMany({
+    where: {
+      status: {
+        in: ['REVIEWING', 'INTERVIEWED', 'ACCEPTED'],
+      },
+    },
+    include: {
+      job: {
+        include: {
+          company: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
+    },
+    take: 15,
+  });
+
+  let interviewCount = 0;
+  for (const app of applications) {
+    const scheduledAt = new Date(Date.now() + Math.random() * 14 * 24 * 60 * 60 * 1000); // Within 14 days
+    const interviewStatuses: InterviewStatus[] = ['SCHEDULED', 'CONFIRMED', 'COMPLETED'];
+    const status = interviewStatuses[Math.floor(Math.random() * interviewStatuses.length)];
+
+    // Get employer user ID from the job's company
+    const createdBy = app.job?.company?.userId || _admin.id;
+
+    await prisma.interview.create({
+      data: {
+        applicationId: app.id,
+        scheduledAt: scheduledAt,
+        duration: 60,
+        location: 'Online - Google Meet',
+        meetingLink: 'https://meet.google.com/abc-defg-hij',
+        notes: 'Phỏng vấn với team leader',
+        status: status,
+        createdBy: createdBy,
+      },
+    });
+    interviewCount++;
+  }
+  console.log(`✅ Created ${interviewCount} interviews`);
+
+  // Create notifications
+  console.log('🔔 Creating notifications...');
+  let notificationCount = 0;
+  for (const cand of candidates.slice(0, 4)) {
+    const notificationTypes = [
+      {
+        title: 'Ứng tuyển thành công',
+        message: 'Hồ sơ của bạn đã được gửi đến nhà tuyển dụng',
+        type: 'application',
+      },
+      {
+        title: 'Lịch phỏng vấn mới',
+        message: 'Bạn có một lịch phỏng vấn mới được sắp xếp',
+        type: 'interview',
+      },
+      {
+        title: 'Công việc phù hợp',
+        message: 'Có công việc mới phù hợp với hồ sơ của bạn',
+        type: 'job_recommendation',
+      },
+    ];
+
+    for (const notif of notificationTypes) {
+      await prisma.notification.create({
+        data: {
+          userId: cand.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          isRead: Math.random() > 0.5,
+        },
+      });
+      notificationCount++;
+    }
+  }
+  console.log(`✅ Created ${notificationCount} notifications`);
+
+  // Create reviews
+  console.log('⭐ Creating reviews...');
+  let reviewCount = 0;
+  const reviewTemplates = [
+    {
+      title: 'Môi trường làm việc tốt',
+      content: 'Công ty có môi trường làm việc chuyên nghiệp, đồng nghiệp thân thiện.',
+      pros: 'Lương thưởng ổn định, có chế độ đãi ngộ tốt',
+      cons: 'Áp lực công việc cao vào cuối tháng',
+    },
+    {
+      title: 'Phù hợp cho người mới',
+      content: 'Công ty tốt cho người mới bắt đầu sự nghiệp, có nhiều cơ hội học hỏi.',
+      pros: 'Được đào tạo bài bản, mentor nhiệt tình',
+      cons: 'Lương khởi điểm chưa cao',
+    },
+    {
+      title: 'Văn hóa công ty tuyệt vời',
+      content: 'Văn hóa công ty rất tốt, nhiều hoạt động team building.',
+      pros: 'Có nhiều phúc lợi, văn phòng hiện đại',
+      cons: 'Yêu cầu làm việc khá cao',
+    },
+  ];
+
+  for (const company of companyInstances.slice(0, 10)) {
+    const numReviews = Math.floor(Math.random() * 3) + 1; // 1-3 reviews per company
+    const reviewCandidates = candidates.sort(() => 0.5 - Math.random()).slice(0, numReviews);
+
+    for (const cand of reviewCandidates) {
+      const rating = Math.floor(Math.random() * 3) + 3; // 3-5 stars
+      const template = reviewTemplates[Math.floor(Math.random() * reviewTemplates.length)];
+
+      await prisma.review.create({
+        data: {
+          userId: cand.id,
+          companyId: company.id,
+          rating: rating,
+          title: template.title,
+          content: template.content,
+          pros: template.pros,
+          cons: template.cons,
+        },
+      });
+      reviewCount++;
+    }
+  }
+  console.log(`✅ Created ${reviewCount} reviews`);
+
   console.log('\n🎉 Seeding completed successfully!');
   console.log('\n📝 Test accounts:');
   console.log('Admin: admin@hrm.com / Admin@123');
   console.log('Employers: [company-slug]@company.com / Employer@123');
   console.log('Candidate: candidate@example.com / Candidate@123');
+  console.log(
+    'Other candidates: nguyenvana@example.com, tranthib@example.com, etc. / Candidate@123',
+  );
   console.log('\n📊 Summary:');
   console.log(`- ${categories.length} categories`);
   console.log(`- ${skills.length} skills`);
   console.log(`- ${companyInstances.length} companies`);
   console.log(`- ${jobCount} jobs`);
+  console.log(`- ${candidates.length} candidates`);
+  console.log(`- ${applicationCount} applications`);
+  console.log(`- ${savedJobCount} saved jobs`);
+  console.log(`- ${interviewCount} interviews`);
+  console.log(`- ${notificationCount} notifications`);
+  console.log(`- ${reviewCount} reviews`);
 }
 
 main()

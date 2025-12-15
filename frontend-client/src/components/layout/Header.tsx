@@ -27,7 +27,7 @@ export const Header = () => {
             to={ROUTES.HOME}
             className="flex items-center gap-2 text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <span className="hidden sm:block">Vũng Áng Jobs</span>
@@ -108,7 +108,7 @@ export const Header = () => {
                   </Button>
                 </Link>
                 <Link to={ROUTES.REGISTER}>
-                  <Button className="bg-blue-600 hover:bg-blue-700 font-medium shadow-md">
+                  <Button className="bg-blue-600 hover:bg-blue-700 font-medium shadow-md text-white">
                     Đăng ký ngay
                   </Button>
                 </Link>
@@ -203,7 +203,7 @@ export const Header = () => {
                   </Button>
                 </Link>
                 <Link to={ROUTES.REGISTER} onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 font-medium">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 font-medium text-white">
                     Đăng ký ngay
                   </Button>
                 </Link>

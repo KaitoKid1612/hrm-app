@@ -53,43 +53,18 @@ export const EmployerDashboardPage = () => {
   const loadDashboardData = async () => {
     try {
       setIsLoading(true);
-      // TODO: Fetch from API
-      // Mock data for now
+      // TODO: Implement API call to get employer dashboard stats
+      // For now, set empty/default state
       setStats({
-        totalJobs: 12,
-        activeJobs: 8,
-        totalApplications: 145,
-        newApplications: 23,
-        totalCandidates: 89,
-        interviewScheduled: 5,
+        totalJobs: 0,
+        activeJobs: 0,
+        totalApplications: 0,
+        newApplications: 0,
+        totalCandidates: 0,
+        interviewScheduled: 0,
       });
 
-      setRecentApplications([
-        {
-          id: '1',
-          candidateName: 'Nguyễn Văn A',
-          candidateEmail: 'nguyenvana@email.com',
-          jobTitle: 'Senior Frontend Developer',
-          status: 'PENDING',
-          appliedAt: '2025-12-12T10:30:00',
-        },
-        {
-          id: '2',
-          candidateName: 'Trần Thị B',
-          candidateEmail: 'tranthib@email.com',
-          jobTitle: 'Backend Developer',
-          status: 'REVIEWING',
-          appliedAt: '2025-12-12T09:15:00',
-        },
-        {
-          id: '3',
-          candidateName: 'Lê Văn C',
-          candidateEmail: 'levanc@email.com',
-          jobTitle: 'Full Stack Developer',
-          status: 'SHORTLISTED',
-          appliedAt: '2025-12-11T16:45:00',
-        },
-      ]);
+      setRecentApplications([]);
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {

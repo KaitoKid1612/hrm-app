@@ -13,7 +13,13 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "seed": "tsx src/scripts/seed.ts"
+    "seed": "tsx src/scripts/seed.ts",
+    "seed:safe": "tsx src/scripts/seed-safe.ts",
+    "seed:force": "tsx src/scripts/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "db:seed": "npm run db:reset && npm run seed",
+    "deploy:setup": "npm install -g pnpm && pnpm install && pnpm run prisma:generate && pnpm run prisma:migrate && pnpm run seed:safe && pnpm run build",
+    "deploy": "npm run prisma:generate && npm run prisma:migrate && npm run build"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

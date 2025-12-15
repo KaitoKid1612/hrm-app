@@ -43,7 +43,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 flex">
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="w-full max-w-md space-y-8">
@@ -57,7 +57,7 @@ const Login: React.FC = () => {
               Về trang chủ
             </Link>
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
                 <Briefcase className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
           {/* Error Alert */}
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-in slide-in-from-top-5">
-              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
               <span className="text-sm text-red-800">{error}</span>
             </div>
           )}
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+              className="w-full h-12 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               {isLoading ? (
                 <>
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
               Chưa có tài khoản?{' '}
               <Link
                 to={ROUTES.REGISTER}
-                className="text-blue-600 hover:text-indigo-600 font-semibold transition-colors"
+                className="hover:text-indigo-600 font-semibold transition-colors text-white"
               >
                 Đăng ký ngay
               </Link>
@@ -143,7 +143,7 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Side - Image/Illustration */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
+      <div className="hidden lg:flex lg:flex-1 bg-linear-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
         <div className="max-w-md text-white space-y-6">
           <h2 className="text-4xl font-bold">Vũng Áng Jobs</h2>
           <p className="text-lg text-blue-100">
@@ -152,7 +152,7 @@ const Login: React.FC = () => {
           </p>
           <div className="space-y-4 pt-8">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                 <Briefcase className="w-6 h-6" />
               </div>
               <div>

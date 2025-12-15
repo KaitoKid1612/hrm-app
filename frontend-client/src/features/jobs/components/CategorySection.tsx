@@ -38,69 +38,20 @@ const categoryIcons: Record<string, { icon: React.ReactNode; color: string }> = 
   },
 };
 
-// Fallback categories
-const fallbackCategories: CategoryDisplay[] = [
-  {
-    id: '1',
-    name: 'Frontend',
-    icon: <Code className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 1234,
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    id: '2',
-    name: 'Backend',
-    icon: <Database className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 987,
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    id: '3',
-    name: 'DevOps',
-    icon: <Cloud className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 456,
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
-    id: '4',
-    name: 'Mobile',
-    icon: <Smartphone className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 789,
-    color: 'from-orange-500 to-red-500',
-  },
-  {
-    id: '5',
-    name: 'UI/UX Design',
-    icon: <PenTool className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 567,
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    id: '6',
-    name: 'Data Science',
-    icon: <BarChart className="w-5 h-5 sm:w-6 sm:h-6" />,
-    count: 345,
-    color: 'from-indigo-500 to-blue-500',
-  },
-];
-
 export const CategorySection = () => {
   const { categories: apiCategories, isLoading } = useCategories();
 
   // Map API categories to display format
-  const categories: CategoryDisplay[] =
-    apiCategories.length > 0
-      ? apiCategories.slice(0, 6).map((cat) => {
-          const iconData = categoryIcons[cat.slug] || categoryIcons.frontend;
-          return {
-            id: cat.id,
-            name: cat.name,
-            icon: iconData.icon,
-            count: cat.jobCount || 0,
-            color: iconData.color,
-          };
-        })
-      : fallbackCategories;
+  const categories: CategoryDisplay[] = apiCategories.slice(0, 6).map((cat) => {
+    const iconData = categoryIcons[cat.slug] || categoryIcons.frontend;
+    return {
+      id: cat.id,
+      name: cat.name,
+      icon: iconData.icon,
+      count: cat.jobCount || 0,
+      color: iconData.color,
+    };
+  });
 
   return (
     <section className="py-12 sm:py-16 bg-gray-50">
