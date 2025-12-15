@@ -1,0 +1,207 @@
+[
+  {
+    "name": "JavaScript",
+    "slug": "javascript",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "TypeScript",
+    "slug": "typescript",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "React",
+    "slug": "react",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "Node.js",
+    "slug": "nodejs",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "Python",
+    "slug": "python",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "Java",
+    "slug": "java",
+    "category": "Công nghệ thông tin"
+  },
+  {
+    "name": "Phục vụ bàn",
+    "slug": "phuc-vu-ban",
+    "category": "Nhà hàng - Khách sạn"
+  },
+  {
+    "name": "Nấu ăn",
+    "slug": "nau-an",
+    "category": "Nhà hàng - Khách sạn"
+  },
+  {
+    "name": "Pha chế",
+    "slug": "pha-che",
+    "category": "Pha chế - Coffee"
+  },
+  {
+    "name": "Barista",
+    "slug": "barista",
+    "category": "Pha chế - Coffee"
+  },
+  {
+    "name": "Thu ngân",
+    "slug": "thu-ngan",
+    "category": "Bán lẻ - Siêu thị"
+  },
+  {
+    "name": "Tư vấn bán hàng",
+    "slug": "tu-van-ban-hang",
+    "category": "Bán hàng"
+  },
+  {
+    "name": "Lái xe",
+    "slug": "lai-xe",
+    "category": "Vận chuyển - Giao hàng"
+  },
+  {
+    "name": "Giao hàng",
+    "slug": "giao-hang",
+    "category": "Vận chuyển - Giao hàng"
+  },
+  {
+    "name": "Thợ xây",
+    "slug": "tho-xay",
+    "category": "Xây dựng"
+  },
+  {
+    "name": "Thợ điện",
+    "slug": "tho-dien",
+    "category": "Xây dựng"
+  },
+  {
+    "name": "Thợ sơn",
+    "slug": "tho-son",
+    "category": "Xây dựng"
+  },
+  {
+    "name": "Vệ sinh công nghiệp",
+    "slug": "ve-sinh-cong-nghiep",
+    "category": "Dịch vụ vệ sinh"
+  },
+  {
+    "name": "Làm vườn",
+    "slug": "lam-vuon",
+    "category": "Dịch vụ vệ sinh"
+  },
+  {
+    "name": "Giao tiếp tốt",
+    "slug": "giao-tiep-tot",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Chịu khó",
+    "slug": "chiu-kho",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Nhanh nhẹn",
+    "slug": "nhanh-nhen",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Làm việc nhóm",
+    "slug": "lam-viec-nhom",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Nhiệt tình",
+    "slug": "nhiet-tinh",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Trung thực",
+    "slug": "trung-thuc",
+    "category": "Kỹ năng mềm"
+  },
+  {
+    "name": "Cắt tóc",
+    "slug": "cat-toc",
+    "category": "Làm đẹp - Spa"
+  },
+  {
+    "name": "Nail",
+    "slug": "nail",
+    "category": "Làm đẹp - Spa"
+  },
+  {
+    "name": "Massage",
+    "slug": "massage",
+    "category": "Làm đẹp - Spa"
+  },
+  {
+    "name": "Marketing Online",
+    "slug": "marketing-online",
+    "category": "Marketing - Truyền thông"
+  },
+  {
+    "name": "Facebook Ads",
+    "slug": "facebook-ads",
+    "category": "Marketing - Truyền thông"
+  },
+  {
+    "name": "Kế toán",
+    "slug": "ke-toan",
+    "category": "Tài chính - Ngân hàng"
+  },
+  {
+    "name": "Excel",
+    "slug": "excel",
+    "category": "Văn phòng"
+  },
+  {
+    "name": "Tin học văn phòng",
+    "slug": "tin-hoc-van-phong",
+    "category": "Văn phòng"
+  },
+  {
+    "name": "Bảo vệ",
+    "slug": "bao-ve",
+    "category": "Bảo vệ - An ninh"
+  },
+  {
+    "name": "Vận hành máy",
+    "slug": "van-hanh-may",
+    "category": "Sản xuất - Vận hành"
+  },
+  {
+    "name": "QC kiểm tra",
+    "slug": "qc-kiem-tra",
+    "category": "Sản xuất - Vận hành"
+  },
+  {
+    "name": "Quản lý kho",
+    "slug": "quan-ly-kho",
+    "category": "Kho vận"
+  },
+  {
+    "name": "Xuất nhập hàng",
+    "slug": "xuat-nhap-hang",
+    "category": "Kho vận"
+  },
+  {
+    "name": "Tiếng Anh giao tiếp",
+    "slug": "tieng-anh-giao-tiep",
+    "category": "Ngoại ngữ"
+  },
+  {
+    "name": "Tiếng Trung",
+    "slug": "tieng-trung",
+    "category": "Ngoại ngữ"
+  },
+  {
+    "name": "Tiếng Nhật",
+    "slug": "tieng-nhat",
+    "category": "Ngoại ngữ"
+  }
+]

@@ -1,78 +1,73 @@
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const prisma = new PrismaClient();
+
+// ES modules equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }
 
+// Load JSON data
+function loadJsonData(filename: string): any[] {
+  const filePath = join(__dirname, 'data', filename);
+  const rawData = readFileSync(filePath, 'utf-8');
+  return JSON.parse(rawData);
+}
+
 async function main() {
   console.log('🌱 Seeding database...');
 
-  // Create categories
-  const categories = await Promise.all([
-    prisma.category.create({
-      data: {
-        name: 'Information Technology',
-        slug: 'information-technology',
-        description: 'Jobs related to IT, software development, and technology',
-        icon: '💻',
-      },
-    }),
-    prisma.category.create({
-      data: {
-        name: 'Marketing',
-        slug: 'marketing',
-        description: 'Marketing, advertising, and PR jobs',
-        icon: '📱',
-      },
-    }),
-    prisma.category.create({
-      data: {
-        name: 'Finance & Banking',
-        slug: 'finance-banking',
-        description: 'Finance, banking, and accounting jobs',
-        icon: '💰',
-      },
-    }),
-    prisma.category.create({
-      data: {
-        name: 'Human Resources',
-        slug: 'human-resources',
-        description: 'HR and recruitment jobs',
-        icon: '👥',
-      },
-    }),
-    prisma.category.create({
-      data: {
-        name: 'Sales',
-        slug: 'sales',
-        description: 'Sales and business development jobs',
-        icon: '💼',
-      },
-    }),
-  ]);
+  // Load data from JSON files
+  const categoriesData = loadJsonData('categories.json');
+  const skillsData = loadJsonData('skills.json');
+  const companiesData = loadJsonData('companies.json');
+  const jobsData = loadJsonData('jobs.json');
 
-  console.log('✅ Created categories');
+  // Create categories
+  console.log('📂 Creating categories...');
+  const categories = [];
+  for (const cat of categoriesData) {
+    const category = await prisma.category.create({
+      data: {
+        name: cat.name,
+        slug: cat.slug,
+        description: cat.description,
+        icon: cat.icon,
+      },
+    });
+    categories.push(category);
+  }
+  console.log(`✅ Created ${categories.length} categories`);
+
+  // Create a map for easy lookup
+  const categoryMap = new Map(categories.map((c) => [c.slug, c]));
 
   // Create skills
-  const skills = await Promise.all([
-    prisma.skill.create({ data: { name: 'JavaScript', slug: 'javascript' } }),
-    prisma.skill.create({ data: { name: 'TypeScript', slug: 'typescript' } }),
-    prisma.skill.create({ data: { name: 'React', slug: 'react' } }),
-    prisma.skill.create({ data: { name: 'Node.js', slug: 'nodejs' } }),
-    prisma.skill.create({ data: { name: 'Python', slug: 'python' } }),
-    prisma.skill.create({ data: { name: 'Java', slug: 'java' } }),
-    prisma.skill.create({ data: { name: 'SQL', slug: 'sql' } }),
-    prisma.skill.create({ data: { name: 'MongoDB', slug: 'mongodb' } }),
-    prisma.skill.create({ data: { name: 'Docker', slug: 'docker' } }),
-    prisma.skill.create({ data: { name: 'AWS', slug: 'aws' } }),
-  ]);
+  console.log('🎯 Creating skills...');
+  const skills = [];
+  for (const skill of skillsData) {
+    const createdSkill = await prisma.skill.create({
+      data: {
+        name: skill.name,
+        slug: skill.slug,
+      },
+    });
+    skills.push(createdSkill);
+  }
+  console.log(`✅ Created ${skills.length} skills`);
 
-  console.log('✅ Created skills');
+  // Create a map for easy lookup
+  const skillMap = new Map(skills.map((s) => [s.name, s]));
 
   // Create admin user
+  console.log('👤 Creating admin user...');
   const _admin = await prisma.user.create({
     data: {
       email: 'admin@hrm.com',
@@ -82,150 +77,157 @@ async function main() {
       phone: '0123456789',
     },
   });
-
   console.log('✅ Created admin user');
 
-  // Create employer user
-  const employer = await prisma.user.create({
-    data: {
-      email: 'employer@company.com',
-      password: await hashPassword('Employer@123'),
-      name: 'John Employer',
-      role: 'EMPLOYER',
-      phone: '0987654321',
-    },
-  });
+  // Create employers and companies
+  console.log('🏢 Creating companies and employers...');
+  const companyInstances = [];
+  for (const comp of companiesData) {
+    // Create employer user for this company
+    const employer = await prisma.user.create({
+      data: {
+        email: `${comp.slug || comp.name.toLowerCase().replace(/\s+/g, '')}@company.com`,
+        password: await hashPassword('Employer@123'),
+        name: `HR ${comp.name}`,
+        role: 'EMPLOYER',
+        phone: comp.phone,
+      },
+    });
 
-  // Create company for employer
-  const company = await prisma.company.create({
-    data: {
-      userId: employer.id,
-      name: 'Tech Innovation Corp',
-      logo: 'https://via.placeholder.com/150',
-      description: 'A leading technology company specializing in innovative solutions',
-      website: 'https://techinnovation.com',
-      email: 'hr@techinnovation.com',
-      phone: '0123456789',
-      address: '123 Tech Street',
-      city: 'Ho Chi Minh City',
-      country: 'Vietnam',
-      size: '201-500',
-      isVerified: true,
-    },
-  });
+    // Create company
+    const company = await prisma.company.create({
+      data: {
+        userId: employer.id,
+        name: comp.name,
+        logo: comp.logo,
+        description: comp.description,
+        website: comp.website || null,
+        email: comp.email,
+        phone: comp.phone,
+        address: comp.address,
+        city: comp.city,
+        country: comp.country,
+        size: comp.size,
+        isVerified: comp.isVerified,
+      },
+    });
 
-  console.log('✅ Created employer and company');
+    companyInstances.push({ ...company, categorySlug: comp.categorySlug });
+  }
+  console.log(`✅ Created ${companyInstances.length} companies`);
+
+  // Create a company map by name for lookup
+  const companyMap = new Map(companyInstances.map((c) => [c.name, c]));
 
   // Create jobs
-  const _job1 = await prisma.job.create({
-    data: {
-      companyId: company.id,
-      categoryId: categories[0].id,
-      title: 'Senior Full Stack Developer',
-      slug: 'senior-full-stack-developer-' + Date.now(),
-      description: 'We are looking for an experienced Full Stack Developer to join our team.',
-      requirements:
-        '- 5+ years of experience in web development\n- Strong knowledge of React and Node.js\n- Experience with TypeScript\n- Good communication skills',
-      benefits: '- Competitive salary\n- Health insurance\n- Free lunch\n- Flexible working hours',
-      jobType: 'FULL_TIME',
-      jobLevel: 'SENIOR',
-      salaryMin: 2000,
-      salaryMax: 3000,
-      positions: 2,
-      experience: 'FIVE_TO_TEN_YEARS',
-      address: '123 Tech Street',
-      city: 'Ho Chi Minh City',
-      country: 'Vietnam',
-      deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      skills: {
-        create: [
-          { skillId: skills[0].id }, // JavaScript
-          { skillId: skills[1].id }, // TypeScript
-          { skillId: skills[2].id }, // React
-          { skillId: skills[3].id }, // Node.js
-        ],
-      },
-    },
-  });
+  console.log('💼 Creating jobs...');
+  let jobCount = 0;
+  for (const job of jobsData) {
+    const company = companyMap.get(job.companyName);
+    const category = categoryMap.get(job.categorySlug);
 
-  const _job2 = await prisma.job.create({
-    data: {
-      companyId: company.id,
-      categoryId: categories[0].id,
-      title: 'Frontend Developer (React)',
-      slug: 'frontend-developer-react-' + Date.now(),
-      description: 'Join our team as a Frontend Developer working with modern technologies.',
-      requirements:
-        '- 2+ years of React experience\n- Knowledge of HTML, CSS, JavaScript\n- Understanding of responsive design',
-      benefits: '- Attractive salary\n- Training opportunities\n- Modern office',
-      jobType: 'FULL_TIME',
-      jobLevel: 'JUNIOR',
-      salaryMin: 800,
-      salaryMax: 1500,
-      positions: 3,
-      experience: 'ONE_TO_THREE_YEARS',
-      address: '123 Tech Street',
-      city: 'Ha Noi',
-      country: 'Vietnam',
-      deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
-      skills: {
-        create: [
-          { skillId: skills[0].id }, // JavaScript
-          { skillId: skills[1].id }, // TypeScript
-          { skillId: skills[2].id }, // React
-        ],
-      },
-    },
-  });
+    if (!company || !category) {
+      console.warn(`⚠️  Skipping job "${job.title}" - company or category not found`);
+      continue;
+    }
 
-  console.log('✅ Created jobs');
+    // Find skills for this job
+    const jobSkills = job.skills
+      .map((skillName: string) => skillMap.get(skillName))
+      .filter((s: any) => s !== undefined);
+
+    const slug = `${job.title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    await prisma.job.create({
+      data: {
+        companyId: company.id,
+        categoryId: category.id,
+        title: job.title,
+        slug: slug,
+        description: job.description,
+        requirements: job.requirements,
+        benefits: job.benefits || '',
+        jobType: job.jobType,
+        jobLevel: job.jobLevel,
+        salaryMin: job.salaryMin ? Math.round(job.salaryMin * 1000000) : null,
+        salaryMax: job.salaryMax ? Math.round(job.salaryMax * 1000000) : null,
+        positions: job.positions,
+        experience: job.experience || null,
+        address: company.address,
+        city: company.city,
+        country: company.country,
+        deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        skills: {
+          create: jobSkills.map((skill: any) => ({
+            skillId: skill.id,
+          })),
+        },
+      },
+    });
+    jobCount++;
+  }
+  console.log(`✅ Created ${jobCount} jobs`);
 
   // Create candidate user
+  console.log('👤 Creating candidate user...');
   const candidate = await prisma.user.create({
     data: {
       email: 'candidate@example.com',
       password: await hashPassword('Candidate@123'),
-      name: 'Jane Candidate',
+      name: 'Nguyễn Văn A',
       role: 'CANDIDATE',
       phone: '0999888777',
     },
   });
 
   // Create resume for candidate
-  const _resume = await prisma.resume.create({
-    data: {
-      userId: candidate.id,
-      categoryId: categories[0].id,
-      title: 'Full Stack Developer',
-      objective:
-        'Seeking a challenging position as a Full Stack Developer where I can utilize my skills',
-      experience: 'THREE_TO_FIVE_YEARS',
-      education: 'Bachelor of Computer Science - XYZ University (2018-2022)',
-      workHistory:
-        'Software Developer at ABC Company (2022-2024)\n- Developed web applications using React and Node.js',
-      city: 'Ho Chi Minh City',
-      country: 'Vietnam',
-      gender: 'FEMALE',
-      dateOfBirth: new Date('1999-05-15'),
-      isPublic: true,
-      skills: {
-        create: [
-          { skillId: skills[0].id, level: 'advanced' },
-          { skillId: skills[1].id, level: 'advanced' },
-          { skillId: skills[2].id, level: 'expert' },
-          { skillId: skills[3].id, level: 'advanced' },
-        ],
+  const itCategory = categoryMap.get('cong-nghe-thong-tin');
+  if (itCategory) {
+    await prisma.resume.create({
+      data: {
+        userId: candidate.id,
+        categoryId: itCategory.id,
+        title: 'Lập trình viên Full Stack',
+        objective: 'Tìm kiếm vị trí Full Stack Developer để phát huy kinh nghiệm và kỹ năng',
+        experience: 'THREE_TO_FIVE_YEARS',
+        education: 'Đại học Bách Khoa - Khoa Công nghệ thông tin (2018-2022)',
+        workHistory:
+          'Lập trình viên tại Công ty ABC (2022-2024)\n- Phát triển ứng dụng web với React và Node.js\n- Tham gia dự án cho khách hàng nước ngoài',
+        city: 'Hồ Chí Minh',
+        country: 'Vietnam',
+        gender: 'MALE',
+        dateOfBirth: new Date('1999-05-15'),
+        isPublic: true,
+        skills: {
+          create: [
+            { skillId: skillMap.get('JavaScript')?.id, level: 'advanced' },
+            { skillId: skillMap.get('TypeScript')?.id, level: 'advanced' },
+            { skillId: skillMap.get('React')?.id, level: 'expert' },
+            { skillId: skillMap.get('Node.js')?.id, level: 'advanced' },
+          ].filter((s) => s.skillId),
+        },
       },
-    },
-  });
+    });
+  }
 
   console.log('✅ Created candidate and resume');
 
   console.log('\n🎉 Seeding completed successfully!');
   console.log('\n📝 Test accounts:');
   console.log('Admin: admin@hrm.com / Admin@123');
-  console.log('Employer: employer@company.com / Employer@123');
+  console.log('Employers: [company-slug]@company.com / Employer@123');
   console.log('Candidate: candidate@example.com / Candidate@123');
+  console.log('\n📊 Summary:');
+  console.log(`- ${categories.length} categories`);
+  console.log(`- ${skills.length} skills`);
+  console.log(`- ${companyInstances.length} companies`);
+  console.log(`- ${jobCount} jobs`);
 }
 
 main()

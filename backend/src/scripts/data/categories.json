@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Công nghệ thông tin",
+    "slug": "cong-nghe-thong-tin",
+    "description": "Công việc liên quan đến phát triển phần mềm, IT, công nghệ",
+    "icon": "💻"
+  },
+  {
+    "name": "Nhà hàng - Khách sạn",
+    "slug": "nha-hang-khach-san",
+    "description": "Phục vụ bàn, đầu bếp, lễ tân, buồng phòng",
+    "icon": "🍽️"
+  },
+  {
+    "name": "Bán lẻ - Siêu thị",
+    "slug": "ban-le-sieu-thi",
+    "description": "Thu ngân, bán hàng, kho vận, tư vấn sản phẩm",
+    "icon": "🏪"
+  },
+  {
+    "name": "Vận chuyển - Giao hàng",
+    "slug": "van-chuyen-giao-hang",
+    "description": "Tài xế, shipper, giao hàng, nhân viên kho",
+    "icon": "🚗"
+  },
+  {
+    "name": "Xây dựng",
+    "slug": "xay-dung",
+    "description": "Thợ xây, thợ điện, thợ sơn, kỹ thuật xây dựng",
+    "icon": "🏗️"
+  },
+  {
+    "name": "Dịch vụ vệ sinh",
+    "slug": "dich-vu-ve-sinh",
+    "description": "Nhân viên vệ sinh, tạp vụ, giặt ủi",
+    "icon": "🧹"
+  },
+  {
+    "name": "Marketing - Truyền thông",
+    "slug": "marketing-truyen-thong",
+    "description": "Marketing, quảng cáo, PR, social media",
+    "icon": "📱"
+  },
+  {
+    "name": "Tài chính - Ngân hàng",
+    "slug": "tai-chinh-ngan-hang",
+    "description": "Ngân hàng, kế toán, tài chính, kiểm toán",
+    "icon": "💰"
+  },
+  {
+    "name": "Bảo vệ - An ninh",
+    "slug": "bao-ve-an-ninh",
+    "description": "Bảo vệ, an ninh, giám sát",
+    "icon": "🛡️"
+  },
+  {
+    "name": "Y tế - Chăm sóc sức khỏe",
+    "slug": "y-te-cham-soc-suc-khoe",
+    "description": "Y tá, dược sĩ, chăm sóc người bệnh",
+    "icon": "🏥"
+  },
+  {
+    "name": "Giáo dục - Đào tạo",
+    "slug": "giao-duc-dao-tao",
+    "description": "Giáo viên, gia sư, đào tạo, hỗ trợ học tập",
+    "icon": "📚"
+  },
+  {
+    "name": "Làm đẹp - Spa",
+    "slug": "lam-dep-spa",
+    "description": "Thợ cắt tóc, nail, spa, massage, chăm sóc da",
+    "icon": "💆"
+  },
+  {
+    "name": "Bán hàng",
+    "slug": "ban-hang",
+    "description": "Bán hàng, kinh doanh, phát triển thị trường",
+    "icon": "💼"
+  },
+  {
+    "name": "Nhân sự",
+    "slug": "nhan-su",
+    "description": "Tuyển dụng, quản lý nhân sự, đào tạo",
+    "icon": "👥"
+  },
+  {
+    "name": "Sản xuất - Vận hành",
+    "slug": "san-xuat-van-hanh",
+    "description": "Công nhân sản xuất, vận hành máy móc, QC",
+    "icon": "🏭"
+  },
+  {
+    "name": "Kho vận",
+    "slug": "kho-van",
+    "description": "Thủ kho, nhân viên kho, kiểm kê, xuất nhập",
+    "icon": "📦"
+  },
+  {
+    "name": "Pha chế - Coffee",
+    "slug": "pha-che-coffee",
+    "description": "Barista, pha chế, nhân viên quán cafe",
+    "icon": "☕"
+  },
+  {
+    "name": "Nông nghiệp",
+    "slug": "nong-nghiep",
+    "description": "Trồng trọt, chăn nuôi, nông trại",
+    "icon": "🌾"
+  },
+  {
+    "name": "Du lịch - Lữ hành",
+    "slug": "du-lich-lu-hanh",
+    "description": "Hướng dẫn viên, tư vấn du lịch, điều hành tour",
+    "icon": "✈️"
+  },
+  {
+    "name": "Khác",
+    "slug": "khac",
+    "description": "Các công việc khác",
+    "icon": "📋"
+  }
+]

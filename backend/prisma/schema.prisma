@@ -33,6 +33,9 @@ enum JobLevel {
   SENIOR
   LEADER
   MANAGER
+  ENTRY_LEVEL // Cấp độ nhập môn - phù hợp với mọi ngành
+  EXPERIENCED // Có kinh nghiệm - phù hợp với mọi ngành
+  NOT_REQUIRED // Không yêu cầu cấp bậc - cho các công việc đơn giản
 }
 
 enum ApplicationStatus {
