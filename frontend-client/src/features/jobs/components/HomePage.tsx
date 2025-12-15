@@ -10,132 +10,14 @@ import { CTASection } from './CTASection';
 import { Job } from '../types';
 import { useJobs, useTrendingJobs } from '../hooks/useJobs';
 
-// Fallback mock data cho trường hợp API lỗi
-const mockJobs: Job[] = [
-  {
-    id: '1',
-    title: 'Senior Frontend Developer (ReactJS)',
-    description:
-      'Chúng tôi đang tìm kiếm một Senior Frontend Developer có kinh nghiệm với ReactJS để tham gia đội ngũ phát triển sản phẩm của chúng tôi.',
-    salary: { min: 25000000, max: 35000000 },
-    location: 'Hà Nội',
-    type: 'FULL_TIME',
-    level: 'SENIOR',
-    requirements: ['ReactJS', 'TypeScript', 'NextJS'],
-    isHot: true,
-    isNew: true,
-    createdAt: '2025-12-10',
-    company: {
-      id: '1',
-      name: 'FPT Software',
-      logo: '',
-      address: 'Hà Nội',
-    },
-  },
-  {
-    id: '2',
-    title: 'Backend Developer (NodeJS)',
-    description: 'Tìm kiếm Backend Developer có kinh nghiệm phát triển API với NodeJS và Express.',
-    salary: { min: 20000000, max: 30000000 },
-    location: 'Hồ Chí Minh',
-    type: 'FULL_TIME',
-    level: 'MIDDLE',
-    requirements: ['NodeJS', 'Express', 'MongoDB'],
-    isNew: true,
-    createdAt: '2025-12-09',
-    company: {
-      id: '2',
-      name: 'VNG Corporation',
-      logo: '',
-      address: 'TP.HCM',
-    },
-  },
-  {
-    id: '3',
-    title: 'Full-stack Developer',
-    description: 'Vị trí Full-stack Developer cho dự án phát triển ứng dụng web hiện đại.',
-    salary: { min: 18000000, max: 28000000 },
-    location: 'Đà Nẵng',
-    type: 'FULL_TIME',
-    level: 'JUNIOR',
-    requirements: ['JavaScript', 'React', 'NodeJS'],
-    isHot: true,
-    createdAt: '2025-12-08',
-    company: {
-      id: '3',
-      name: 'Teko Vietnam',
-      logo: '',
-      address: 'Đà Nẵng',
-    },
-  },
-  {
-    id: '4',
-    title: 'DevOps Engineer',
-    description: 'Tìm kiếm DevOps Engineer có kinh nghiệm về CI/CD, Docker, Kubernetes.',
-    salary: { min: 30000000, max: 45000000 },
-    location: 'Hà Nội',
-    type: 'FULL_TIME',
-    level: 'SENIOR',
-    requirements: ['Docker', 'Kubernetes', 'AWS'],
-    isHot: true,
-    createdAt: '2025-12-10',
-    company: {
-      id: '4',
-      name: 'VinTech',
-      logo: '',
-      address: 'Hà Nội',
-    },
-  },
-  {
-    id: '5',
-    title: 'Mobile Developer (React Native)',
-    description: 'Phát triển ứng dụng mobile đa nền tảng với React Native.',
-    salary: { min: 22000000, max: 32000000 },
-    location: 'Hồ Chí Minh',
-    type: 'FULL_TIME',
-    level: 'MIDDLE',
-    requirements: ['React Native', 'TypeScript', 'Redux'],
-    isNew: true,
-    createdAt: '2025-12-09',
-    company: {
-      id: '5',
-      name: 'Shopee Vietnam',
-      logo: '',
-      address: 'TP.HCM',
-    },
-  },
-  {
-    id: '6',
-    title: 'Thực tập sinh Frontend',
-    description: 'Cơ hội thực tập và học hỏi kinh nghiệm phát triển frontend từ đội ngũ senior.',
-    salary: { min: 5000000, max: 8000000 },
-    location: 'Hà Nội',
-    type: 'INTERNSHIP',
-    level: 'INTERN',
-    requirements: ['HTML', 'CSS', 'JavaScript', 'React cơ bản'],
-    isNew: true,
-    createdAt: '2025-12-10',
-    company: {
-      id: '6',
-      name: 'Tech Startup Hub',
-      logo: '',
-      address: 'Hà Nội',
-    },
-  },
-];
-
 export const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'hot' | 'new'>('all');
   const [searchParams, setSearchParams] = useState<{ keyword?: string; city?: string }>({});
 
   // Fetch jobs based on active tab
-  const {
-    jobs: allJobs,
-    isLoading: isLoadingAll,
-    error: errorAll,
-  } = useJobs({
+  const { jobs: allJobs, isLoading: isLoadingAll } = useJobs({
     limit: 12,
-    sortBy: 'createdAt',
+    sort: 'createdAt',
     sortOrder: 'desc',
     ...searchParams,
   });
@@ -153,9 +35,6 @@ export const HomePage = () => {
       return job.isNew || new Date(job.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days
     return true;
   });
-
-  // Use mock data as fallback if API fails
-  const displayJobs = filteredJobs.length > 0 ? filteredJobs : errorAll ? mockJobs : [];
 
   const handleSearch = async (keyword: string, location: string) => {
     setSearchParams({ keyword: keyword || undefined, city: location || undefined });
@@ -185,10 +64,14 @@ export const HomePage = () => {
           </div>
 
           {/* Job Tabs */}
-          <JobTabs activeTab={activeTab} onTabChange={setActiveTab} jobCount={displayJobs.length} />
+          <JobTabs
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            jobCount={filteredJobs.length}
+          />
 
           {/* Job List */}
-          <JobListSection jobs={displayJobs} isLoading={isLoading} />
+          <JobListSection jobs={filteredJobs} isLoading={isLoading} />
         </div>
       </section>
 

@@ -56,10 +56,10 @@ export const JobListPage = () => {
 
   // Fetch jobs with filters
   const { jobs, total, isLoading, error } = useJobs({
-    search: keyword || undefined,
-    city: location || undefined,
-    jobType: type || undefined,
-    jobLevel: level || undefined,
+    keyword: keyword || undefined,
+    location: location || undefined,
+    type: type || undefined,
+    level: level || undefined,
     ...getSalaryParams(),
   });
 

@@ -60,8 +60,8 @@ export class AdminCompaniesController {
   }
 
   @Post(':id/reject')
-  rejectCompany(@Param('id') id: string, @Body('reason') reason?: string) {
-    return this.adminCompaniesService.rejectCompany(id, reason);
+  rejectCompany(@Param('id') id: string) {
+    return this.adminCompaniesService.rejectCompany(id);
   }
 
   @Get('stats/overview')

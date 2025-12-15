@@ -62,6 +62,8 @@ export const JobDetailPage = () => {
   };
 
   const handleShare = () => {
+    if (!job) return;
+
     const url = window.location.href;
     if (navigator.share) {
       navigator
