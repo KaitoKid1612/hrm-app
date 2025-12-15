@@ -14,22 +14,26 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🔍 Checking database...');
 
-  // Check if database already has data
-  const userCount = await prisma.user.count();
+  // Check if database already has ESSENTIAL data (categories and companies)
+  // We check these because users might exist from initial admin creation
   const categoryCount = await prisma.category.count();
   const companyCount = await prisma.company.count();
+  const jobCount = await prisma.job.count();
 
-  if (userCount > 0 || categoryCount > 0 || companyCount > 0) {
+  // Only skip if we have actual business data (not just users)
+  if (categoryCount > 0 && companyCount > 0) {
+    const userCount = await prisma.user.count();
     console.log('⚠️  Database already has data:');
     console.log(`   - ${userCount} users`);
     console.log(`   - ${categoryCount} categories`);
     console.log(`   - ${companyCount} companies`);
+    console.log(`   - ${jobCount} jobs`);
     console.log('\n⏭️  Skipping seed to preserve existing data.');
     console.log('💡 To force seed, run: npm run seed:force');
     return;
   }
 
-  console.log('✨ Database is empty. Running seed...\n');
+  console.log('✨ Database needs seeding. Running seed...\n');
 
   // Import and run the seed function directly
   try {
