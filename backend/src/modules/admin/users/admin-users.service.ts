@@ -149,6 +149,58 @@ export class AdminUsersService {
     return { message: 'Xóa người dùng thành công' };
   }
 
+  async getUserStats() {
+    const [total, byRole, active, banned] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.user.groupBy({
+        by: ['role'],
+        _count: { role: true },
+      }),
+      this.prisma.user.count({ where: { isActive: true } }),
+      this.prisma.user.count({ where: { isActive: false } }),
+    ]);
+
+    const roleStats = byRole.reduce(
+      (acc, item) => {
+        acc[item.role.toLowerCase()] = item._count.role;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return {
+      total,
+      candidates: roleStats.candidate || 0,
+      employers: roleStats.employer || 0,
+      admins: roleStats.admin || 0,
+      active,
+      banned,
+    };
+  }
+
+  async toggleUserStatus(id: string, status: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Không tìm thấy người dùng');
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        isActive: status === 'ACTIVE',
+        bannedAt: status === 'BANNED' ? new Date() : null,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        bannedAt: true,
+      },
+    });
+  }
+
   async bulkAction(dto: AdminBulkActionUsersDto) {
     const { ids, action } = dto;
 
