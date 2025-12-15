@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Param, Query, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Get, Delete, Post, Param, Query, UseGuards, Inject } from '@nestjs/common';
 import { AdminModerationService } from './admin-moderation.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
@@ -17,6 +17,26 @@ export class AdminModerationController {
   @Get('reviews')
   getAllReviews(@Query() query: AdminQueryReviewsDto) {
     return this.adminModerationService.getAllReviews(query);
+  }
+
+  @Get('reviews/stats/overview')
+  getReviewStats() {
+    return this.adminModerationService.getReviewStats();
+  }
+
+  @Post('reviews/:id/approve')
+  approveReview(@Param('id') id: string) {
+    return this.adminModerationService.approveReview(id);
+  }
+
+  @Post('reviews/:id/reject')
+  rejectReview(@Param('id') id: string) {
+    return this.adminModerationService.rejectReview(id);
+  }
+
+  @Post('reviews/:id/verify')
+  verifyReview(@Param('id') id: string) {
+    return this.adminModerationService.verifyReview(id);
   }
 
   @Delete('reviews/:id')

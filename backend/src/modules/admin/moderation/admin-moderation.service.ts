@@ -85,4 +85,120 @@ export class AdminModerationService {
 
     return { message: 'Xóa đánh giá thành công' };
   }
+
+  async approveReview(id: string) {
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+    });
+
+    if (!review) {
+      throw new NotFoundException('Không tìm thấy đánh giá');
+    }
+
+    return this.prisma.review.update({
+      where: { id },
+      data: { isApproved: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async rejectReview(id: string) {
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+    });
+
+    if (!review) {
+      throw new NotFoundException('Không tìm thấy đánh giá');
+    }
+
+    return this.prisma.review.update({
+      where: { id },
+      data: { isApproved: false },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async verifyReview(id: string) {
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+    });
+
+    if (!review) {
+      throw new NotFoundException('Không tìm thấy đánh giá');
+    }
+
+    return this.prisma.review.update({
+      where: { id },
+      data: { isVerified: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getReviewStats() {
+    const [total, approved, rejected, verified, pending] = await Promise.all([
+      this.prisma.review.count(),
+      this.prisma.review.count({
+        where: { isApproved: true },
+      }),
+      this.prisma.review.count({
+        where: { isApproved: false },
+      }),
+      this.prisma.review.count({
+        where: { isVerified: true },
+      }),
+      this.prisma.review.count({
+        where: { isApproved: true, isVerified: false },
+      }),
+    ]);
+
+    return {
+      total,
+      approved,
+      rejected,
+      verified,
+      pending,
+    };
+  }
 }
