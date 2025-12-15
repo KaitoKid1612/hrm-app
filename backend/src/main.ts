@@ -14,29 +14,32 @@ async function bootstrap() {
   // Global prefix
   app.setGlobalPrefix('api');
 
-  // Enable CORS - Allow both client and admin frontends
-  const allowedOrigins: string[] = [
-    process.env.FRONTEND_URL || 'https://vungang-jobs-client.onrender.com',
-    process.env.ADMIN_URL,
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:3000',
-    'http://localhost:3001',
-  ].filter(Boolean) as string[]; // Remove undefined values
-
+  // Enable CORS - Simple and permissive for production
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
-
-      // Check if origin is in allowed list
-      if (allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
-        callback(null, true);
-      } else {
-        console.warn(`⚠️  CORS blocked origin: ${origin}`);
-        // Don't throw error, just reject
-        callback(null, false);
+      // Allow requests with no origin (mobile apps, Postman, curl, etc.)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      // Allow all localhost for development
+      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return callback(null, true);
+      }
+
+      // Allow all *.onrender.com for production
+      if (origin.includes('.onrender.com')) {
+        return callback(null, true);
+      }
+
+      // Allow specific frontend URL from env
+      if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+        return callback(null, true);
+      }
+
+      // Reject all others
+      console.warn(`⚠️  CORS rejected origin: ${origin}`);
+      callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
