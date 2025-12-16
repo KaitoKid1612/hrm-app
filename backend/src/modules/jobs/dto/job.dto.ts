@@ -7,13 +7,24 @@ import {
   IsArray,
   IsDateString,
 } from 'class-validator';
-import { JobType, JobLevel, ExperienceLevel } from '@prisma/client';
+import { JobType, JobLevel, ExperienceLevel, CompanyType } from '@prisma/client';
 import { Type } from 'class-transformer';
 
 export class CreateJobDto {
   @IsOptional()
   @IsString()
   categoryId?: string;
+
+  // Optional: If provided, job will be linked to existing company
+  // If not provided, a company will be auto-created based on companyType
+  @IsOptional()
+  @IsString()
+  companyId?: string;
+
+  // Type of company to auto-create if companyId is not provided
+  @IsOptional()
+  @IsEnum(CompanyType)
+  companyType?: CompanyType;
 
   @IsString()
   title: string;
