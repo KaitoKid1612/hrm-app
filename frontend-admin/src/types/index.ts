@@ -3,6 +3,7 @@
  */
 
 export type Role = 'ADMIN' | 'EMPLOYER' | 'CANDIDATE';
+export type CompanyType = 'COMPANY' | 'SMALL_BUSINESS' | 'HEADHUNTER';
 
 export type User = {
   id: string;
@@ -18,6 +19,7 @@ export type User = {
 export type Company = {
   id: string;
   name: string;
+  type?: CompanyType;
   description?: string;
   website?: string;
   logo?: string;
