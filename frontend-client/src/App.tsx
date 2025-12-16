@@ -26,6 +26,7 @@ import {
   InterviewDetailPage,
   ScheduleInterviewPage,
   AnalyticsDashboardPage,
+  InviteCandidatesPage,
 } from '@/features/company';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
@@ -220,6 +221,16 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <AnalyticsDashboardPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.INVITE_CANDIDATES}
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <InviteCandidatesPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }

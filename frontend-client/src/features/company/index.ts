@@ -10,6 +10,7 @@ export { InterviewsPage } from './components/InterviewsPage';
 export { InterviewDetailPage } from './components/InterviewDetailPage';
 export { ScheduleInterviewPage } from './components/ScheduleInterviewPage';
 export { AnalyticsDashboardPage } from './components/AnalyticsDashboardPage';
+export { InviteCandidatesPage } from './components/InviteCandidatesPage';
 
 // Hooks
 export { useCompanyProfile } from './hooks/useCompanyProfile';
