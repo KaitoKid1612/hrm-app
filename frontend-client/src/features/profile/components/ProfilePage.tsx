@@ -1,34 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { useProfile } from '../hooks/useProfile';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-  Calendar,
-  DollarSign,
-  Linkedin,
-  Github,
-  Globe,
-  Camera,
-  Save,
-  ArrowLeft,
-  Loader2,
-} from 'lucide-react';
+import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import { ROUTES } from '@/constants';
+import { ProfileAvatar } from './sections/ProfileAvatar';
+import { ProfilePersonalInfo } from './sections/ProfilePersonalInfo';
+import { ProfileProfessionalInfo } from './sections/ProfileProfessionalInfo';
+import { ProfileSocialLinks } from './sections/ProfileSocialLinks';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { updateProfile, uploadAvatar, isLoading } = useProfile();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -59,14 +44,7 @@ export const ProfilePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleAvatarChange = async (file: File) => {
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('Kích thước file không được vượt quá 5MB');
@@ -142,271 +120,46 @@ export const ProfilePage = () => {
       )}
 
       {/* Avatar Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Ảnh đại diện</h2>
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-indigo-500 flex items-center justify-center overflow-hidden">
-              {user?.avatar ? (
-                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <User className="w-12 h-12 text-white" />
-              )}
-            </div>
-            <button
-              onClick={handleAvatarClick}
-              disabled={isUploadingAvatar}
-              className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-lg transition-colors disabled:opacity-50"
-            >
-              {isUploadingAvatar ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Camera className="w-4 h-4" />
-              )}
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              className="hidden"
-            />
-          </div>
-          <div>
-            <p className="text-sm text-gray-600 mb-1">Ảnh JPG, PNG hoặc GIF. Tối đa 5MB.</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAvatarClick}
-              disabled={isUploadingAvatar}
-            >
-              Thay đổi ảnh
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ProfileAvatar
+        avatar={user?.avatar}
+        isUploading={isUploadingAvatar}
+        onAvatarChange={handleAvatarChange}
+      />
 
       {/* Profile Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Personal Info */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Thông tin cá nhân</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">
-                <User className="w-4 h-4 inline mr-2" />
-                Họ và tên <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Nguyễn Văn A"
-                className="mt-2"
-              />
-            </div>
+        <ProfilePersonalInfo
+          formData={{
+            name: formData.name,
+            phone: formData.phone,
+            gender: formData.gender,
+            dateOfBirth: formData.dateOfBirth,
+            address: formData.address,
+            city: formData.city,
+            country: formData.country,
+            bio: formData.bio,
+          }}
+          userEmail={user?.email}
+          onChange={handleChange}
+        />
 
-            <div>
-              <Label htmlFor="email">
-                <Mail className="w-4 h-4 inline mr-2" />
-                Email
-              </Label>
-              <Input id="email" value={user?.email} disabled className="mt-2 bg-gray-50" />
-            </div>
+        <ProfileProfessionalInfo
+          formData={{
+            currentJobTitle: formData.currentJobTitle,
+            yearsOfExperience: formData.yearsOfExperience,
+            expectedSalary: formData.expectedSalary,
+          }}
+          onChange={handleChange}
+        />
 
-            <div>
-              <Label htmlFor="phone">
-                <Phone className="w-4 h-4 inline mr-2" />
-                Số điện thoại
-              </Label>
-              <Input
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="0123456789"
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="gender">Giới tính</Label>
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="mt-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <option value="MALE">Nam</option>
-                <option value="FEMALE">Nữ</option>
-                <option value="OTHER">Khác</option>
-              </select>
-            </div>
-
-            <div>
-              <Label htmlFor="dateOfBirth">
-                <Calendar className="w-4 h-4 inline mr-2" />
-                Ngày sinh
-              </Label>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="city">
-                <MapPin className="w-4 h-4 inline mr-2" />
-                Thành phố
-              </Label>
-              <Input
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Hà Nội"
-                className="mt-2"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="address">Địa chỉ</Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="123 Đường ABC, Quận XYZ"
-                className="mt-2"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="bio">Giới thiệu bản thân</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Viết vài dòng giới thiệu về bản thân..."
-                className="mt-2"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Professional Info */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Thông tin nghề nghiệp</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="currentJobTitle">
-                <Briefcase className="w-4 h-4 inline mr-2" />
-                Chức danh hiện tại
-              </Label>
-              <Input
-                id="currentJobTitle"
-                name="currentJobTitle"
-                value={formData.currentJobTitle}
-                onChange={handleChange}
-                placeholder="Senior Developer"
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="yearsOfExperience">Số năm kinh nghiệm</Label>
-              <Input
-                id="yearsOfExperience"
-                name="yearsOfExperience"
-                type="number"
-                value={formData.yearsOfExperience}
-                onChange={handleChange}
-                min="0"
-                className="mt-2"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="expectedSalary">
-                <DollarSign className="w-4 h-4 inline mr-2" />
-                Mức lương mong muốn (VNĐ)
-              </Label>
-              <Input
-                id="expectedSalary"
-                name="expectedSalary"
-                type="number"
-                value={formData.expectedSalary}
-                onChange={handleChange}
-                min="0"
-                placeholder="20000000"
-                className="mt-2"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Social Links */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Liên kết mạng xã hội</h2>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="linkedinUrl">
-                <Linkedin className="w-4 h-4 inline mr-2" />
-                LinkedIn
-              </Label>
-              <Input
-                id="linkedinUrl"
-                name="linkedinUrl"
-                type="url"
-                value={formData.linkedinUrl}
-                onChange={handleChange}
-                placeholder="https://linkedin.com/in/yourprofile"
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="githubUrl">
-                <Github className="w-4 h-4 inline mr-2" />
-                GitHub
-              </Label>
-              <Input
-                id="githubUrl"
-                name="githubUrl"
-                type="url"
-                value={formData.githubUrl}
-                onChange={handleChange}
-                placeholder="https://github.com/yourusername"
-                className="mt-2"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="portfolioUrl">
-                <Globe className="w-4 h-4 inline mr-2" />
-                Portfolio
-              </Label>
-              <Input
-                id="portfolioUrl"
-                name="portfolioUrl"
-                type="url"
-                value={formData.portfolioUrl}
-                onChange={handleChange}
-                placeholder="https://yourportfolio.com"
-                className="mt-2"
-              />
-            </div>
-          </div>
-        </div>
+        <ProfileSocialLinks
+          formData={{
+            linkedinUrl: formData.linkedinUrl,
+            githubUrl: formData.githubUrl,
+            portfolioUrl: formData.portfolioUrl,
+          }}
+          onChange={handleChange}
+        />
 
         {/* Submit Button */}
         <div className="flex justify-end gap-3">
