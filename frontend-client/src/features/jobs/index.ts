@@ -5,6 +5,7 @@ export { JobDetailPage } from './components/JobDetailPage';
 export { JobListPage } from './components/JobListPage';
 export { SavedJobsPage } from './components/SavedJobsPage';
 export { CompanyListPage } from './components/CompanyListPage';
+export { CompanyDetailPage } from './components/CompanyDetailPage';
 export { ApplyJobModal } from './components/ApplyJobModal';
 export { HeroSection } from './components/HeroSection';
 export { CategorySection } from './components/CategorySection';

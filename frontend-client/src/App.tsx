@@ -11,6 +11,7 @@ import {
   JobListPage,
   SavedJobsPage,
   CompanyListPage,
+  CompanyDetailPage,
 } from '@/features/jobs';
 import { MyApplicationsPage } from '@/features/applications';
 import {
@@ -44,6 +45,7 @@ function App() {
           <Route path={ROUTES.JOBS} element={<JobListPage />} />
           <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
           <Route path={ROUTES.COMPANIES} element={<CompanyListPage />} />
+          <Route path={ROUTES.COMPANY_DETAIL} element={<CompanyDetailPage />} />
 
           {/* Auth Routes - Redirect nếu đã đăng nhập */}
           <Route

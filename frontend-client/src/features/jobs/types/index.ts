@@ -82,6 +82,7 @@ export interface JobFilters {
   level?: string;
   salaryMin?: number;
   salaryMax?: number;
+  companyId?: string;
 }
 
 export interface JobSearchParams extends JobFilters {

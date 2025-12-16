@@ -7,8 +7,11 @@ export interface Company {
   name: string;
   type?: CompanyType;
   logo?: string;
+  coverImage?: string;
   description?: string;
   website?: string;
+  email?: string;
+  phone?: string;
   city?: string;
   address?: string;
   size?: string;
