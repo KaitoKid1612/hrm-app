@@ -55,33 +55,46 @@ class SettingsService {
     return response.data;
   }
 
-  // Note: Preferences API doesn't exist yet in backend
-  // These methods are placeholder for when backend implements it
   async getPreferences(): Promise<UserPreferences> {
-    // Fallback to localStorage for now
-    const stored = localStorage.getItem('userPreferences');
-    return stored
-      ? JSON.parse(stored)
-      : {
-          emailNotifications: true,
-          jobAlerts: true,
-          applicationUpdates: true,
-          messageNotifications: true,
-        };
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/preferences`, {
+        headers: getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      // Fallback to localStorage if API fails
+      const stored = localStorage.getItem('userPreferences');
+      return stored
+        ? JSON.parse(stored)
+        : {
+            emailNotifications: true,
+            jobAlerts: true,
+            applicationUpdates: true,
+            messageNotifications: true,
+          };
+    }
   }
 
   async updatePreferences(preferences: UserPreferences): Promise<UserPreferences> {
-    // Store in localStorage until backend is ready
-    localStorage.setItem('userPreferences', JSON.stringify(preferences));
-    return preferences;
+    try {
+      const response = await axios.put(`${API_BASE_URL}/auth/preferences`, preferences, {
+        headers: getAuthHeaders(),
+      });
+      return response.data.preferences;
+    } catch (error) {
+      // Fallback to localStorage if API fails
+      localStorage.setItem('userPreferences', JSON.stringify(preferences));
+      return preferences;
+    }
   }
 
   async deleteAccount(): Promise<void> {
-    // This would need backend implementation
     await axios.delete(`${API_BASE_URL}/auth/account`, {
       headers: getAuthHeaders(),
     });
   }
 }
+
+export const settingsService = new SettingsService();
 
 export const settingsService = new SettingsService();

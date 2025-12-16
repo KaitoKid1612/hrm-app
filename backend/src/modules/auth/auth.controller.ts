@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, UseGuards, Inject } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   RegisterDto,
@@ -8,6 +8,7 @@ import {
   ResetPasswordDto,
   ChangePasswordDto,
   RefreshTokenDto,
+  UpdatePreferencesDto,
 } from './dto/auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -63,5 +64,23 @@ export class AuthController {
   @Post('logout')
   async logout(@CurrentUser() user: any) {
     return this.authService.logout(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('preferences')
+  async getPreferences(@CurrentUser() user: any) {
+    return this.authService.getPreferences(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('preferences')
+  async updatePreferences(@CurrentUser() user: any, @Body() dto: UpdatePreferencesDto) {
+    return this.authService.updatePreferences(user.id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('account')
+  async deleteAccount(@CurrentUser() user: any) {
+    return this.authService.deleteAccount(user.id);
   }
 }

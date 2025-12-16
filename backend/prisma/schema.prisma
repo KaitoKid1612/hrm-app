@@ -107,8 +107,12 @@ model User {
   githubUrl         String?
 
   // Settings & Preferences
-  preferredLanguage String? @default("vi")
-  timezone          String? @default("Asia/Ho_Chi_Minh")
+  preferredLanguage    String? @default("vi")
+  timezone             String? @default("Asia/Ho_Chi_Minh")
+  emailNotifications   Boolean @default(true)
+  jobAlerts            Boolean @default(true)
+  applicationUpdates   Boolean @default(true)
+  messageNotifications Boolean @default(true)
 
   // Email Verification
   emailVerified     Boolean   @default(false)

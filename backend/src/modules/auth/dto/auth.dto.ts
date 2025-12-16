@@ -166,3 +166,17 @@ export class RefreshTokenDto {
   @IsString()
   refreshToken: string;
 }
+
+export class UpdatePreferencesDto {
+  @IsOptional()
+  emailNotifications?: boolean;
+
+  @IsOptional()
+  jobAlerts?: boolean;
+
+  @IsOptional()
+  applicationUpdates?: boolean;
+
+  @IsOptional()
+  messageNotifications?: boolean;
+}

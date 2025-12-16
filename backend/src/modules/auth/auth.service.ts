@@ -538,4 +538,70 @@ export class AuthService {
       message: 'Đăng xuất thành công',
     };
   }
+
+  async getPreferences(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        emailNotifications: true,
+        jobAlerts: true,
+        applicationUpdates: true,
+        messageNotifications: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Người dùng không tồn tại');
+    }
+
+    return user;
+  }
+
+  async updatePreferences(userId: string, dto: any) {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailNotifications: dto.emailNotifications,
+        jobAlerts: dto.jobAlerts,
+        applicationUpdates: dto.applicationUpdates,
+        messageNotifications: dto.messageNotifications,
+      },
+      select: {
+        emailNotifications: true,
+        jobAlerts: true,
+        applicationUpdates: true,
+        messageNotifications: true,
+      },
+    });
+
+    return {
+      message: 'Cập nhật cài đặt thành công',
+      preferences: user,
+    };
+  }
+
+  async deleteAccount(userId: string) {
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Người dùng không tồn tại');
+    }
+
+    // Soft delete: set isActive to false
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isActive: false,
+        bannedAt: new Date(),
+        banReason: 'User requested account deletion',
+      },
+    });
+
+    return {
+      message: 'Tài khoản đã được xóa thành công',
+    };
+  }
 }
