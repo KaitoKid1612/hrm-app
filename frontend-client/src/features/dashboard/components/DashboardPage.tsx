@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/constants';
@@ -12,6 +12,8 @@ import {
   TrendingUp,
   ArrowRight,
 } from 'lucide-react';
+import { candidateAnalyticsService } from '../services/candidateAnalyticsService';
+import { toast } from '@/lib/toast';
 
 interface Application {
   id: string;
@@ -23,16 +25,52 @@ interface Application {
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
-  // TODO: Replace with real data from API
-  const stats = {
+  const [stats, setStats] = useState({
     totalApplications: 0,
     savedJobs: 0,
     acceptedApplications: 0,
     pendingApplications: 0,
-  };
+  });
 
-  const recentApplications: Application[] = [];
+  const [recentApplications, setRecentApplications] = useState<Application[]>([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setIsLoading(true);
+
+      const analytics = await candidateAnalyticsService.getCandidateAnalytics({
+        timeRange: 'last_30_days',
+      });
+
+      setStats({
+        totalApplications: analytics.overview.totalApplications,
+        savedJobs: analytics.overview.savedJobsCount,
+        acceptedApplications: analytics.metrics.acceptedCount,
+        pendingApplications: analytics.metrics.pendingCount,
+      });
+
+      setRecentApplications(
+        analytics.recentApplications.map((app) => ({
+          id: app.id,
+          jobTitle: app.job.title,
+          company: app.job.company.name,
+          appliedAt: app.appliedAt,
+          status: app.status,
+        })),
+      );
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      toast.error('Không thể tải dữ liệu dashboard');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const statusColors: Record<string, string> = {
     PENDING: 'text-yellow-600 bg-yellow-50',
@@ -49,6 +87,17 @@ const Dashboard: React.FC = () => {
     ACCEPTED: 'Đã chấp nhận',
     REJECTED: 'Đã từ chối',
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
