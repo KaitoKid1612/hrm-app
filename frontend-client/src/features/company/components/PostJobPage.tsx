@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { jobManagementService, JobFormData } from '../services/jobManagementService';
+import { jobManagementService, JobFormData, CompanyType } from '../services/jobManagementService';
 import { companyProfileService, CompanyProfileData } from '../services/companyProfileService';
 import { CreateCompanyModal } from './CreateCompanyModal';
 import { ROUTES } from '@/constants';
@@ -22,6 +22,8 @@ import {
   TrendingUp,
   Building2,
   CheckCircle,
+  Home,
+  UserCheck,
 } from 'lucide-react';
 
 const jobTypes = [
@@ -48,6 +50,8 @@ export const PostJobPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [company, setCompany] = useState<CompanyProfileData | null>(null);
   const [showCreateCompanyModal, setShowCreateCompanyModal] = useState(false);
+  const [companyType, setCompanyType] = useState<CompanyType>('SMALL_BUSINESS');
+  const [useExistingCompany, setUseExistingCompany] = useState(true);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -81,12 +85,9 @@ export const PostJobPage = () => {
     try {
       const profile = await companyProfileService.getMyProfile();
       setCompany(profile);
-      if (!profile) {
-        setShowCreateCompanyModal(true);
-      }
+      // Don't force create company modal - allow user to choose
     } catch (err) {
       console.error('Error checking company profile:', err);
-      setShowCreateCompanyModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -187,6 +188,13 @@ export const PostJobPage = () => {
         isHot: formData.isHot,
       };
 
+      // Add company selection logic
+      if (useExistingCompany && company) {
+        jobData.companyId = company.id;
+      } else {
+        jobData.companyType = companyType;
+      }
+
       await jobManagementService.createJob(jobData);
       navigate(ROUTES.MANAGE_JOBS);
     } catch (err) {
@@ -246,14 +254,136 @@ export const PostJobPage = () => {
                   <h3 className="font-semibold text-gray-900">{company.name}</h3>
                   {company.isVerified && <CheckCircle className="w-4 h-4 text-blue-600" />}
                 </div>
-                <p className="text-sm text-gray-600">
-                  Tin tuyển dụng sẽ được đăng dưới tên công ty này
-                </p>
+                <p className="text-sm text-gray-600">Công ty hiện tại của bạn</p>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Company Type Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="w-5 h-5" />
+            Chọn loại hình đăng tuyển
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Company Selection Options */}
+          {company && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="companySelection"
+                  checked={useExistingCompany}
+                  onChange={() => setUseExistingCompany(true)}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium">Đăng dưới tên công ty hiện có</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Tin tuyển dụng sẽ hiển thị với tên: {company.name}
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="companySelection"
+                  checked={!useExistingCompany}
+                  onChange={() => setUseExistingCompany(false)}
+                  className="w-4 h-4 text-blue-600"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium">Đăng với loại hình khác</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Tạo hồ sơ mới cho hộ kinh doanh hoặc nhà tuyển dụng
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
+
+          {/* Company Type Options (only show when not using existing company or no company) */}
+          {(!company || !useExistingCompany) && (
+            <div className="space-y-3">
+              <Label>Chọn loại hình:</Label>
+
+              <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
+                <input
+                  type="radio"
+                  name="companyType"
+                  value="COMPANY"
+                  checked={companyType === 'COMPANY'}
+                  onChange={(e) => {
+                    setCompanyType(e.target.value as CompanyType);
+                    setShowCreateCompanyModal(true);
+                  }}
+                  className="w-4 h-4 mt-1 text-blue-600"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium">Công ty</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Doanh nghiệp, công ty có đăng ký kinh doanh chính thức
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-green-50 transition-colors">
+                <input
+                  type="radio"
+                  name="companyType"
+                  value="SMALL_BUSINESS"
+                  checked={companyType === 'SMALL_BUSINESS'}
+                  onChange={(e) => setCompanyType(e.target.value as CompanyType)}
+                  className="w-4 h-4 mt-1 text-green-600"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <Home className="w-5 h-5 text-green-600" />
+                    <span className="font-medium">Hộ kinh doanh / Cá nhân</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Hộ kinh doanh nhỏ lẻ, cửa hàng, cá nhân tuyển dụng
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-colors">
+                <input
+                  type="radio"
+                  name="companyType"
+                  value="HEADHUNTER"
+                  checked={companyType === 'HEADHUNTER'}
+                  onChange={(e) => setCompanyType(e.target.value as CompanyType)}
+                  className="w-4 h-4 mt-1 text-purple-600"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="w-5 h-5 text-purple-600" />
+                    <span className="font-medium">Nhà tuyển dụng</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Headhunter, công ty tư vấn nhân sự, môi giới tuyển dụng
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Error Message */}
       {error && (
