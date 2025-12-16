@@ -1,24 +1,78 @@
 import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { CreateJobDto, UpdateJobDto, QueryJobDto } from './dto/job.dto';
+import { CompanyType } from '@prisma/client';
 
 @Injectable()
 export class JobsService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async createJobByUserId(userId: string, dto: CreateJobDto) {
-    // Check if user has a company
-    const company = await this.prisma.company.findUnique({
-      where: { userId },
-    });
+    let companyId: string;
 
-    if (!company) {
-      throw new ForbiddenException(
-        'Bạn cần tạo hồ sơ công ty trước khi đăng tin tuyển dụng. Vui lòng truy cập trang Quản lý công ty để tạo hồ sơ.',
-      );
+    // If companyId is provided, use it (user selected existing company)
+    if (dto.companyId) {
+      // Verify the company belongs to this user
+      const company = await this.prisma.company.findFirst({
+        where: {
+          id: dto.companyId,
+          userId,
+        },
+      });
+
+      if (!company) {
+        throw new ForbiddenException('Công ty không tồn tại hoặc không thuộc về bạn');
+      }
+
+      companyId = dto.companyId;
+    } else {
+      // Auto-create or get company based on companyType
+      const companyType = dto.companyType || CompanyType.SMALL_BUSINESS;
+
+      // Check if user already has a company
+      let company = await this.prisma.company.findUnique({
+        where: { userId },
+      });
+
+      if (!company) {
+        // Get user info to auto-fill company name
+        const user = await this.prisma.user.findUnique({
+          where: { id: userId },
+        });
+
+        // Auto-create company
+        const companyName =
+          companyType === CompanyType.SMALL_BUSINESS
+            ? `Hộ kinh doanh - ${user?.name || 'Người dùng'}`
+            : companyType === CompanyType.HEADHUNTER
+              ? `Nhà tuyển dụng - ${user?.name || 'Người dùng'}`
+              : user?.name || 'Công ty';
+
+        company = await this.prisma.company.create({
+          data: {
+            userId,
+            name: companyName,
+            type: companyType,
+            email: user?.email,
+            phone: user?.phone,
+            city: user?.city,
+            country: user?.country,
+          },
+        });
+      } else {
+        // Update existing company type if needed
+        if (company.type !== companyType) {
+          company = await this.prisma.company.update({
+            where: { id: company.id },
+            data: { type: companyType },
+          });
+        }
+      }
+
+      companyId = company.id;
     }
 
-    return this.create(company.id, dto);
+    return this.create(companyId, dto);
   }
 
   async create(companyId: string, dto: CreateJobDto) {
