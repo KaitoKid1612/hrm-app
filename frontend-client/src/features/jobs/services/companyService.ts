@@ -1,8 +1,11 @@
 import api from '@/lib/axios';
 
+export type CompanyType = 'COMPANY' | 'SMALL_BUSINESS' | 'HEADHUNTER';
+
 export interface Company {
   id: string;
   name: string;
+  type?: CompanyType;
   logo?: string;
   description?: string;
   website?: string;

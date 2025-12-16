@@ -2,6 +2,8 @@ import api from '@/lib/axios';
 import { API_ENDPOINTS } from '@/constants';
 import { Job as JobType } from '@/features/jobs/types';
 
+export type CompanyType = 'COMPANY' | 'SMALL_BUSINESS' | 'HEADHUNTER';
+
 export interface JobFormData {
   title: string;
   description: string;
@@ -21,6 +23,10 @@ export interface JobFormData {
   isHot?: boolean;
   categoryId?: string;
   skillIds?: string[];
+  // Optional: If provided, job will be linked to existing company
+  companyId?: string;
+  // Type of company to auto-create if companyId is not provided
+  companyType?: CompanyType;
 }
 
 export interface Job extends JobFormData {

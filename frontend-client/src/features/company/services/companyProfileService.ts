@@ -1,9 +1,12 @@
 import api from '@/lib/axios';
 import { API_ENDPOINTS } from '@/constants';
 
+export type CompanyType = 'COMPANY' | 'SMALL_BUSINESS' | 'HEADHUNTER';
+
 export interface CompanyProfileData {
   id?: string;
   name: string;
+  type?: CompanyType;
   description?: string;
   logo?: string;
   coverImage?: string;
@@ -20,6 +23,7 @@ export interface CompanyProfileData {
 
 export interface CreateCompanyData {
   name: string;
+  type?: CompanyType;
   email?: string;
   phone?: string;
   address?: string;
