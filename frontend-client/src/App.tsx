@@ -15,6 +15,7 @@ import {
 } from '@/features/jobs';
 import { MyApplicationsPage } from '@/features/applications';
 import { NotificationsPage } from '@/features/notifications';
+import { SettingsPage } from '@/features/settings';
 import {
   EmployerDashboardPage,
   CompanyProfilePage,
@@ -104,6 +105,16 @@ function App() {
               <ProtectedRoute>
                 <DashboardLayout>
                   <NotificationsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.SETTINGS}
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <SettingsPage />
                 </DashboardLayout>
               </ProtectedRoute>
             }
