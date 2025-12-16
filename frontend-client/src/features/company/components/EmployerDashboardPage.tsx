@@ -14,6 +14,9 @@ import {
   Plus,
 } from 'lucide-react';
 import { ROUTES } from '@/constants';
+import { analyticsService } from '../services/analyticsService';
+import { applicationManagementService } from '../services/applicationManagementService';
+import { toast } from '@/lib/toast';
 
 interface DashboardStats {
   totalJobs: number;
@@ -53,20 +56,40 @@ export const EmployerDashboardPage = () => {
   const loadDashboardData = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implement API call to get employer dashboard stats
-      // For now, set empty/default state
-      setStats({
-        totalJobs: 0,
-        activeJobs: 0,
-        totalApplications: 0,
-        newApplications: 0,
-        totalCandidates: 0,
-        interviewScheduled: 0,
+
+      // Fetch analytics data
+      const analytics = await analyticsService.getCompanyAnalytics({
+        timeRange: 'last_30_days',
       });
 
-      setRecentApplications([]);
+      setStats({
+        totalJobs: analytics.overview.totalJobs,
+        activeJobs: analytics.overview.activeJobs,
+        totalApplications: analytics.overview.totalApplications,
+        newApplications: analytics.overview.newApplications,
+        totalCandidates: analytics.overview.totalApplications, // Use unique applicants
+        interviewScheduled: 0, // This would need separate API
+      });
+
+      // Fetch recent applications
+      const applicationsData = await applicationManagementService.getApplications({
+        page: 1,
+        limit: 5,
+      });
+
+      setRecentApplications(
+        applicationsData.data.map((app) => ({
+          id: app.id,
+          candidateName: app.candidateName || 'Ẩn danh',
+          candidateEmail: app.candidateEmail || '',
+          jobTitle: app.jobTitle,
+          status: app.status,
+          appliedAt: app.appliedAt,
+        })),
+      );
     } catch (error) {
       console.error('Error loading dashboard:', error);
+      toast.error('Không thể tải dữ liệu dashboard');
     } finally {
       setIsLoading(false);
     }
