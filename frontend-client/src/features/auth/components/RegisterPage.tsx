@@ -57,9 +57,9 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-pink-50 flex">
       {/* Left Side - Image/Illustration */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-purple-600 to-pink-600 items-center justify-center p-12">
+      <div className="hidden lg:flex lg:flex-1 bg-linear-to-br from-purple-600 to-pink-600 items-center justify-center p-12">
         <div className="max-w-md text-white space-y-6">
           <h2 className="text-4xl font-bold">Bắt đầu hành trình nghề nghiệp</h2>
           <p className="text-lg text-purple-100">
@@ -92,7 +92,7 @@ const Register: React.FC = () => {
               Về trang chủ
             </Link>
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-linear-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
                 <Briefcase className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -253,7 +253,7 @@ const Register: React.FC = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+              className="w-full h-12 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
             >
               {isLoading ? (
                 <>

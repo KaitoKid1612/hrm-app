@@ -59,7 +59,7 @@ export const EmployerDashboardPage = () => {
 
       // Fetch analytics data
       const analytics = await analyticsService.getCompanyAnalytics({
-        timeRange: 'last_30_days',
+        timeRange: TimeRange.LAST_30_DAYS,
       });
 
       setStats({
@@ -78,7 +78,7 @@ export const EmployerDashboardPage = () => {
       });
 
       setRecentApplications(
-        applicationsData.data.map((app) => ({
+        applicationsData.data.map((app: ApplicationDetail) => ({
           id: app.id,
           candidateName: app.candidateName || 'Ẩn danh',
           candidateEmail: app.candidateEmail || '',

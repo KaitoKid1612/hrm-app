@@ -19,6 +19,15 @@ export interface CompanyProfileData {
   size?: string;
   taxCode?: string;
   isVerified?: boolean;
+  industry?: string;
+  foundedYear?: number;
+  culture?: string;
+  socialLinks?: {
+    facebook?: string;
+    linkedin?: string;
+    twitter?: string;
+  };
+  benefits?: string[];
 }
 
 export interface CreateCompanyData {

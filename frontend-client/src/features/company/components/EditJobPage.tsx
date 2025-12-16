@@ -16,8 +16,8 @@ export const EditJobPage = () => {
       title: string;
       description: string;
       location: string;
-      type: string;
-      level: string;
+      type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'FREELANCE';
+      level: 'INTERN' | 'FRESHER' | 'JUNIOR' | 'MIDDLE' | 'SENIOR' | 'LEAD';
       salaryMin: string;
       salaryMax: string;
       numberOfPositions: number;

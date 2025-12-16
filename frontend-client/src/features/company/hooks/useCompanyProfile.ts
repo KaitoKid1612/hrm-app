@@ -14,7 +14,7 @@ export const useCompanyProfile = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await companyProfileService.getProfile();
+      const data = await companyProfileService.getMyProfile();
       setProfile(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
@@ -24,7 +24,8 @@ export const useCompanyProfile = () => {
   };
 
   const updateProfile = async (data: Partial<CompanyProfileData>) => {
-    const updated = await companyProfileService.updateProfile(data);
+    if (!profile?.id) throw new Error('No profile ID');
+    const updated = await companyProfileService.updateProfile(profile.id, data);
     setProfile(updated);
     return updated;
   };

@@ -136,7 +136,7 @@ export const AnalyticsDashboardPage = () => {
       </div>
 
       {/* Company Info */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-sm p-6 mb-6 text-white">
+      <div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl shadow-sm p-6 mb-6 text-white">
         <div className="flex items-center gap-4">
           {analytics.company.logo ? (
             <img

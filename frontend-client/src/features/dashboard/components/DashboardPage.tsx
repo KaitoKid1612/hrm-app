@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
       setIsLoading(true);
 
       const analytics = await candidateAnalyticsService.getCandidateAnalytics({
-        timeRange: 'last_30_days',
+        timeRange: TimeRange.LAST_7_DAYS,
       });
 
       setStats({
