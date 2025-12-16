@@ -2,25 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { jobManagementService, Job } from '../services/jobManagementService';
 import { inviteService, InviteCandidate } from '../services/inviteService';
 import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
-import {
-  Mail,
-  Upload,
-  UserPlus,
-  Send,
-  Download,
-  X,
-  Plus,
-  Briefcase,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+import { BulkInviteForm } from './invites/BulkInviteForm';
+import { CSVUploadForm } from './invites/CSVUploadForm';
+import { InvitesList } from './invites/InvitesList';
+import { InviteStatsCard } from './invites/InviteStatsCard';
+import { Mail, Upload, UserPlus, Briefcase } from 'lucide-react';
 
 type InviteMethod = 'manual' | 'csv';
 
@@ -266,216 +257,38 @@ export const InviteCandidatesPage = () => {
         <CardContent>
           {inviteMethod === 'manual' ? (
             <div className="space-y-6">
-              {/* Add Candidate Form */}
-              <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-                <h3 className="font-semibold text-gray-900">Thêm ứng viên</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email">
-                      Email <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="candidate@example.com"
-                      value={currentCandidate.email}
-                      onChange={(e) =>
-                        setCurrentCandidate({ ...currentCandidate, email: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="name">
-                      Họ và tên <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="name"
-                      placeholder="Nguyễn Văn A"
-                      value={currentCandidate.name}
-                      onChange={(e) =>
-                        setCurrentCandidate({ ...currentCandidate, name: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Số điện thoại</Label>
-                    <Input
-                      id="phone"
-                      placeholder="0901234567"
-                      value={currentCandidate.phone}
-                      onChange={(e) =>
-                        setCurrentCandidate({ ...currentCandidate, phone: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="note">Ghi chú</Label>
-                    <Input
-                      id="note"
-                      placeholder="Kinh nghiệm 3 năm..."
-                      value={currentCandidate.note}
-                      onChange={(e) =>
-                        setCurrentCandidate({ ...currentCandidate, note: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button onClick={handleAddCandidate} className="w-full">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Thêm vào danh sách
-                </Button>
-              </div>
-
-              {/* Candidates List */}
-              {candidates.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Danh sách ứng viên ({candidates.length})
-                  </h3>
-                  <div className="space-y-2">
-                    {candidates.map((candidate, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start justify-between p-3 bg-white border rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900">{candidate.name}</p>
-                          <p className="text-sm text-gray-600">{candidate.email}</p>
-                          {candidate.phone && (
-                            <p className="text-sm text-gray-600">{candidate.phone}</p>
-                          )}
-                          {candidate.note && (
-                            <p className="text-sm text-gray-500 italic">{candidate.note}</p>
-                          )}
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveCandidate(candidate.email)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Custom Message */}
-              <div>
-                <Label htmlFor="customMessage">Tin nhắn tùy chỉnh (tùy chọn)</Label>
-                <Textarea
-                  id="customMessage"
-                  rows={4}
-                  placeholder="Thêm lời nhắn cá nhân hóa cho ứng viên..."
-                  value={customMessage}
-                  onChange={(e) => setCustomMessage(e.target.value)}
-                  className="mt-2"
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Tin nhắn này sẽ được thêm vào email mời ứng tuyển
-                </p>
-              </div>
+              <BulkInviteForm
+                currentCandidate={currentCandidate}
+                customMessage={customMessage}
+                onCandidateChange={setCurrentCandidate}
+                onCustomMessageChange={setCustomMessage}
+                onAddCandidate={handleAddCandidate}
+              />
+              <InvitesList candidates={candidates} onRemove={handleRemoveCandidate} />
             </div>
           ) : (
-            <div className="space-y-6">
-              {/* CSV Upload */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <Label>Tải lên file CSV</Label>
-                  <Button variant="outline" size="sm" onClick={downloadCsvTemplate}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Tải mẫu CSV
-                  </Button>
-                </div>
-
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600 mb-2">Kéo thả file CSV hoặc click để chọn</p>
-                  <p className="text-sm text-gray-500 mb-4">
-                    File CSV phải có các cột: email, name, phone, note
-                  </p>
-                  <input
-                    type="file"
-                    accept=".csv"
-                    onChange={handleCsvFileChange}
-                    className="hidden"
-                    id="csv-upload"
-                  />
-                  <label htmlFor="csv-upload">
-                    <Button type="button" variant="outline" asChild>
-                      <span>Chọn file</span>
-                    </Button>
-                  </label>
-                </div>
-
-                {csvFile && (
-                  <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600" />
-                    <span className="text-green-800">Đã chọn: {csvFile.name}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* CSV Preview */}
-              {csvPreview.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Xem trước (5 dòng đầu tiên)</h3>
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                    {csvPreview.map((candidate, index) => (
-                      <div key={index} className="flex items-start gap-3 p-2 bg-white rounded">
-                        <CheckCircle2 className="w-4 h-4 text-green-600 mt-1" />
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900">{candidate.name}</p>
-                          <p className="text-sm text-gray-600">{candidate.email}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
-                    <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <p className="text-sm text-blue-800">
-                      File CSV sẽ được xử lý hoàn toàn trên server. Đảm bảo file có định dạng đúng.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+            <CSVUploadForm
+              csvFile={csvFile}
+              csvPreview={csvPreview}
+              onFileChange={handleCsvFileChange}
+              onDownloadTemplate={downloadCsvTemplate}
+            />
           )}
         </CardContent>
       </Card>
 
       {/* Send Button */}
-      <Card>
-        <CardContent className="p-6">
-          <Button
-            onClick={handleSendInvites}
-            disabled={
-              !selectedJobId ||
-              isSending ||
-              (inviteMethod === 'manual' && candidates.length === 0) ||
-              (inviteMethod === 'csv' && !csvFile)
-            }
-            className="w-full"
-            size="lg"
-          >
-            {isSending ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
-                Đang gửi...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5 mr-2" />
-                Gửi lời mời (
-                {inviteMethod === 'manual' ? candidates.length : csvPreview.length || '...'} ứng
-                viên)
-              </>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
+      <InviteStatsCard
+        candidateCount={inviteMethod === 'manual' ? candidates.length : csvPreview.length}
+        isSending={isSending}
+        isDisabled={
+          !selectedJobId ||
+          isSending ||
+          (inviteMethod === 'manual' && candidates.length === 0) ||
+          (inviteMethod === 'csv' && !csvFile)
+        }
+        onSend={handleSendInvites}
+      />
     </div>
   );
 };
