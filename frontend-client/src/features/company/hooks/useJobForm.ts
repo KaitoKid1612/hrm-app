@@ -14,7 +14,14 @@ export interface JobFormState {
   isHot: boolean;
 }
 
-export const useJobForm = () => {
+interface InitialData {
+  formData?: Partial<JobFormState>;
+  requirements?: string[];
+  responsibilities?: string[];
+  benefits?: string[];
+}
+
+export const useJobForm = (initialData?: InitialData) => {
   const [formData, setFormData] = useState<JobFormState>({
     title: '',
     description: '',
@@ -26,11 +33,14 @@ export const useJobForm = () => {
     numberOfPositions: 1,
     expiresAt: '',
     isHot: false,
+    ...initialData?.formData,
   });
 
-  const [requirements, setRequirements] = useState<string[]>([]);
-  const [responsibilities, setResponsibilities] = useState<string[]>([]);
-  const [benefits, setBenefits] = useState<string[]>([]);
+  const [requirements, setRequirements] = useState<string[]>(initialData?.requirements || []);
+  const [responsibilities, setResponsibilities] = useState<string[]>(
+    initialData?.responsibilities || [],
+  );
+  const [benefits, setBenefits] = useState<string[]>(initialData?.benefits || []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -124,6 +134,7 @@ export const useJobForm = () => {
 
   return {
     formData,
+    setFormData,
     requirements,
     responsibilities,
     benefits,
