@@ -8,6 +8,10 @@ import { jobService } from '../services/jobService';
 import type { Company } from '../services/companyService';
 import type { Job } from '../types';
 import { ROUTES } from '@/constants';
+import { useCompanyReviews, useCompanyRating } from '@/features/reviews/hooks/useReviews';
+import { ReviewCard } from '@/features/reviews/components/ReviewCard';
+import { RatingOverview } from '@/features/reviews/components/RatingOverview';
+import { WriteReviewModal } from '@/features/reviews/components/WriteReviewModal';
 import {
   Building2,
   MapPin,
@@ -22,6 +26,8 @@ import {
   DollarSign,
   Clock,
   TrendingUp,
+  Star,
+  MessageSquare,
 } from 'lucide-react';
 
 export const CompanyDetailPage = () => {
@@ -30,7 +36,12 @@ export const CompanyDetailPage = () => {
   const [company, setCompany] = useState<Company | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'about' | 'jobs'>('about');
+  const [activeTab, setActiveTab] = useState<'about' | 'jobs' | 'reviews'>('about');
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
+
+  // Reviews data
+  const { rating } = useCompanyRating(id || '');
+  const { reviews, refetch: refetchReviews } = useCompanyReviews(id || '', { limit: 5 });
 
   useEffect(() => {
     if (id) {
@@ -117,7 +128,7 @@ export const CompanyDetailPage = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row gap-6">
             {/* Logo */}
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl border-2 border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 -mt-12 sm:-mt-16 bg-white shadow-lg">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl border-2 border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 mt-0 sm:mt-0 bg-white shadow-lg">
               {company.logo ? (
                 <img
                   src={company.logo}
@@ -186,6 +197,17 @@ export const CompanyDetailPage = () => {
               }`}
             >
               Việc làm ({jobs.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`py-4 px-2 border-b-2 font-medium transition-colors flex items-center gap-2 ${
+                activeTab === 'reviews'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Star className="w-4 h-4" />
+              Đánh giá {rating && `(${rating.totalReviews})`}
             </button>
           </div>
         </div>
@@ -291,6 +313,57 @@ export const CompanyDetailPage = () => {
                 )}
               </div>
             )}
+
+            {activeTab === 'reviews' && (
+              <div className="space-y-6">
+                {/* Rating Overview */}
+                {rating && <RatingOverview rating={rating} />}
+
+                {/* Write Review Button */}
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold mb-2">Chia sẻ trải nghiệm của bạn</h3>
+                      <p className="text-gray-600 mb-4">
+                        Đánh giá của bạn sẽ giúp người khác có cái nhìn chính xác về công ty
+                      </p>
+                      <Button onClick={() => setIsWriteReviewModalOpen(true)}>Viết đánh giá</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Reviews List */}
+                {reviews.length > 0 ? (
+                  <>
+                    <div className="space-y-4">
+                      {reviews.map((review) => (
+                        <ReviewCard key={review.id} review={review} onUpdate={refetchReviews} />
+                      ))}
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => navigate(`/companies/${id}/reviews`)}
+                    >
+                      Xem tất cả đánh giá
+                    </Button>
+                  </>
+                ) : (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold mb-2">Chưa có đánh giá</h3>
+                      <p className="text-gray-600 mb-4">
+                        Hãy là người đầu tiên đánh giá công ty này
+                      </p>
+                      <Button onClick={() => setIsWriteReviewModalOpen(true)}>
+                        Viết đánh giá đầu tiên
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -380,6 +453,18 @@ export const CompanyDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Write Review Modal */}
+      {isWriteReviewModalOpen && id && (
+        <WriteReviewModal
+          companyId={id}
+          onClose={() => setIsWriteReviewModalOpen(false)}
+          onSubmit={() => {
+            setIsWriteReviewModalOpen(false);
+            refetchReviews();
+          }}
+        />
+      )}
     </MainLayout>
   );
 };

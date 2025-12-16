@@ -31,6 +31,8 @@ import {
   AnalyticsDashboardPage,
   InviteCandidatesPage,
 } from '@/features/company';
+import { CompanyReviewsPage } from '@/features/reviews';
+import { RecommendedJobsPage } from '@/features/recommendations';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -50,6 +52,7 @@ function App() {
           <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
           <Route path={ROUTES.COMPANIES} element={<CompanyListPage />} />
           <Route path={ROUTES.COMPANY_DETAIL} element={<CompanyDetailPage />} />
+          <Route path="/companies/:companyId/reviews" element={<CompanyReviewsPage />} />
 
           {/* Auth Routes - Redirect nếu đã đăng nhập */}
           <Route
@@ -133,6 +136,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyApplicationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.RECOMMENDED_JOBS}
+            element={
+              <ProtectedRoute>
+                <RecommendedJobsPage />
               </ProtectedRoute>
             }
           />

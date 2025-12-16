@@ -61,7 +61,7 @@ class SettingsService {
         headers: getAuthHeaders(),
       });
       return response.data;
-    } catch (error) {
+    } catch {
       // Fallback to localStorage if API fails
       const stored = localStorage.getItem('userPreferences');
       return stored
@@ -81,7 +81,7 @@ class SettingsService {
         headers: getAuthHeaders(),
       });
       return response.data.preferences;
-    } catch (error) {
+    } catch {
       // Fallback to localStorage if API fails
       localStorage.setItem('userPreferences', JSON.stringify(preferences));
       return preferences;

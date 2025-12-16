@@ -53,6 +53,14 @@ export const Header = () => {
             >
               Công ty
             </Link>
+            {isAuthenticated && user?.role === 'CANDIDATE' && (
+              <Link
+                to={ROUTES.RECOMMENDED_JOBS}
+                className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium flex items-center gap-1"
+              >
+                <span>✨</span> Gợi ý việc làm
+              </Link>
+            )}
             {isAuthenticated && user?.role === 'EMPLOYER' && (
               <Link
                 to={ROUTES.COMPANY_DASHBOARD}

@@ -17,6 +17,7 @@ export const ROUTES = {
   MY_APPLICATIONS: '/my-applications',
   SAVED_JOBS: '/saved-jobs',
   MY_RESUME: '/my-resume',
+  RECOMMENDED_JOBS: '/recommended-jobs',
 
   // Company routes (Employer)
   COMPANY_DASHBOARD: '/company/dashboard',
@@ -34,6 +35,7 @@ export const ROUTES = {
   // Other
   COMPANIES: '/companies',
   COMPANY_DETAIL: '/companies/:id',
+  COMPANY_REVIEWS: '/companies/:id/reviews',
   SETTINGS: '/settings',
 } as const;
 

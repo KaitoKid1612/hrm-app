@@ -26,27 +26,27 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle 401 - Unauthorized
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      toast.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại');
-      // Redirect to login after a short delay
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 1500);
+    // Handle 401 - Unauthorized (but not for login/register endpoints)
+    const isAuthEndpoint =
+      error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/register');
+
+    if (error.response?.status === 401 && !isAuthEndpoint) {
+      // Only handle token expiration, not login failures
+      const token = localStorage.getItem('token');
+      if (token) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        toast.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại');
+        // Redirect to login after a short delay
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
+      }
     }
 
-    // Don't show toast for these cases (let components handle them)
-    // - 400 errors from form validation (component shows field errors)
-    // - 404 errors (component shows "not found" state)
-    const shouldShowToast = error.response?.status !== 400 && error.response?.status !== 404;
-
-    if (shouldShowToast) {
-      toast.error(error);
-    }
-
+    // Don't show toast for any errors - let components handle them
+    // Components will show appropriate error messages
     return Promise.reject(error);
   },
 );

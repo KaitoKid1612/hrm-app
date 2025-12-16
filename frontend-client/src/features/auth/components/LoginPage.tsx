@@ -36,7 +36,13 @@ const Login: React.FC = () => {
         navigate(ROUTES.DASHBOARD);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Lỗi không xác định');
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      // Extract error message from API response
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
