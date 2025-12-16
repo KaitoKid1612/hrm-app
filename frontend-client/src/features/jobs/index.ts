@@ -4,6 +4,7 @@ export { SearchBar } from './components/SearchBar';
 export { JobDetailPage } from './components/JobDetailPage';
 export { JobListPage } from './components/JobListPage';
 export { SavedJobsPage } from './components/SavedJobsPage';
+export { CompanyListPage } from './components/CompanyListPage';
 export { ApplyJobModal } from './components/ApplyJobModal';
 export { HeroSection } from './components/HeroSection';
 export { CategorySection } from './components/CategorySection';

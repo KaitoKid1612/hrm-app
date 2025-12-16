@@ -5,7 +5,13 @@ import { AuthProvider } from '@/features/auth';
 import { LoginPage, RegisterPage } from '@/features/auth';
 import { DashboardPage } from '@/features/dashboard';
 import { ProfilePage, ResumePage } from '@/features/profile';
-import { HomePage, JobDetailPage, JobListPage, SavedJobsPage } from '@/features/jobs';
+import {
+  HomePage,
+  JobDetailPage,
+  JobListPage,
+  SavedJobsPage,
+  CompanyListPage,
+} from '@/features/jobs';
 import { MyApplicationsPage } from '@/features/applications';
 import {
   EmployerDashboardPage,
@@ -37,6 +43,7 @@ function App() {
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.JOBS} element={<JobListPage />} />
           <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
+          <Route path={ROUTES.COMPANIES} element={<CompanyListPage />} />
 
           {/* Auth Routes - Redirect nếu đã đăng nhập */}
           <Route
