@@ -20,6 +20,7 @@ import {
   EmployerDashboardPage,
   CompanyProfilePage,
   PostJobPage,
+  EditJobPage,
   ManageJobsPage,
   ManageApplicationsPage,
   ApplicationDetailPage,
@@ -163,6 +164,16 @@ function App() {
               <ProtectedRoute>
                 <EmployerDashboardLayout>
                   <PostJobPage />
+                </EmployerDashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/company/jobs/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EmployerDashboardLayout>
+                  <EditJobPage />
                 </EmployerDashboardLayout>
               </ProtectedRoute>
             }

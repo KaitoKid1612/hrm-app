@@ -1,6 +1,7 @@
 export { EmployerDashboardPage } from './components/EmployerDashboardPage';
 export { CompanyProfilePage } from './components/CompanyProfilePage';
 export { PostJobPage } from './components/PostJobPage';
+export { EditJobPage } from './components/EditJobPage';
 export { ManageJobsPage } from './components/ManageJobsPage';
 export { ManageApplicationsPage } from './components/ManageApplicationsPage';
 export { ApplicationDetailPage } from './components/ApplicationDetailPage';
