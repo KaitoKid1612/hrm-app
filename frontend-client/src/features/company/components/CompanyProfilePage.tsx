@@ -1,52 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompanyProfile } from '../hooks/useCompanyProfile';
-import {
-  Building2,
-  Upload,
-  Save,
-  Globe,
-  MapPin,
-  Phone,
-  Mail,
-  Calendar,
-  Users,
-  Facebook,
-  Linkedin,
-  Twitter,
-  Plus,
-  X,
-} from 'lucide-react';
-
-const industrys = [
-  'Công nghệ thông tin',
-  'Tài chính - Ngân hàng',
-  'Bất động sản',
-  'Y tế - Dược phẩm',
-  'Giáo dục - Đào tạo',
-  'Thương mại - Dịch vụ',
-  'Sản xuất',
-  'Du lịch - Khách sạn',
-  'Truyền thông - Marketing',
-  'Khác',
-];
-
-const companySizes = [
-  '1-10 nhân viên',
-  '11-50 nhân viên',
-  '51-200 nhân viên',
-  '201-500 nhân viên',
-  '501-1000 nhân viên',
-  '1000+ nhân viên',
-];
+import { CompanyBasicInfo } from './profile/CompanyBasicInfo';
+import { CompanyContactInfo } from './profile/CompanyContactInfo';
+import { CompanyMediaUpload } from './profile/CompanyMediaUpload';
+import { Building2, Save, Users, Facebook, Linkedin, Twitter, Plus, X } from 'lucide-react';
 
 export const CompanyProfilePage = () => {
   const { profile, isLoading, updateProfile, uploadLogo } = useCompanyProfile();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -203,127 +168,17 @@ export const CompanyProfilePage = () => {
             <CardTitle>Thông tin cơ bản</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Logo Upload */}
-            <div>
-              <Label>Logo công ty</Label>
-              <div className="mt-2 flex items-center gap-6">
-                <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
-                  {profile?.logo ? (
-                    <img
-                      src={profile.logo}
-                      alt="Company logo"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Building2 className="w-12 h-12 text-gray-400" />
-                  )}
-                </div>
-                <div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    Tải lên logo
-                  </Button>
-                  <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF tối đa 5MB</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Company Name */}
-            <div>
-              <Label htmlFor="name">Tên công ty *</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                placeholder="Ví dụ: FPT Software"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <Label htmlFor="description">Mô tả công ty *</Label>
-              <Textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                required
-                rows={5}
-                placeholder="Giới thiệu về công ty của bạn..."
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* Industry */}
-              <div>
-                <Label htmlFor="industry">Lĩnh vực</Label>
-                <select
-                  id="industry"
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleInputChange}
-                  className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Chọn lĩnh vực</option>
-                  {industrys.map((ind) => (
-                    <option key={ind} value={ind}>
-                      {ind}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Company Size */}
-              <div>
-                <Label htmlFor="size">Quy mô</Label>
-                <select
-                  id="size"
-                  name="size"
-                  value={formData.size}
-                  onChange={handleInputChange}
-                  className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Chọn quy mô</option>
-                  {companySizes.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Founded Year */}
-            <div>
-              <Label htmlFor="foundedYear">
-                <Calendar className="w-4 h-4 inline mr-1" />
-                Năm thành lập
-              </Label>
-              <Input
-                id="foundedYear"
-                name="foundedYear"
-                type="number"
-                value={formData.foundedYear}
-                onChange={handleInputChange}
-                min="1900"
-                max={new Date().getFullYear()}
-                placeholder="2020"
-              />
-            </div>
+            <CompanyMediaUpload logo={profile?.logo} onLogoUpload={handleLogoUpload} />
+            <CompanyBasicInfo
+              formData={{
+                name: formData.name,
+                description: formData.description,
+                industry: formData.industry,
+                size: formData.size,
+                foundedYear: formData.foundedYear,
+              }}
+              onChange={handleInputChange}
+            />
           </CardContent>
         </Card>
 
@@ -332,90 +187,18 @@ export const CompanyProfilePage = () => {
           <CardHeader>
             <CardTitle>Thông tin liên hệ</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="address">
-                <MapPin className="w-4 h-4 inline mr-1" />
-                Địa chỉ *
-              </Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                required
-                placeholder="Số nhà, tên đường"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">Thành phố</Label>
-                <Input
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  placeholder="Hà Nội"
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">Quốc gia</Label>
-                <Input
-                  id="country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  placeholder="Việt Nam"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone">
-                  <Phone className="w-4 h-4 inline mr-1" />
-                  Số điện thoại
-                </Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="0123456789"
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">
-                  <Mail className="w-4 h-4 inline mr-1" />
-                  Email liên hệ
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="contact@company.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="website">
-                <Globe className="w-4 h-4 inline mr-1" />
-                Website
-              </Label>
-              <Input
-                id="website"
-                name="website"
-                type="url"
-                value={formData.website}
-                onChange={handleInputChange}
-                placeholder="https://company.com"
-              />
-            </div>
+          <CardContent>
+            <CompanyContactInfo
+              formData={{
+                address: formData.address,
+                city: formData.city,
+                country: formData.country,
+                phone: formData.phone,
+                email: formData.email,
+                website: formData.website,
+              }}
+              onChange={handleInputChange}
+            />
           </CardContent>
         </Card>
 
