@@ -79,6 +79,39 @@ export class CreateJobDto {
   @IsArray()
   @IsString({ each: true })
   skillIds?: string[];
+
+  // New fields
+  @IsOptional()
+  @IsBoolean()
+  isRemote?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isUrgent?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsString()
+  contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsString()
+  workSchedule?: string;
+
+  @IsOptional()
+  @IsNumber()
+  probationPeriod?: number;
+
+  @IsOptional()
+  @IsString()
+  contractType?: string;
 }
 
 export class UpdateJobDto {
@@ -141,6 +174,39 @@ export class UpdateJobDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  // New fields
+  @IsOptional()
+  @IsBoolean()
+  isRemote?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isUrgent?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsString()
+  contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsString()
+  workSchedule?: string;
+
+  @IsOptional()
+  @IsNumber()
+  probationPeriod?: number;
+
+  @IsOptional()
+  @IsString()
+  contractType?: string;
 }
 
 export class QueryJobDto {

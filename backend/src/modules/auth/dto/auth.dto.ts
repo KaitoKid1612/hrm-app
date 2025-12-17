@@ -7,6 +7,7 @@ import {
   IsInt,
   IsUrl,
   IsDateString,
+  IsBoolean,
   Min,
   Max,
 } from 'class-validator';
@@ -128,6 +129,41 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsUrl({}, { message: 'Github URL không hợp lệ' })
   githubUrl?: string;
+
+  // New fields
+  @IsOptional()
+  @IsString({ message: 'Headline phải là chuỗi ký tự' })
+  headline?: string;
+
+  @IsOptional()
+  @IsString({ message: 'Trạng thái tìm việc phải là chuỗi ký tự' })
+  availability?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: 'Thời gian báo trước phải là số nguyên' })
+  @Min(0, { message: 'Thời gian báo trước không thể âm' })
+  noticePeriod?: number;
+
+  @IsOptional()
+  @IsBoolean({ message: 'Sẵn sàng di chuyển phải là boolean' })
+  willingToRelocate?: boolean;
+
+  @IsOptional()
+  @IsString({ message: 'Ngôn ngữ phải là chuỗi ký tự' })
+  languages?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Twitter URL không hợp lệ' })
+  twitterUrl?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Facebook URL không hợp lệ' })
+  facebookUrl?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Website URL không hợp lệ' })
+  websiteUrl?: string;
 
   // Preferences
   @IsOptional()

@@ -52,6 +52,45 @@ export class CreateCompanyDto {
   @IsOptional()
   @IsString()
   taxCode?: string;
+
+  // New fields
+  @IsOptional()
+  @IsString()
+  industry?: string;
+
+  @IsOptional()
+  foundedYear?: number;
+
+  @IsOptional()
+  employeeCount?: number;
+
+  @IsOptional()
+  @IsString()
+  benefits?: string;
+
+  @IsOptional()
+  @IsString()
+  workingDays?: string;
+
+  @IsOptional()
+  @IsString()
+  overtimePolicy?: string;
+
+  @IsOptional()
+  @IsUrl()
+  linkedinUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  facebookUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  twitterUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  youtubeUrl?: string;
 }
 
 export class UpdateCompanyDto {
@@ -110,4 +149,43 @@ export class UpdateCompanyDto {
   @IsOptional()
   @IsBoolean()
   isVerified?: boolean;
+
+  // New fields
+  @IsOptional()
+  @IsString()
+  industry?: string;
+
+  @IsOptional()
+  foundedYear?: number;
+
+  @IsOptional()
+  employeeCount?: number;
+
+  @IsOptional()
+  @IsString()
+  benefits?: string;
+
+  @IsOptional()
+  @IsString()
+  workingDays?: string;
+
+  @IsOptional()
+  @IsString()
+  overtimePolicy?: string;
+
+  @IsOptional()
+  @IsUrl()
+  linkedinUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  facebookUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  twitterUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  youtubeUrl?: string;
 }
