@@ -22,6 +22,12 @@ import { AnalyticsModule } from '@/modules/analytics/analytics.module';
 import { RecommendationsModule } from '@/modules/recommendations/recommendations.module';
 import { InvitesModule } from '@/modules/invites/invites.module';
 import { InterviewsModule } from '@/modules/interviews/interviews.module';
+import { WorkExperiencesModule } from '@/modules/work-experiences/work-experiences.module';
+import { EducationsModule } from '@/modules/educations/educations.module';
+import { CertificatesModule } from '@/modules/certificates/certificates.module';
+import { BenefitsModule } from '@/modules/benefits/benefits.module';
+import { CompanyFollowersModule } from '@/modules/company-followers/company-followers.module';
+import { JobAlertsModule } from '@/modules/job-alerts/job-alerts.module';
 
 @Module({
   imports: [
@@ -48,6 +54,13 @@ import { InterviewsModule } from '@/modules/interviews/interviews.module';
     AnalyticsModule,
     RecommendationsModule,
     InvitesModule,
+    InterviewsModule,
+    WorkExperiencesModule,
+    EducationsModule,
+    CertificatesModule,
+    BenefitsModule,
+    CompanyFollowersModule,
+    JobAlertsModule,
     InterviewsModule,
   ],
   providers: [RolesGuard],
