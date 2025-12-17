@@ -42,11 +42,8 @@ export class AnalyticsController {
   @Get('company')
   @UseGuards(RolesGuard)
   @Roles(Role.EMPLOYER)
-  async getCompanyAnalytics(
-    @CurrentUser('sub') userId: string,
-    @Query() query: CompanyAnalyticsQueryDto,
-  ) {
-    const analytics = await this.analyticsService.getCompanyAnalytics(userId, query);
+  async getCompanyAnalytics(@CurrentUser() user: any, @Query() query: CompanyAnalyticsQueryDto) {
+    const analytics = await this.analyticsService.getCompanyAnalytics(user.id, query);
 
     if (!analytics) {
       throw new NotFoundException('Company not found for this user');
@@ -63,10 +60,10 @@ export class AnalyticsController {
   @UseGuards(RolesGuard)
   @Roles(Role.CANDIDATE)
   async getCandidateAnalytics(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Query() query: CandidateAnalyticsQueryDto,
   ) {
-    return this.analyticsService.getCandidateAnalytics(userId, query);
+    return this.analyticsService.getCandidateAnalytics(user.id, query);
   }
 
   /**

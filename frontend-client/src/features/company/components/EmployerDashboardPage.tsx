@@ -16,6 +16,7 @@ import {
 import { ROUTES } from '@/constants';
 import { analyticsService } from '../services/analyticsService';
 import { applicationManagementService } from '../services/applicationManagementService';
+import { TimeRange } from '../types/analytics.types';
 import { toast } from '@/lib/toast';
 
 interface DashboardStats {
