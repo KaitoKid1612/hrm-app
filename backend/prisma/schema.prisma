@@ -106,6 +106,18 @@ model User {
   portfolioUrl      String?
   githubUrl         String?
 
+  // Additional Professional Info
+  headline          String? // Short tagline/headline
+  availability      String? @default("ACTIVE_LOOKING") // ACTIVE_LOOKING, OPEN, NOT_LOOKING
+  noticePeriod      Int?    @default(30) // Days notice period
+  willingToRelocate Boolean @default(false)
+  languages         String? // JSON: [{name: "English", level: "fluent"}]
+
+  // Social & Professional Links
+  twitterUrl  String?
+  facebookUrl String?
+  websiteUrl  String?
+
   // Settings & Preferences
   preferredLanguage    String? @default("vi")
   timezone             String? @default("Asia/Ho_Chi_Minh")
@@ -142,10 +154,15 @@ model User {
   resume              Resume?
   applications        Application[]
   savedJobs           SavedJob[]
-  conversationsAsUser Conversation[] @relation("UserConversations")
+  conversationsAsUser Conversation[]    @relation("UserConversations")
   messages            Message[]
   notifications       Notification[]
   reviews             Review[]
+  workExperiences     WorkExperience[]
+  educations          Education[]
+  certificates        Certificate[]
+  followedCompanies   CompanyFollower[]
+  jobAlertSettings    JobAlert[]
 
   @@map("users")
 }
@@ -167,14 +184,31 @@ model Company {
   size        String? // 1-50, 51-200, 201-500, 500+
   taxCode     String?
   isVerified  Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+
+  // Additional fields
+  industry       String? // Ngành nghề: IT, Finance, Marketing, etc.
+  foundedYear    Int? // Năm thành lập
+  employeeCount  Int? // Số lượng nhân viên thực tế
+  benefits       String? @db.Text // Tổng quan phúc lợi công ty
+  workingDays    String? @default("Mon-Fri") // Ngày làm việc
+  overtimePolicy String? @db.Text // Chính sách làm thêm giờ
+
+  // Social Links
+  linkedinUrl String?
+  facebookUrl String?
+  twitterUrl  String?
+  youtubeUrl  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs    Job[]
-  reviews Review[]
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs      Job[]
+  reviews   Review[]
+  followers CompanyFollower[]
 
+  @@index([industry])
   @@map("companies")
 }
 
@@ -231,8 +265,19 @@ model Job {
   deadline        DateTime?
   isActive        Boolean          @default(true)
   viewCount       Int              @default(0)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+
+  // Additional important fields
+  isRemote        Boolean @default(false)
+  isUrgent        Boolean @default(false) // Tuyển gấp
+  isFeatured      Boolean @default(false) // Việc làm nổi bật
+  contactEmail    String?
+  contactPhone    String?
+  workSchedule    String? // Lịch làm việc: 8h-17h, flexible, etc.
+  probationPeriod Int?    @default(60) // Thời gian thử việc (days)
+  contractType    String? // Loại hợp đồng: chính thức, thử việc, etc.
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -241,11 +286,15 @@ model Job {
   applications Application[]
   savedJobs    SavedJob[]
   invites      JobInvite[]
+  jobBenefits  JobBenefit[]
 
   @@index([companyId])
   @@index([categoryId])
   @@index([isActive])
   @@index([deadline])
+  @@index([isRemote])
+  @@index([isUrgent])
+  @@index([isFeatured])
   @@map("jobs")
 }
 
@@ -324,11 +373,12 @@ model Application {
   updatedAt   DateTime          @updatedAt
 
   // Relations
-  job           Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume        Resume?        @relation(fields: [resumeId], references: [id])
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume        Resume?           @relation(fields: [resumeId], references: [id])
   notifications Notification[]
   interviews    Interview[]
+  notes         ApplicationNote[]
 
   @@unique([jobId, userId])
   @@index([jobId])
@@ -493,4 +543,166 @@ model Interview {
   @@index([scheduledAt])
   @@index([status])
   @@map("interviews")
+}
+
+// ============= NEW MODELS FOR PROFESSIONAL PROFILE =============
+
+model WorkExperience {
+  id          String    @id @default(cuid())
+  userId      String
+  company     String // Tên công ty
+  position    String // Vị trí công việc
+  startDate   DateTime
+  endDate     DateTime?
+  isCurrent   Boolean   @default(false)
+  location    String? // Địa điểm làm việc
+  description String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("work_experiences")
+}
+
+model Education {
+  id           String    @id @default(cuid())
+  userId       String
+  school       String // Tên trường
+  degree       String // Bằng cấp: Cử nhân, Thạc sĩ, etc.
+  fieldOfStudy String // Chuyên ngành
+  startDate    DateTime
+  endDate      DateTime?
+  isCurrent    Boolean   @default(false)
+  grade        String? // GPA hoặc xếp loại
+  activities   String?   @db.Text // Hoạt động ngoại khóa
+  description  String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("educations")
+}
+
+model Certificate {
+  id             String    @id @default(cuid())
+  userId         String
+  name           String // Tên chứng chỉ
+  issuingOrg     String // Tổ chức cấp
+  issueDate      DateTime
+  expirationDate DateTime?
+  credentialId   String? // Mã chứng chỉ
+  credentialUrl  String? // Link xác minh
+  description    String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("certificates")
+}
+
+// ============= BENEFITS SYSTEM =============
+
+model Benefit {
+  id          String   @id @default(cuid())
+  name        String   @unique // Bảo hiểm, Thưởng, Training, etc.
+  slug        String   @unique
+  icon        String?
+  description String?  @db.Text
+  category    String? // INSURANCE, BONUS, TRAINING, HEALTH, etc.
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  jobBenefits JobBenefit[]
+
+  @@map("benefits")
+}
+
+model JobBenefit {
+  id        String   @id @default(cuid())
+  jobId     String
+  benefitId String
+  details   String?  @db.Text // Chi tiết cụ thể của benefit cho job này
+  createdAt DateTime @default(now())
+
+  // Relations
+  job     Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  benefit Benefit @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, benefitId])
+  @@index([jobId])
+  @@index([benefitId])
+  @@map("job_benefits")
+}
+
+// ============= COMPANY FOLLOWERS =============
+
+model CompanyFollower {
+  id        String   @id @default(cuid())
+  userId    String
+  companyId String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@index([companyId])
+  @@map("company_followers")
+}
+
+// ============= JOB ALERTS =============
+
+model JobAlert {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String // Tên alert: "Full-stack jobs in HCM"
+  keywords   String? // Từ khóa tìm kiếm
+  categoryId String?
+  city       String?
+  jobType    JobType?
+  salaryMin  Int?
+  isRemote   Boolean?
+  isActive   Boolean   @default(true)
+  frequency  String    @default("DAILY") // DAILY, WEEKLY, INSTANT
+  lastSentAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("job_alerts")
+}
+
+// ============= APPLICATION NOTES =============
+
+model ApplicationNote {
+  id            String   @id @default(cuid())
+  applicationId String
+  createdBy     String // userId who created note
+  content       String   @db.Text
+  isPrivate     Boolean  @default(true) // Only visible to company
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@index([createdBy])
+  @@map("application_notes")
 }
