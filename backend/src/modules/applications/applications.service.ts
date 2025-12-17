@@ -1,9 +1,17 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { NotificationsService } from '@/modules/notifications/notifications.service';
 import { EmailService } from '@/modules/email/email.service';
 import { CreateApplicationDto } from './dto/application.dto';
+import { CreateApplicationNoteDto } from './dto/create-application-note.dto';
+import { UpdateApplicationNoteDto } from './dto/update-application-note.dto';
 
 @Injectable()
 export class ApplicationsService {
@@ -188,5 +196,98 @@ export class ApplicationsService {
     }
 
     return application;
+  }
+
+  // Application Notes Management
+  async createNote(applicationId: string, userId: string, data: CreateApplicationNoteDto) {
+    const application = await this.prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { job: { include: { company: true } } },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    // Only job owner (company) can create notes
+    if (!application.job.company || application.job.company.userId !== userId) {
+      throw new ForbiddenException('Only company can create notes on applications');
+    }
+
+    return this.prisma.applicationNote.create({
+      data: {
+        applicationId,
+        createdBy: userId,
+        content: data.content,
+        isPrivate: data.isPrivate ?? true,
+      },
+    });
+  }
+
+  async getNotes(applicationId: string, userId: string) {
+    const application = await this.prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { job: { include: { company: true } } },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    // Only company or candidate can view notes
+    const isCompany = application.job.company?.userId === userId;
+    const isCandidate = application.userId === userId;
+
+    if (!isCompany && !isCandidate) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    return this.prisma.applicationNote.findMany({
+      where: {
+        applicationId,
+        ...(isCandidate && { isPrivate: false }), // Candidates only see non-private notes
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updateNote(noteId: string, userId: string, data: UpdateApplicationNoteDto) {
+    const note = await this.prisma.applicationNote.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note) {
+      throw new NotFoundException('Note not found');
+    }
+
+    if (note.createdBy !== userId) {
+      throw new ForbiddenException('You can only update your own notes');
+    }
+
+    return this.prisma.applicationNote.update({
+      where: { id: noteId },
+      data: {
+        ...(data.content && { content: data.content }),
+        ...(data.isPrivate !== undefined && { isPrivate: data.isPrivate }),
+      },
+    });
+  }
+
+  async deleteNote(noteId: string, userId: string) {
+    const note = await this.prisma.applicationNote.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note) {
+      throw new NotFoundException('Note not found');
+    }
+
+    if (note.createdBy !== userId) {
+      throw new ForbiddenException('You can only delete your own notes');
+    }
+
+    return this.prisma.applicationNote.delete({
+      where: { id: noteId },
+    });
   }
 }
