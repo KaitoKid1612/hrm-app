@@ -133,9 +133,11 @@ export class AdminApplicationsService {
       throw new NotFoundException('Không tìm thấy đơn ứng tuyển');
     }
 
+    const { notes: _notes, ...updateData } = dto;
+
     return this.prisma.application.update({
       where: { id },
-      data: dto,
+      data: updateData,
       include: {
         user: {
           select: {
