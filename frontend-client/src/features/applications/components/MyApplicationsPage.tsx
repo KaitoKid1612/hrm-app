@@ -90,7 +90,9 @@ export const MyApplicationsPage = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadApplications();
@@ -99,21 +101,42 @@ export const MyApplicationsPage = () => {
   const loadApplications = async () => {
     try {
       setIsLoading(true);
+      setError('');
       const data = await applicationService.getMyApplications();
-      setApplications(data);
+      setApplications(data || []);
     } catch (error) {
       console.error('Error loading applications:', error);
+      setError('Không thể tải danh sách đơn ứng tuyển');
+      setApplications([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const filteredApplications = statusFilter
-    ? applications.filter((app) => app.status === statusFilter)
-    : applications;
+    ? (applications || []).filter((app) => app.status === statusFilter)
+    : applications || [];
 
   const getStatusCount = (status: string) => {
-    return applications.filter((app) => app.status === status).length;
+    return (applications || []).filter((app) => app.status === status).length;
+  };
+
+  const handleWithdraw = async (id: string) => {
+    if (!window.confirm('Bạn có chắc chắn muốn rút đơn ứng tuyển này?')) {
+      return;
+    }
+
+    try {
+      setWithdrawingId(id);
+      await applicationService.withdrawApplication(id);
+      // Reload applications
+      loadApplications();
+    } catch (error) {
+      console.error('Error withdrawing application:', error);
+      setError('Không thể rút đơn. Vui lòng thử lại.');
+    } finally {
+      setWithdrawingId(null);
+    }
   };
 
   if (isLoading) {
@@ -143,6 +166,11 @@ export const MyApplicationsPage = () => {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">{error}</div>
+        )}
+
         {/* Status Filter */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <div className="flex flex-wrap gap-2">
@@ -154,7 +182,7 @@ export const MyApplicationsPage = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Tất cả ({applications.length})
+              Tất cả ({(applications || []).length})
             </button>
             {Object.entries(statusConfig).map(([status, config]) => {
               const count = getStatusCount(status);
@@ -262,6 +290,29 @@ export const MyApplicationsPage = () => {
                           <ExternalLink className="w-4 h-4 mr-2" />
                           Xem tin
                         </Button>
+
+                        {/* Withdraw button - only show for PENDING or REVIEWING */}
+                        {['PENDING', 'REVIEWING'].includes(application.status) && (
+                          <Button
+                            onClick={() => handleWithdraw(application.id)}
+                            variant="outline"
+                            size="sm"
+                            disabled={withdrawingId === application.id}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            {withdrawingId === application.id ? (
+                              <>
+                                <Clock className="w-4 h-4 mr-2 animate-spin" />
+                                Đang rút...
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="w-4 h-4 mr-2" />
+                                Rút đơn
+                              </>
+                            )}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
