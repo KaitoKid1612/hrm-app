@@ -68,7 +68,7 @@ export class AdminInterviewsService {
 
     return {
       data: interviews,
-      meta: {
+      pagination: {
         total,
         page,
         limit,

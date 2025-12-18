@@ -20,6 +20,7 @@ import {
   AdminQueryUsersDto,
   AdminUpdateUserDto,
   AdminBulkActionUsersDto,
+  AdminCreateUserDto,
 } from './dto/admin-users.dto';
 
 @Controller('admin/users')
@@ -27,6 +28,11 @@ import {
 @Roles(Role.ADMIN)
 export class AdminUsersController {
   constructor(@Inject(AdminUsersService) private readonly adminUsersService: AdminUsersService) {}
+
+  @Post()
+  createUser(@Body() dto: AdminCreateUserDto) {
+    return this.adminUsersService.createUser(dto);
+  }
 
   @Get()
   getAllUsers(@Query() query: AdminQueryUsersDto) {

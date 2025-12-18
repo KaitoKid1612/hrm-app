@@ -1,14 +1,63 @@
 import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { PrismaService } from '@/core/prisma/prisma.service';
+import bcrypt from 'bcryptjs';
 import {
   AdminQueryUsersDto,
   AdminUpdateUserDto,
   AdminBulkActionUsersDto,
+  AdminCreateUserDto,
 } from './dto/admin-users.dto';
 
 @Injectable()
 export class AdminUsersService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+
+  async createUser(dto: AdminCreateUserDto) {
+    // Check if user already exists
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Email đã được sử dụng');
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    // Create user
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        name: dto.name,
+        password: hashedPassword,
+        role: dto.role || 'CANDIDATE',
+        phone: dto.phone,
+        bio: dto.bio,
+        address: dto.address,
+        city: dto.city,
+        country: dto.country,
+        isActive: true,
+        emailVerified: false,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        phone: true,
+        bio: true,
+        address: true,
+        city: true,
+        country: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return user;
+  }
 
   async getAllUsers(query: AdminQueryUsersDto) {
     const {
@@ -20,7 +69,11 @@ export class AdminUsersService {
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = query;
-    const skip = (page - 1) * limit;
+
+    // Ensure numbers are parsed correctly
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const where: any = {};
 
@@ -39,7 +92,7 @@ export class AdminUsersService {
       this.prisma.user.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         orderBy: { [sortBy]: sortOrder },
         include: {
           _count: {
@@ -58,11 +111,11 @@ export class AdminUsersService {
         ...user,
         password: undefined,
       })),
-      meta: {
-        page,
-        limit,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNum),
       },
     };
   }

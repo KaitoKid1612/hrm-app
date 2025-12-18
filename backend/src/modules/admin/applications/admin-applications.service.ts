@@ -70,7 +70,7 @@ export class AdminApplicationsService {
 
     return {
       data: applications,
-      meta: {
+      pagination: {
         page,
         limit,
         total,

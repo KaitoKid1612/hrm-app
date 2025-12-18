@@ -37,7 +37,7 @@ export class AdminContentService {
 
     return {
       data: categories,
-      meta: {
+      pagination: {
         total,
         page,
         limit,
@@ -160,7 +160,7 @@ export class AdminContentService {
 
     return {
       data: skills,
-      meta: {
+      pagination: {
         total,
         page,
         limit,

@@ -24,7 +24,11 @@ export class AdminJobsService {
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = query;
-    const skip = (page - 1) * limit;
+
+    // Ensure numbers are parsed correctly
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const where: any = {};
 
@@ -52,7 +56,7 @@ export class AdminJobsService {
       this.prisma.job.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         orderBy,
         include: {
           company: {
@@ -79,11 +83,11 @@ export class AdminJobsService {
 
     return {
       data: jobs,
-      meta: {
-        page,
-        limit,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNum),
       },
     };
   }
@@ -255,7 +259,7 @@ export class AdminJobsService {
 
     return {
       data: applications,
-      meta: {
+      pagination: {
         total,
         page,
         limit,

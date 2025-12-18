@@ -61,7 +61,7 @@ export class AdminModerationService {
 
     return {
       data: reviews,
-      meta: {
+      pagination: {
         total,
         page,
         limit,
