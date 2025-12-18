@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { CandidateSidebar } from './CandidateSidebar';
+import { EmployerSidebar } from './EmployerSidebar';
 import { Button } from '@/components/ui/button';
 import { LogOut, Bell, User as UserIcon } from 'lucide-react';
 import { ROUTES } from '@/constants';
@@ -21,7 +22,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <CandidateSidebar />
+      {user?.role === 'EMPLOYER' ? <EmployerSidebar /> : <CandidateSidebar />}
 
       <div className="flex-1 flex flex-col">
         {/* Header */}
