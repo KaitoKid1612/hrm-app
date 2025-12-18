@@ -6,7 +6,7 @@ export const resumeService = {
   async getMyResume(): Promise<Resume | null> {
     try {
       const response = await api.get(API_ENDPOINTS.RESUME.MY_RESUME);
-      return response.data.data;
+      return response.data;
     } catch (error: unknown) {
       if (error && typeof error === 'object' && 'response' in error) {
         const err = error as { response?: { status?: number } };
@@ -20,7 +20,7 @@ export const resumeService = {
 
   async upsertResume(data: ResumeFormData): Promise<Resume> {
     const response = await api.post(API_ENDPOINTS.RESUME.UPSERT, data);
-    return response.data.data;
+    return response.data;
   },
 
   async uploadResumeFile(file: File): Promise<{ url: string }> {
@@ -31,6 +31,6 @@ export const resumeService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data.data;
+    return response.data;
   },
 };

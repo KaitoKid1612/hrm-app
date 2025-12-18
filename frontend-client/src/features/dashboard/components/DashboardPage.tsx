@@ -12,7 +12,7 @@ import {
   TrendingUp,
   ArrowRight,
 } from 'lucide-react';
-import { candidateAnalyticsService } from '../services/candidateAnalyticsService';
+import { candidateAnalyticsService, TimeRange } from '../services/candidateAnalyticsService';
 import { toast } from '@/lib/toast';
 
 interface Application {

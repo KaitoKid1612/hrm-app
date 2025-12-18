@@ -5,16 +5,16 @@ import { FileText } from 'lucide-react';
 
 interface ResumeBasicInfoProps {
   title: string;
-  summary: string;
+  objective?: string;
   onTitleChange: (title: string) => void;
-  onSummaryChange: (summary: string) => void;
+  onObjectiveChange: (objective: string) => void;
 }
 
 export const ResumeBasicInfo = ({
   title,
-  summary,
+  objective,
   onTitleChange,
-  onSummaryChange,
+  onObjectiveChange,
 }: ResumeBasicInfoProps) => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -34,13 +34,13 @@ export const ResumeBasicInfo = ({
           />
         </div>
         <div>
-          <Label htmlFor="summary">Tóm tắt về bản thân</Label>
+          <Label htmlFor="objective">Mục tiêu nghề nghiệp</Label>
           <Textarea
-            id="summary"
-            value={summary}
-            onChange={(e) => onSummaryChange(e.target.value)}
+            id="objective"
+            value={objective || ''}
+            onChange={(e) => onObjectiveChange(e.target.value)}
             rows={6}
-            placeholder="Giới thiệu về bản thân, mục tiêu nghề nghiệp, điểm mạnh..."
+            placeholder="Mô tả mục tiêu nghề nghiệp, điểm mạnh, kỹ năng nổi bật của bạn..."
             className="mt-2"
           />
         </div>
