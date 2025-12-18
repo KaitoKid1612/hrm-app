@@ -23,6 +23,22 @@ export class ApplicationsService {
   ) {}
 
   async create(userId: string, data: CreateApplicationDto) {
+    // Check user role - only candidates can apply
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Người dùng không tồn tại');
+    }
+
+    if (user.role === 'EMPLOYER') {
+      throw new ForbiddenException(
+        'Nhà tuyển dụng không thể ứng tuyển vào công việc. Vui lòng sử dụng tài khoản ứng viên.',
+      );
+    }
+
     // Verify resume exists and belongs to user
     const resume = await this.prisma.resume.findFirst({
       where: {
@@ -143,8 +159,115 @@ export class ApplicationsService {
     });
   }
 
-  async updateStatus(id: string, status: any) {
-    const application = await this.prisma.application.update({
+  async findByEmployer(userId: string) {
+    // First, find all companies owned by this employer
+    const companies = await this.prisma.company.findMany({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (companies.length === 0) {
+      return [];
+    }
+
+    const companyIds = companies.map((c) => c.id);
+
+    // Find all jobs from these companies
+    const jobs = await this.prisma.job.findMany({
+      where: { companyId: { in: companyIds } },
+      select: { id: true },
+    });
+
+    if (jobs.length === 0) {
+      return [];
+    }
+
+    const jobIds = jobs.map((j) => j.id);
+
+    // Find all applications for these jobs
+    return this.prisma.application.findMany({
+      where: { jobId: { in: jobIds } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            avatar: true,
+          },
+        },
+        job: {
+          select: {
+            id: true,
+            title: true,
+            company: {
+              select: {
+                id: true,
+                name: true,
+                logo: true,
+              },
+            },
+          },
+        },
+        resume: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async updateStatus(id: string, status: any, userId: string, userRole: string) {
+    // Validate user permission
+    const application = await this.prisma.application.findUnique({
+      where: { id },
+      include: {
+        job: {
+          include: {
+            company: true,
+          },
+        },
+      },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Đơn ứng tuyển không tồn tại');
+    }
+
+    // Only employer who owns the job can update status
+    if (userRole !== 'EMPLOYER' && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Bạn không có quyền cập nhật trạng thái đơn ứng tuyển');
+    }
+
+    // Check if employer owns this job's company
+    if (userRole === 'EMPLOYER' && application.job.company?.userId !== userId) {
+      throw new ForbiddenException('Bạn chỉ có thể cập nhật đơn ứng tuyển của công ty mình');
+    }
+
+    // Validate status transitions (employer can only set certain statuses)
+    const allowedStatuses = [
+      'PENDING',
+      'REVIEWING',
+      'SHORTLISTED',
+      'INTERVIEWED',
+      'ACCEPTED',
+      'REJECTED',
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      throw new BadRequestException(
+        `Trạng thái không hợp lệ. Chỉ được phép: ${allowedStatuses.join(', ')}`,
+      );
+    }
+
+    // Prevent changing status of withdrawn applications
+    if (application.status === 'WITHDRAWN') {
+      throw new BadRequestException('Không thể thay đổi trạng thái của đơn đã rút');
+    }
+
+    // Update the application
+    const updatedApplication = await this.prisma.application.update({
       where: { id },
       data: {
         status,
@@ -162,19 +285,19 @@ export class ApplicationsService {
     });
 
     // Notify candidate about status change
-    if (['REVIEWING', 'INTERVIEWED', 'ACCEPTED', 'REJECTED'].includes(status)) {
+    if (['REVIEWING', 'SHORTLISTED', 'INTERVIEWED', 'ACCEPTED', 'REJECTED'].includes(status)) {
       // Create notification
       await this.notificationsService.notifyApplicationStatus(
-        application.userId,
-        application.job.title,
-        application.job.company?.name || 'Công ty',
+        updatedApplication.userId,
+        updatedApplication.job.title,
+        updatedApplication.job.company?.name || 'Công ty',
         status,
-        application.id,
+        updatedApplication.id,
       );
 
       // Send email to candidate
       const candidate = await this.prisma.user.findUnique({
-        where: { id: application.userId },
+        where: { id: updatedApplication.userId },
         select: { name: true, email: true },
       });
 
@@ -183,11 +306,11 @@ export class ApplicationsService {
           .sendApplicationStatusEmail({
             candidateName: candidate.name || 'Candidate',
             candidateEmail: candidate.email,
-            jobTitle: application.job.title,
-            companyName: application.job.company?.name || 'Công ty',
+            jobTitle: updatedApplication.job.title,
+            companyName: updatedApplication.job.company?.name || 'Công ty',
             status: status,
-            appliedDate: application.createdAt.toLocaleDateString('vi-VN'),
-            applicationUrl: `${this.configService.get('FRONTEND_URL', 'http://localhost:5173')}/applications/${application.id}`,
+            appliedDate: updatedApplication.createdAt.toLocaleDateString('vi-VN'),
+            applicationUrl: `${this.configService.get('FRONTEND_URL', 'http://localhost:5173')}/applications/${updatedApplication.id}`,
           })
           .catch((error) => {
             console.error('Failed to send application status email:', error);
@@ -195,7 +318,56 @@ export class ApplicationsService {
       }
     }
 
-    return application;
+    return updatedApplication;
+  }
+
+  async withdrawApplication(id: string, userId: string) {
+    const application = await this.prisma.application.findUnique({
+      where: { id },
+      include: {
+        job: {
+          include: {
+            company: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Đơn ứng tuyển không tồn tại');
+    }
+
+    // Only the candidate who created the application can withdraw
+    if (application.userId !== userId) {
+      throw new ForbiddenException('Bạn chỉ có thể rút đơn ứng tuyển của chính mình');
+    }
+
+    // Can only withdraw if status is PENDING or REVIEWING
+    if (!['PENDING', 'REVIEWING'].includes(application.status)) {
+      throw new BadRequestException(
+        'Chỉ có thể rút đơn khi trạng thái là Đang chờ hoặc Đang xem xét',
+      );
+    }
+
+    const updatedApplication = await this.prisma.application.update({
+      where: { id },
+      data: {
+        status: 'WITHDRAWN',
+      },
+      include: {
+        job: {
+          include: {
+            company: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+
+    return updatedApplication;
   }
 
   // Application Notes Management

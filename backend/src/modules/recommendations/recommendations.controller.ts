@@ -25,11 +25,8 @@ export class RecommendationsController {
   @Get('jobs')
   @UseGuards(RolesGuard)
   @Roles(Role.CANDIDATE)
-  async getJobRecommendations(
-    @CurrentUser('sub') userId: string,
-    @Query() query: JobRecommendationQueryDto,
-  ) {
-    return this.recommendationsService.getJobRecommendations(userId, query);
+  async getJobRecommendations(@CurrentUser() user: any, @Query() query: JobRecommendationQueryDto) {
+    return this.recommendationsService.getJobRecommendations(user.id, query);
   }
 
   /**
@@ -40,10 +37,10 @@ export class RecommendationsController {
   @UseGuards(RolesGuard)
   @Roles(Role.EMPLOYER)
   async getCandidateRecommendations(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Query() query: CandidateRecommendationQueryDto,
   ) {
-    return this.recommendationsService.getCandidateRecommendations(userId, query);
+    return this.recommendationsService.getCandidateRecommendations(user.id, query);
   }
 
   /**
@@ -53,8 +50,8 @@ export class RecommendationsController {
   @Post('match-score')
   @UseGuards(RolesGuard)
   @Roles(Role.CANDIDATE)
-  async getMatchScore(@CurrentUser('sub') userId: string, @Body() dto: MatchScoreDto) {
-    return this.recommendationsService.getMatchScore(userId, dto);
+  async getMatchScore(@CurrentUser() user: any, @Body() dto: MatchScoreDto) {
+    return this.recommendationsService.getMatchScore(user.id, dto);
   }
 
   /**

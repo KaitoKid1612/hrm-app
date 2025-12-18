@@ -45,8 +45,27 @@ export class AnalyticsController {
   async getCompanyAnalytics(@CurrentUser() user: any, @Query() query: CompanyAnalyticsQueryDto) {
     const analytics = await this.analyticsService.getCompanyAnalytics(user.id, query);
 
+    // Return empty analytics if user hasn't created a company yet
     if (!analytics) {
-      throw new NotFoundException('Company not found for this user');
+      return {
+        hasCompany: false,
+        overview: {
+          totalJobs: 0,
+          activeJobs: 0,
+          totalApplications: 0,
+          newApplications: 0,
+          pendingApplications: 0,
+          totalViews: 0,
+        },
+        recentApplications: [],
+        applicationsByStatus: [],
+        applicationTrend: [],
+        topPerformingJobs: [],
+        timeRange: {
+          start: new Date(),
+          end: new Date(),
+        },
+      };
     }
 
     return analytics;

@@ -288,6 +288,7 @@ export class EmailService {
       ACCEPTED: 'Chấp nhận',
       REJECTED: 'Từ chối',
       WITHDRAWN: 'Rút đơn',
+      SHORTLISTED: 'Đã lọc',
     };
 
     return statusMap[status] || status;

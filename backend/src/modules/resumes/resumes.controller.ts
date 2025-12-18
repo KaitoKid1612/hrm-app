@@ -2,6 +2,7 @@ import { Controller, Get, Post, Param, Body, UseGuards, Inject } from '@nestjs/c
 import { ResumesService } from './resumes.service';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { UpsertResumeDto } from './dto/upsert-resume.dto';
 
 @Controller('resumes')
 @UseGuards(JwtAuthGuard)
@@ -9,7 +10,7 @@ export class ResumesController {
   constructor(@Inject(ResumesService) private readonly resumesService: ResumesService) {}
 
   @Post()
-  upsert(@CurrentUser() user: any, @Body() data: any) {
+  upsert(@CurrentUser() user: any, @Body() data: UpsertResumeDto) {
     return this.resumesService.upsert(user.id, data);
   }
 

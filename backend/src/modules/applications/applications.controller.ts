@@ -33,14 +33,28 @@ export class ApplicationsController {
     return this.applicationsService.findByUser(user.id);
   }
 
+  @Get('employer/applications')
+  getEmployerApplications(@CurrentUser() user: any) {
+    return this.applicationsService.findByEmployer(user.id);
+  }
+
   @Get('job/:jobId')
   getJobApplications(@Param('jobId') jobId: string) {
     return this.applicationsService.findByJob(jobId);
   }
 
   @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body() dto: UpdateApplicationStatusDto) {
-    return this.applicationsService.updateStatus(id, dto.status);
+  updateStatus(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @Body() dto: UpdateApplicationStatusDto,
+  ) {
+    return this.applicationsService.updateStatus(id, dto.status, user.id, user.role);
+  }
+
+  @Patch(':id/withdraw')
+  withdrawApplication(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.applicationsService.withdrawApplication(id, user.id);
   }
 
   // Application Notes

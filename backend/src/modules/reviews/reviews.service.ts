@@ -104,7 +104,11 @@ export class ReviewsService {
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = query;
-    const skip = (page - 1) * limit;
+
+    // Ensure numeric values
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     const where: any = {
       isApproved,
@@ -118,7 +122,7 @@ export class ReviewsService {
       this.prisma.review.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         orderBy: { [sortBy]: sortOrder },
         include: {
           user: {
@@ -143,10 +147,10 @@ export class ReviewsService {
     return {
       data: reviews.map((review) => this.sanitizeReview(review)),
       meta: {
-        page,
-        limit,
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNum),
       },
     };
   }
@@ -352,9 +356,10 @@ export class ReviewsService {
     });
 
     return {
+      companyId,
       averageRating: reviews._avg.rating || 0,
       totalReviews: reviews._count.rating,
-      distribution,
+      ratingDistribution: distribution,
     };
   }
 

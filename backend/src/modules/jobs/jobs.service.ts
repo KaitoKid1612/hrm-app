@@ -186,9 +186,11 @@ export class JobsService {
 
     const where: any = {
       isActive: true,
-      deadline: {
-        gte: new Date(),
-      },
+      AND: [
+        {
+          OR: [{ deadline: { gte: new Date() } }, { deadline: null }],
+        },
+      ],
     };
 
     // Category filter
@@ -242,12 +244,12 @@ export class JobsService {
       where.companyId = filters.companyId;
     }
 
-    // Hot/Featured filters
+    // Hot/Featured filters - ensure boolean conversion
     if (filters.isHot !== undefined) {
-      where.isHot = filters.isHot;
+      where.isHot = filters.isHot === true || (filters.isHot as any) === 'true';
     }
     if (filters.isUrgent !== undefined) {
-      where.isUrgent = filters.isUrgent;
+      where.isUrgent = filters.isUrgent === true || (filters.isUrgent as any) === 'true';
     }
 
     // Date range filters
@@ -265,16 +267,18 @@ export class JobsService {
 
     // Full-text search (keyword)
     if (keyword) {
-      where.OR = [
-        { title: { contains: keyword, mode: 'insensitive' } },
-        { description: { contains: keyword, mode: 'insensitive' } },
-        { requirements: { contains: keyword, mode: 'insensitive' } },
-        {
-          company: {
-            name: { contains: keyword, mode: 'insensitive' },
+      where.AND.push({
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          { description: { contains: keyword, mode: 'insensitive' } },
+          { requirements: { contains: keyword, mode: 'insensitive' } },
+          {
+            company: {
+              name: { contains: keyword, mode: 'insensitive' },
+            },
           },
-        },
-      ];
+        ],
+      });
     }
 
     // Sorting
@@ -336,12 +340,10 @@ export class JobsService {
 
     return {
       data: sortedJobs,
-      meta: {
-        page: pageNum,
-        limit: limitNum,
-        total,
-        totalPages: Math.ceil(total / limitNum),
-      },
+      page: pageNum,
+      limit: limitNum,
+      total,
+      totalPages: Math.ceil(total / limitNum),
     };
   }
 
@@ -354,9 +356,7 @@ export class JobsService {
     if (!company) {
       return {
         data: [],
-        meta: {
-          total: 0,
-        },
+        total: 0,
       };
     }
 
@@ -412,9 +412,7 @@ export class JobsService {
 
     return {
       data: jobs,
-      meta: {
-        total,
-      },
+      total,
     };
   }
 
