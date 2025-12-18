@@ -139,7 +139,7 @@ const Login: React.FC = () => {
               Chưa có tài khoản?{' '}
               <Link
                 to={ROUTES.REGISTER}
-                className="hover:text-indigo-600 font-semibold transition-colors text-white"
+                className="hover:text-indigo-600 font-semibold transition-colors text-blue-600"
               >
                 Đăng ký ngay
               </Link>

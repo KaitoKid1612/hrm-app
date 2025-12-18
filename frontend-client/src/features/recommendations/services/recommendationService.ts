@@ -19,7 +19,7 @@ export const recommendationService = {
     if (query.minMatchScore) params.append('minMatchScore', query.minMatchScore.toString());
 
     const response = await api.get(`${BASE_URL}/jobs?${params.toString()}`);
-    return response.data;
+    return response.data.data || response.data; // Handle both { data: [] } and direct array
   },
 
   // Get candidate recommendations for a job (Employer only)
@@ -32,7 +32,7 @@ export const recommendationService = {
     if (query.minMatchScore) params.append('minMatchScore', query.minMatchScore.toString());
 
     const response = await api.get(`${BASE_URL}/candidates?${params.toString()}`);
-    return response.data;
+    return response.data.data || response.data; // Handle both { data: [] } and direct array
   },
 
   // Calculate match score for a specific job
@@ -44,6 +44,6 @@ export const recommendationService = {
   // Get similar jobs
   async getSimilarJobs(jobId: string, limit = 5): Promise<JobRecommendation[]> {
     const response = await api.get(`${BASE_URL}/similar/${jobId}?limit=${limit}`);
-    return response.data;
+    return response.data.data || response.data; // Handle both { data: [] } and direct array
   },
 };
