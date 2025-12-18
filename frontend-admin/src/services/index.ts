@@ -8,3 +8,4 @@ export * from './analytics.service';
 export * from './skills.service';
 export * from './moderation.service';
 export * from './interviews.service';
+export * from './dashboard.service';

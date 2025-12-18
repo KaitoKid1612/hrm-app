@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { companiesService, type CompaniesQueryParams, type UpdateCompanyData } from '@/services';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 // Query key factory
 export const COMPANIES_KEYS = {

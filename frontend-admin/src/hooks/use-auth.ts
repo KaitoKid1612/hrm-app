@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService, type LoginCredentials, type RegisterData } from '@/services';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 // Query key constants
 export const AUTH_KEYS = {

@@ -25,11 +25,15 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
 
-    // Save tokens
+    // Save tokens to both localStorage and cookies
     if (typeof window !== 'undefined') {
       localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('refresh_token', response.data.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Set cookies for middleware access
+      document.cookie = `access_token=${response.data.accessToken}; path=/; max-age=86400`; // 1 day
+      document.cookie = `refresh_token=${response.data.refreshToken}; path=/; max-age=604800`; // 7 days
     }
 
     return response.data;
@@ -39,11 +43,15 @@ export const authService = {
   async register(data: RegisterData): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/auth/register', data);
 
-    // Save tokens
+    // Save tokens to both localStorage and cookies
     if (typeof window !== 'undefined') {
       localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('refresh_token', response.data.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Set cookies for middleware access
+      document.cookie = `access_token=${response.data.accessToken}; path=/; max-age=86400`; // 1 day
+      document.cookie = `refresh_token=${response.data.refreshToken}; path=/; max-age=604800`; // 7 days
     }
 
     return response.data;
@@ -54,18 +62,22 @@ export const authService = {
     try {
       await apiClient.post('/auth/logout');
     } finally {
-      // Clear local storage
+      // Clear local storage and cookies
       if (typeof window !== 'undefined') {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
+
+        // Clear cookies
+        document.cookie = 'access_token=; path=/; max-age=0';
+        document.cookie = 'refresh_token=; path=/; max-age=0';
       }
     }
   },
 
   // Get current user
   async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<User>('/auth/me');
+    const response = await apiClient.get<User>('/auth/profile');
     return response.data;
   },
 

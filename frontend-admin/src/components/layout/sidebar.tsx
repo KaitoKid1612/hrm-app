@@ -16,9 +16,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCurrentUser, useLogout } from '@/hooks/use-auth';
 
 export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const pathname = usePathname();
+  const { data: user } = useCurrentUser();
+  const logoutMutation = useLogout();
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   return (
     <div className={cn('pb-12', className)}>
@@ -45,7 +52,11 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
           </h2>
           <div className="space-y-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+              // Special handling for dashboard root - exact match only
+              const isActive =
+                item.href === '/dashboard'
+                  ? pathname === '/dashboard'
+                  : pathname === item.href || pathname?.startsWith(item.href + '/');
 
               return (
                 <Button
@@ -74,12 +85,12 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="w-full justify-start">
                 <Avatar className="h-8 w-8 mr-2">
-                  <AvatarImage src="/avatar.png" alt="Admin" />
-                  <AvatarFallback>AD</AvatarFallback>
+                  <AvatarImage src={user?.avatar} alt={user?.name || 'Admin'} />
+                  <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'A'}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start text-left">
-                  <span className="text-sm font-medium">Admin User</span>
-                  <span className="text-xs text-muted-foreground">admin@hrm.com</span>
+                  <span className="text-sm font-medium">{user?.name}</span>
+                  <span className="text-xs text-muted-foreground">{user?.email}</span>
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -93,8 +104,12 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
                 <span>⚙️ Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                <span>🚪 Logout</span>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={handleLogout}
+                disabled={logoutMutation.isPending}
+              >
+                <span>🚪 {logoutMutation.isPending ? 'Đang đăng xuất...' : 'Logout'}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

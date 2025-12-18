@@ -1,66 +1,45 @@
 /**
  * Type definitions for the admin dashboard
+ *
+ * All types are organized into separate files:
+ * - common.types.ts: Common utilities and generic types
+ * - user.types.ts: User, profile, preferences
+ * - company.types.ts: Company, reviews, followers
+ * - job.types.ts: Jobs, categories, skills
+ * - application.types.ts: Applications and interviews
  */
 
-export type Role = 'ADMIN' | 'EMPLOYER' | 'CANDIDATE';
-export type CompanyType = 'COMPANY' | 'SMALL_BUSINESS' | 'HEADHUNTER';
+// Export all types from organized files
+export * from './common.types';
+export * from './user.types';
+export * from './company.types';
+export * from './job.types';
+export * from './application.types';
 
-export type User = {
-  id: string;
-  email: string;
-  name: string;
-  role: Role;
-  avatar?: string;
-  phone?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+// ==================== Additional Types ====================
 
-export type Company = {
-  id: string;
-  name: string;
-  type?: CompanyType;
-  description?: string;
-  website?: string;
-  logo?: string;
-  industry?: string;
-  size?: string;
-  location?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Job = {
-  id: string;
-  title: string;
-  description: string;
-  companyId: string;
-  company?: Company;
-  location?: string;
-  salary?: number;
-  type: string;
-  level: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Application = {
-  id: string;
-  jobId: string;
-  job?: Job;
-  candidateId: string;
-  candidate?: User;
-  status: string;
-  coverLetter?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Stats = {
+// Stats & Analytics (for backward compatibility)
+export interface Stats {
   totalUsers: number;
   totalCompanies: number;
   totalJobs: number;
   totalApplications: number;
-  recentActivity: number;
-};
+  activeJobs?: number;
+  pendingApplications?: number;
+  recentActivity?: number;
+}
+
+export interface DashboardStats extends Stats {
+  newUsersToday: number;
+  newApplicationsToday: number;
+  verificationsPending: number;
+  trends?: {
+    users: number;
+    jobs: number;
+    applications: number;
+    companies: number;
+  };
+}
+
+// Review Status (if not in other files)
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
