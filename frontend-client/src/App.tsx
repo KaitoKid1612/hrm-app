@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/features/auth';
@@ -46,15 +45,13 @@ function App() {
       <AuthProvider>
         <Toaster position="top-right" richColors closeButton />
         <Routes>
-          {/* Public Routes - Không cần đăng nhập */}
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.JOBS} element={<JobListPage />} />
           <Route path={ROUTES.JOB_DETAIL} element={<JobDetailPage />} />
           <Route path={ROUTES.COMPANIES} element={<CompanyListPage />} />
           <Route path={ROUTES.COMPANY_DETAIL} element={<CompanyDetailPage />} />
-          <Route path="/companies/:companyId/reviews" element={<CompanyReviewsPage />} />
+          <Route path={ROUTES.COMPANY_REVIEWS} element={<CompanyReviewsPage />} />
 
-          {/* Auth Routes - Redirect nếu đã đăng nhập */}
           <Route
             path={ROUTES.LOGIN}
             element={
@@ -72,7 +69,6 @@ function App() {
             }
           />
 
-          {/* Protected Routes - Cần đăng nhập */}
           <Route
             path={ROUTES.DASHBOARD}
             element={
@@ -180,7 +176,7 @@ function App() {
             }
           />
           <Route
-            path="/company/jobs/:id/edit"
+            path={ROUTES.EDIT_JOB}
             element={
               <ProtectedRoute>
                 <EmployerDashboardLayout>
@@ -210,7 +206,7 @@ function App() {
             }
           />
           <Route
-            path={`${ROUTES.MANAGE_APPLICATIONS}/:id`}
+            path={ROUTES.APPLICATION_DETAIL}
             element={
               <ProtectedRoute>
                 <EmployerDashboardLayout>
@@ -240,7 +236,7 @@ function App() {
             }
           />
           <Route
-            path={`${ROUTES.COMPANY_INTERVIEWS}/:id`}
+            path={ROUTES.INTERVIEW_DETAIL}
             element={
               <ProtectedRoute>
                 <EmployerDashboardLayout>

@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
     JOB_APPLICATIONS: (jobId: string) => `/applications/job/${jobId}`,
     CREATE: '/applications',
     UPDATE_STATUS: (id: string) => `/applications/${id}/status`,
+    WITHDRAW: (id: string) => `/applications/${id}/withdraw`,
     DETAIL: (id: string) => `/applications/${id}`,
   },
   PROFILE: {
@@ -49,7 +50,7 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/companies/${id}`,
   },
   COMPANIES: {
-    APPLICATIONS: '/companies/applications',
+    APPLICATIONS: '/applications/employer/applications',
     PROFILE: '/companies/my-profile',
   },
   UPLOAD: {
