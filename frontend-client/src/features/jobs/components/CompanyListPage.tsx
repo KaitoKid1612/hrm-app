@@ -131,7 +131,11 @@ export const CompanyListPage = () => {
                   className="flex-1 outline-none text-gray-900"
                 />
               </div>
-              <Button type="submit" size="lg" className="shrink-0">
+              <Button
+                type="submit"
+                size="lg"
+                className="shrink-0 text-blue-500 bg-white hover:bg-gray-100"
+              >
                 Tìm kiếm
               </Button>
             </div>

@@ -90,4 +90,6 @@ export interface JobSearchParams extends JobFilters {
   limit?: number;
   sortBy?: 'createdAt' | 'salary' | 'deadline' | 'views' | 'applications';
   sortOrder?: 'asc' | 'desc';
+  isHot?: boolean;
+  isUrgent?: boolean;
 }

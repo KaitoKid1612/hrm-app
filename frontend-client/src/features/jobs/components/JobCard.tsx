@@ -41,9 +41,9 @@ export const JobCard = ({ job }: JobCardProps) => {
     return new Date(job.createdAt) > sevenDaysAgo;
   };
 
-  // Check if job is hot (has many applications or high salary)
+  // Check if job is hot (marked as hot in database or has many applications or high salary)
   const isHot = () => {
-    return job._count.applications > 10 || job.salaryMax > 20000000;
+    return job.isHot || job._count.applications > 10 || job.salaryMax > 20000000;
   };
 
   return (

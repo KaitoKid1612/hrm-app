@@ -15,7 +15,7 @@ export const applicationService = {
 
   async getMyApplications() {
     const response = await api.get(API_ENDPOINTS.APPLICATIONS.MY_APPLICATIONS);
-    return response.data.data;
+    return response.data;
   },
 
   async checkIfApplied(jobId: string): Promise<boolean> {
@@ -25,6 +25,11 @@ export const applicationService = {
     } catch {
       return false;
     }
+  },
+
+  async withdrawApplication(id: string) {
+    const response = await api.patch(`/applications/${id}/withdraw`);
+    return response.data;
   },
 };
 

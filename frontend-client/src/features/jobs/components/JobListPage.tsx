@@ -6,7 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { JobCard } from './JobCard';
 import { useJobs } from '../hooks/useJobs';
-import { Loader2, Search, MapPin, DollarSign, Briefcase, SlidersHorizontal } from 'lucide-react';
+import {
+  Loader2,
+  Search,
+  MapPin,
+  DollarSign,
+  Briefcase,
+  Filter,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 
 const jobTypes = [
   { value: '', label: 'Tất cả' },
@@ -39,6 +49,7 @@ const salaryRanges = [
 export const JobListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
+  const [page, setPage] = useState(1);
 
   // Filter states
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
@@ -55,7 +66,9 @@ export const JobListPage = () => {
   };
 
   // Fetch jobs with filters
-  const { jobs, total, isLoading, error } = useJobs({
+  const { jobs, total, totalPages, isLoading, error } = useJobs({
+    page,
+    limit: 12,
     keyword: keyword || undefined,
     location: location || undefined,
     type: type || undefined,
@@ -71,12 +84,13 @@ export const JobListPage = () => {
     if (type) params.set('type', type);
     if (level) params.set('level', level);
     if (salaryRange) params.set('salary', salaryRange);
+    if (page > 1) params.set('page', page.toString());
     setSearchParams(params);
-  }, [keyword, location, type, level, salaryRange, setSearchParams]);
+  }, [keyword, location, type, level, salaryRange, page, setSearchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search will trigger automatically via useEffect when params change
+    setPage(1); // Reset to page 1 when search
   };
 
   const clearFilters = () => {
@@ -85,6 +99,7 @@ export const JobListPage = () => {
     setType('');
     setLevel('');
     setSalaryRange('');
+    setPage(1);
     setSearchParams(new URLSearchParams());
   };
 
@@ -92,10 +107,18 @@ export const JobListPage = () => {
 
   return (
     <MainLayout>
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-linear-to-b from-blue-50 to-white min-h-screen">
         <div className="container mx-auto px-4 py-8">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Tìm kiếm việc làm</h1>
+            <p className="text-gray-600 text-lg">
+              Khám phá hàng nghìn cơ hội nghề nghiệp phù hợp với bạn
+            </p>
+          </div>
+
           {/* Search Header */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-6">
             <form onSubmit={handleSearch} className="space-y-4">
               {/* Main Search */}
               <div className="flex gap-4 items-center">
@@ -129,18 +152,24 @@ export const JobListPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium"
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
                 >
-                  <SlidersHorizontal className="w-5 h-5" />
-                  {showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc'}
+                  <Filter className="w-5 h-5" />
+                  {showFilters ? 'Ẩn bộ lọc' : 'Hiển thị bộ lọc nâng cao'}
+                  {hasActiveFilters && [type, level, salaryRange].filter(Boolean).length > 0 && (
+                    <span className="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      {[type, level, salaryRange].filter(Boolean).length}
+                    </span>
+                  )}
                 </button>
                 {hasActiveFilters && (
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1"
                   >
-                    Xóa bộ lọc
+                    <X className="w-4 h-4" />
+                    Xóa tất cả bộ lọc
                   </button>
                 )}
               </div>
@@ -239,11 +268,89 @@ export const JobListPage = () => {
 
           {/* Job List */}
           {!isLoading && !error && jobs.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {jobs.map((job) => (
+                  <JobCard key={job.id} job={job} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                  <div className="text-sm text-gray-600">
+                    Hiển thị{' '}
+                    <span className="font-semibold text-gray-900">{(page - 1) * 12 + 1}</span> -{' '}
+                    <span className="font-semibold text-gray-900">
+                      {Math.min(page * 12, total)}
+                    </span>{' '}
+                    trong tổng số <span className="font-semibold text-blue-600">{total}</span> việc
+                    làm
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setPage((p) => Math.max(1, p - 1));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      disabled={page === 1}
+                      className="flex items-center gap-1"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span className="hidden sm:inline">Trước</span>
+                    </Button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (page <= 3) {
+                          pageNum = i + 1;
+                        } else if (page >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = page - 2 + i;
+                        }
+
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={page === pageNum ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => {
+                              setPage(pageNum);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="w-9 h-9 p-0"
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      })}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setPage((p) => Math.min(totalPages, p + 1));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      disabled={page >= totalPages}
+                      className="flex items-center gap-1"
+                    >
+                      <span className="hidden sm:inline">Sau</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Empty State */}

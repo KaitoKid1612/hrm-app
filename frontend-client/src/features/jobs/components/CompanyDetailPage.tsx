@@ -316,6 +316,14 @@ export const CompanyDetailPage = () => {
 
             {activeTab === 'reviews' && (
               <div className="space-y-6">
+                {/* Reviews Header */}
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Đánh giá từ nhân viên</h2>
+                  <p className="text-gray-600">
+                    Đọc những chia sẻ thật từ người đã và đang làm việc tại {company?.name}
+                  </p>
+                </div>
+
                 {/* Rating Overview */}
                 {rating && <RatingOverview rating={rating} />}
 
