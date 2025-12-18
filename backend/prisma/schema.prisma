@@ -41,6 +41,7 @@ enum JobLevel {
 enum ApplicationStatus {
   PENDING
   REVIEWING
+  SHORTLISTED
   INTERVIEWED
   ACCEPTED
   REJECTED
@@ -268,6 +269,7 @@ model Job {
 
   // Additional important fields
   isRemote        Boolean @default(false)
+  isHot           Boolean @default(false) // Việc làm hot - nổi bật đặc biệt
   isUrgent        Boolean @default(false) // Tuyển gấp
   isFeatured      Boolean @default(false) // Việc làm nổi bật
   contactEmail    String?
@@ -293,6 +295,7 @@ model Job {
   @@index([isActive])
   @@index([deadline])
   @@index([isRemote])
+  @@index([isHot])
   @@index([isUrgent])
   @@index([isFeatured])
   @@map("jobs")
