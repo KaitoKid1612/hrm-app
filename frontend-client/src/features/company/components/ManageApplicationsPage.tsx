@@ -8,7 +8,12 @@ import { applicationManagementService } from '../services/applicationManagementS
 import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import { FileText, Search, Mail, Phone, Calendar, Briefcase, User, Eye } from 'lucide-react';
-import { APPLICATION_STATUS_CONFIG, StatusBadge, formatDateLocale } from '@/shared';
+import {
+  APPLICATION_STATUS_CONFIG,
+  StatusBadge,
+  formatDateLocale,
+  ApplicationStatus,
+} from '@/shared';
 
 const statusOptions = [
   { value: '', label: 'Tất cả trạng thái' },
