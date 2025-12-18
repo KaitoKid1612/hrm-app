@@ -15,7 +15,10 @@ import {
 } from 'lucide-react';
 import { ROUTES } from '@/constants';
 import { analyticsService } from '../services/analyticsService';
-import { applicationManagementService } from '../services/applicationManagementService';
+import {
+  applicationManagementService,
+  ApplicationDetail,
+} from '../services/applicationManagementService';
 import { TimeRange } from '../types/analytics.types';
 import { toast } from '@/lib/toast';
 
@@ -67,27 +70,33 @@ export const EmployerDashboardPage = () => {
         totalJobs: analytics.overview.totalJobs,
         activeJobs: analytics.overview.activeJobs,
         totalApplications: analytics.overview.totalApplications,
-        newApplications: analytics.overview.newApplications,
+        newApplications: analytics.overview.newApplications || 0,
         totalCandidates: analytics.overview.totalApplications, // Use unique applicants
         interviewScheduled: 0, // This would need separate API
       });
 
-      // Fetch recent applications
-      const applicationsData = await applicationManagementService.getApplications({
-        page: 1,
-        limit: 5,
-      });
+      // Fetch recent applications (skip if user doesn't have company yet)
+      if (!analytics.company || analytics.overview.totalJobs === 0) {
+        setRecentApplications([]);
+      } else {
+        const applicationsData = await applicationManagementService.getApplications({
+          page: 1,
+          limit: 5,
+        });
 
-      setRecentApplications(
-        applicationsData.data.map((app: ApplicationDetail) => ({
-          id: app.id,
-          candidateName: app.candidateName || 'Ẩn danh',
-          candidateEmail: app.candidateEmail || '',
-          jobTitle: app.jobTitle,
-          status: app.status,
-          appliedAt: app.appliedAt,
-        })),
-      );
+        if (Array.isArray(applicationsData)) {
+          setRecentApplications(
+            applicationsData.map((app: ApplicationDetail) => ({
+              id: app.id,
+              candidateName: app.candidate?.fullName || 'Ẩn danh',
+              candidateEmail: app.candidate?.email || '',
+              jobTitle: app.job?.title || '',
+              status: app.status,
+              appliedAt: app.createdAt,
+            })),
+          );
+        }
+      }
     } catch (error) {
       console.error('Error loading dashboard:', error);
       toast.error('Không thể tải dữ liệu dashboard');

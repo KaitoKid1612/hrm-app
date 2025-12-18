@@ -7,86 +7,28 @@ import { useApplicationManagement } from '../hooks/useApplicationManagement';
 import { applicationManagementService } from '../services/applicationManagementService';
 import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
-import {
-  FileText,
-  Search,
-  Mail,
-  Phone,
-  Calendar,
-  Briefcase,
-  User,
-  Eye,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  AlertCircle,
-} from 'lucide-react';
-
-const statusConfig = {
-  PENDING: {
-    label: 'Đang chờ',
-    icon: Clock,
-    color: 'text-yellow-700',
-    bg: 'bg-yellow-100',
-    border: 'border-yellow-200',
-  },
-  REVIEWING: {
-    label: 'Đang xem xét',
-    icon: AlertCircle,
-    color: 'text-blue-700',
-    bg: 'bg-blue-100',
-    border: 'border-blue-200',
-  },
-  SHORTLISTED: {
-    label: 'Lọt vòng',
-    icon: CheckCircle2,
-    color: 'text-green-700',
-    bg: 'bg-green-100',
-    border: 'border-green-200',
-  },
-  INTERVIEWED: {
-    label: 'Đã phỏng vấn',
-    icon: CheckCircle2,
-    color: 'text-purple-700',
-    bg: 'bg-purple-100',
-    border: 'border-purple-200',
-  },
-  ACCEPTED: {
-    label: 'Chấp nhận',
-    icon: CheckCircle2,
-    color: 'text-green-700',
-    bg: 'bg-green-100',
-    border: 'border-green-200',
-  },
-  REJECTED: {
-    label: 'Từ chối',
-    icon: XCircle,
-    color: 'text-red-700',
-    bg: 'bg-red-100',
-    border: 'border-red-200',
-  },
-  WITHDRAWN: {
-    label: 'Đã rút',
-    icon: XCircle,
-    color: 'text-gray-700',
-    bg: 'bg-gray-100',
-    border: 'border-gray-200',
-  },
-};
+import { FileText, Search, Mail, Phone, Calendar, Briefcase, User, Eye } from 'lucide-react';
+import { APPLICATION_STATUS_CONFIG, StatusBadge, formatDateLocale } from '@/shared';
 
 const statusOptions = [
   { value: '', label: 'Tất cả trạng thái' },
-  { value: 'PENDING', label: 'Đang chờ' },
-  { value: 'REVIEWING', label: 'Đang xem xét' },
-  { value: 'SHORTLISTED', label: 'Lọt vòng' },
-  { value: 'INTERVIEWED', label: 'Đã phỏng vấn' },
-  { value: 'ACCEPTED', label: 'Chấp nhận' },
-  { value: 'REJECTED', label: 'Từ chối' },
+  ...Object.entries(APPLICATION_STATUS_CONFIG).map(([key, config]) => ({
+    value: key,
+    label: config.label,
+  })),
 ];
+
+// Status options for employer to change to (excluding WITHDRAWN which is candidate-only)
+const employerStatusOptions = Object.entries(APPLICATION_STATUS_CONFIG)
+  .filter(([key]) => key !== 'WITHDRAWN')
+  .map(([key, config]) => ({
+    value: key,
+    label: config.label,
+  }));
 
 export const ManageApplicationsPage = () => {
   const navigate = useNavigate();
-  const { applications, isLoading, loadApplications } = useApplicationManagement();
+  const { applications, isLoading, error, loadApplications } = useApplicationManagement();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -94,7 +36,7 @@ export const ManageApplicationsPage = () => {
     loadApplications({ status: statusFilter || undefined });
   }, [statusFilter]);
 
-  const filteredApplications = applications.filter(
+  const filteredApplications = (applications || []).filter(
     (app) =>
       app.candidate?.fullName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
       app.candidate?.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
@@ -115,7 +57,7 @@ export const ManageApplicationsPage = () => {
   };
 
   const getStatusCount = (status: string) => {
-    return applications.filter((app) => app.status === status).length;
+    return (applications || []).filter((app) => app.status === status).length;
   };
 
   if (isLoading) {
@@ -138,9 +80,16 @@ export const ManageApplicationsPage = () => {
             <FileText className="w-6 h-6 text-blue-600" />
             Quản lý đơn ứng tuyển
           </h1>
-          <p className="text-gray-600 mt-1">Tổng cộng {applications.length} đơn ứng tuyển</p>
+          <p className="text-gray-600 mt-1">
+            Tổng cộng {(applications || []).length} đơn ứng tuyển
+          </p>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">{error}</div>
+      )}
 
       {/* Filters */}
       <Card>
@@ -179,9 +128,6 @@ export const ManageApplicationsPage = () => {
       {filteredApplications.length > 0 ? (
         <div className="space-y-4">
           {filteredApplications.map((application) => {
-            const status = statusConfig[application.status];
-            const StatusIcon = status?.icon || Clock;
-
             return (
               <Card key={application.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
@@ -228,7 +174,7 @@ export const ManageApplicationsPage = () => {
                             </p>
                             <p className="flex items-center gap-2">
                               <Calendar className="w-4 h-4" />
-                              Nộp đơn: {new Date(application.createdAt).toLocaleDateString('vi-VN')}
+                              Nộp đơn: {formatDateLocale(application.createdAt)}
                             </p>
                           </div>
 
@@ -248,22 +194,21 @@ export const ManageApplicationsPage = () => {
                     {/* Status & Actions */}
                     <div className="flex flex-col items-end gap-3">
                       {/* Status Badge */}
-                      <span
-                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status?.bg || 'bg-gray-100'} ${status?.color || 'text-gray-700'}`}
-                      >
-                        <StatusIcon className="w-4 h-4" />
-                        {status?.label || application.status}
-                      </span>
+                      <StatusBadge
+                        status={application.status as ApplicationStatus}
+                        type="application"
+                      />
 
                       {/* Status Change Dropdown */}
                       <select
                         value={application.status}
                         onChange={(e) => handleStatusChange(application.id, e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={application.status === 'WITHDRAWN'}
                       >
-                        {Object.entries(statusConfig).map(([key, config]) => (
-                          <option key={key} value={key}>
-                            {config.label}
+                        {employerStatusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
                           </option>
                         ))}
                       </select>

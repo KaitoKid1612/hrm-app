@@ -17,10 +17,11 @@ export const useApplicationManagement = (jobId?: string) => {
         ...params,
         jobId,
       });
-      setApplications(data);
+      setApplications(data || []);
       return data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
+      setApplications([]);
       throw err;
     } finally {
       setIsLoading(false);
