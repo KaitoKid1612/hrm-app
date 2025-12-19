@@ -5,7 +5,7 @@ import type {
   UserUpdateData,
   BulkActionRequest,
   PaginatedResponse,
-  Stats,
+  UserStats,
 } from '@/types';
 
 export const usersService = {
@@ -48,8 +48,8 @@ export const usersService = {
   },
 
   // Get user stats
-  async getUserStats(): Promise<Stats> {
-    const response = await apiClient.get<Stats>('/admin/users/stats/overview');
+  async getUserStats(): Promise<UserStats> {
+    const response = await apiClient.get<UserStats>('/admin/users/stats/overview');
     return response.data;
   },
 

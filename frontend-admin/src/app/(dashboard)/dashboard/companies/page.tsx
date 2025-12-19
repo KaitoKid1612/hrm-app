@@ -72,7 +72,7 @@ export default function CompaniesPage() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => companiesService.deleteCompany(id),
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ['admin-companies'] });
       queryClient.invalidateQueries({ queryKey: ['admin-companies-stats'] });
       toast.success('Company deleted successfully');
@@ -297,7 +297,9 @@ export default function CompaniesPage() {
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorState error={error as Error} retry={refetch} />;
 
-  const totalPages = data?.meta ? Math.ceil(data.meta.total / data.meta.limit) : 1;
+  const totalPages = data?.pagination
+    ? Math.ceil(data.pagination.total / data.pagination.limit)
+    : 1;
 
   return (
     <div className="space-y-6">
@@ -385,7 +387,7 @@ export default function CompaniesPage() {
           {/* Pagination */}
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Showing {data?.data?.length || 0} of {data?.meta?.total || 0} companies
+              Showing {data?.data?.length || 0} of {data?.pagination?.total || 0} companies
             </p>
             <div className="flex items-center gap-2">
               <Button

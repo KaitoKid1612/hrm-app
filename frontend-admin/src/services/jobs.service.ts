@@ -1,6 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import type { Job } from '@/types';
-import type { PaginatedResponse } from './users.service';
+import type { Job, PaginatedResponse } from '@/types';
 
 export interface JobsQueryParams {
   page?: number;

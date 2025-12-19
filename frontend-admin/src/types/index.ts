@@ -29,6 +29,16 @@ export interface Stats {
   recentActivity?: number;
 }
 
+// User Stats from API
+export interface UserStats {
+  total: number;
+  candidates: number;
+  employers: number;
+  admins: number;
+  active: number;
+  banned: number;
+}
+
 export interface DashboardStats extends Stats {
   newUsersToday: number;
   newApplicationsToday: number;

@@ -1,22 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { usersService, type UsersQueryParams, type UpdateUserData } from '@/services';
+import { usersService } from '@/services';
+import type { UserQueryParams, UserUpdateData, User } from '@/types';
 import { toast } from '@/lib/toast';
 
 // Query key factory
 export const USERS_KEYS = {
   all: ['users'] as const,
   lists: () => [...USERS_KEYS.all, 'list'] as const,
-  list: (params?: UsersQueryParams) => [...USERS_KEYS.lists(), params] as const,
+  list: (params?: UserQueryParams) => [...USERS_KEYS.lists(), params] as const,
   details: () => [...USERS_KEYS.all, 'detail'] as const,
   detail: (id: string) => [...USERS_KEYS.details(), id] as const,
   stats: () => [...USERS_KEYS.all, 'stats'] as const,
 };
 
 // Get users list
-export function useUsers(params?: UsersQueryParams) {
+export function useUsers(params?: UserQueryParams) {
   return useQuery({
     queryKey: USERS_KEYS.list(params),
-    queryFn: () => usersService.getUsers(params),
+    queryFn: () => usersService.getAllUsers(params),
   });
 }
 
@@ -42,8 +43,8 @@ export function useCreateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Partial<UpdateUserData & { password: string }>) =>
-      usersService.createUser(data),
+    mutationFn: (data: Partial<UserUpdateData> & { password: string }) =>
+      usersService.createUser(data as Partial<User> & { password: string }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USERS_KEYS.lists() });
       queryClient.invalidateQueries({ queryKey: USERS_KEYS.stats() });
@@ -60,7 +61,7 @@ export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateUserData }) =>
+    mutationFn: ({ id, data }: { id: string; data: UserUpdateData }) =>
       usersService.updateUser(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: USERS_KEYS.lists() });

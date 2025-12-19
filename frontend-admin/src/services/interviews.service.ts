@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import type { PaginatedResponse } from './users.service';
+import type { PaginatedResponse } from '@/types';
 
 export interface Interview {
   id: string;

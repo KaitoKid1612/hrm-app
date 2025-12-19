@@ -1,22 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { companiesService, type CompaniesQueryParams, type UpdateCompanyData } from '@/services';
+import { companiesService } from '@/services';
+import type { CompanyQueryParams, CompanyUpdateData } from '@/types';
 import { toast } from '@/lib/toast';
 
 // Query key factory
 export const COMPANIES_KEYS = {
   all: ['companies'] as const,
   lists: () => [...COMPANIES_KEYS.all, 'list'] as const,
-  list: (params?: CompaniesQueryParams) => [...COMPANIES_KEYS.lists(), params] as const,
+  list: (params?: CompanyQueryParams) => [...COMPANIES_KEYS.lists(), params] as const,
   details: () => [...COMPANIES_KEYS.all, 'detail'] as const,
   detail: (id: string) => [...COMPANIES_KEYS.details(), id] as const,
   stats: () => [...COMPANIES_KEYS.all, 'stats'] as const,
 };
 
 // Get companies list
-export function useCompanies(params?: CompaniesQueryParams) {
+export function useCompanies(params?: CompanyQueryParams) {
   return useQuery({
     queryKey: COMPANIES_KEYS.list(params),
-    queryFn: () => companiesService.getCompanies(params),
+    queryFn: () => companiesService.getAllCompanies(params),
   });
 }
 
@@ -42,7 +43,7 @@ export function useUpdateCompany() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateCompanyData }) =>
+    mutationFn: ({ id, data }: { id: string; data: CompanyUpdateData }) =>
       companiesService.updateCompany(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.lists() });
@@ -92,20 +93,21 @@ export function useVerifyCompany() {
 }
 
 // Reject company
-export function useRejectCompany() {
-  const queryClient = useQueryClient();
+// TODO: Implement rejectCompany API endpoint
+// export function useRejectCompany() {
+//   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
-      companiesService.rejectCompany(id, reason),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.lists() });
-      queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.detail(variables.id) });
-      queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.stats() });
-      toast.success('Company rejected');
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to reject company');
-    },
-  });
-}
+//   return useMutation({
+//     mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+//       companiesService.rejectCompany(id, reason),
+//     onSuccess: (_, variables) => {
+//       queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.lists() });
+//       queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.detail(variables.id) });
+//       queryClient.invalidateQueries({ queryKey: COMPANIES_KEYS.stats() });
+//       toast.success('Company rejected');
+//     },
+//     onError: (error: Error) => {
+//       toast.error(error.message || 'Failed to reject company');
+//     },
+//   });
+// }

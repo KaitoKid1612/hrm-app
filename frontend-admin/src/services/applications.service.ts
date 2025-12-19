@@ -1,6 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import type { Application } from '@/types';
-import type { PaginatedResponse } from './users.service';
+import type { Application, PaginatedResponse } from '@/types';
 
 export interface ApplicationsQueryParams {
   page?: number;
