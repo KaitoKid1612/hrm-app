@@ -10,7 +10,7 @@ interface LoadingStateProps {
 
 export function LoadingState({ text = 'Loading...' }: LoadingStateProps) {
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex items-center justify-center min-h-100">
       <div className="flex flex-col items-center gap-2">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-sm text-muted-foreground">{text}</p>
@@ -28,7 +28,7 @@ export function ErrorState({ error, retry }: ErrorStateProps) {
   const message = typeof error === 'string' ? error : error.message;
 
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex items-center justify-center min-h-100">
       <Alert variant="destructive" className="max-w-md">
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
@@ -56,7 +56,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex items-center justify-center min-h-100">
       <div className="text-center">
         <h3 className="text-lg font-semibold">{title}</h3>
         {description && <p className="text-sm text-muted-foreground mt-2">{description}</p>}
