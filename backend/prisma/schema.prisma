@@ -33,9 +33,9 @@ enum JobLevel {
   SENIOR
   LEADER
   MANAGER
-  ENTRY_LEVEL // Cấp độ nhập môn - phù hợp với mọi ngành
-  EXPERIENCED // Có kinh nghiệm - phù hợp với mọi ngành
-  NOT_REQUIRED // Không yêu cầu cấp bậc - cho các công việc đơn giản
+  ENTRY_LEVEL
+  EXPERIENCED
+  NOT_REQUIRED
 }
 
 enum ApplicationStatus {
@@ -64,9 +64,9 @@ enum ExperienceLevel {
 }
 
 enum CompanyType {
-  COMPANY // Công ty
-  SMALL_BUSINESS // Hộ kinh doanh/Cá nhân
-  HEADHUNTER // Nhà tuyển dụng (headhunter)
+  COMPANY
+  SMALL_BUSINESS
+  HEADHUNTER
 }
 
 enum InterviewStatus {
