@@ -340,7 +340,7 @@ export default function JobsPage() {
               <CheckCircle className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.active}</div>
+              <div className="text-2xl font-bold">{stats.published}</div>
             </CardContent>
           </Card>
           <Card>

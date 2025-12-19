@@ -1,5 +1,14 @@
 import { jobsApi } from '@/api/jobs.api';
-import type { Job, PaginatedResponse, BulkActionRequest } from '@/types';
+import type {
+  Job,
+  PaginatedResponse,
+  BulkActionRequest,
+  WorkMode,
+  JobType,
+  JobLevel,
+  SalaryType,
+  ExperienceLevel,
+} from '@/types';
 
 export interface JobsQueryParams {
   page?: number;
@@ -27,16 +36,16 @@ export interface UpdateJobData {
   address?: string;
   city?: string;
   country?: string;
-  workMode?: string;
+  workMode?: WorkMode;
   salary?: number;
   salaryMin?: number;
   salaryMax?: number;
-  salaryType?: string;
+  salaryType?: SalaryType;
   salaryCurrency?: string;
   showSalary?: boolean;
-  type?: string;
-  level?: string;
-  experienceLevel?: string;
+  type?: JobType;
+  level?: JobLevel;
+  experienceLevel?: ExperienceLevel;
   positions?: number;
   status?: 'DRAFT' | 'PUBLISHED' | 'CLOSED' | 'ARCHIVED';
   isHot?: boolean;
@@ -89,7 +98,7 @@ export const jobsService = {
 
   async getJobStats(): Promise<{
     total: number;
-    active: number;
+    published: number;
     closed: number;
     draft: number;
   }> {
