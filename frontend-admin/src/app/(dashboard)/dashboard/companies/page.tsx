@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   MoreHorizontal,
@@ -39,12 +39,13 @@ import {
 } from '@/components/companies/company-filters';
 import { BulkActionsBar } from '@/components/companies/bulk-actions-bar';
 import { companiesService } from '@/services';
+import { useCompanyMutations } from '@/hooks/use-company-mutations';
+import { queryKeys } from '@/lib/query-keys';
 import { exportCompaniesToCSV, exportCompaniesToJSON } from '@/lib/export-utils';
 import type { Company } from '@/types';
 import { toast } from 'sonner';
 
 export default function CompaniesPage() {
-  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,9 +53,10 @@ export default function CompaniesPage() {
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [filters, setFilters] = useState<CompanyFilters>({});
 
-  // Fetch companies with filters
+  const mutations = useCompanyMutations();
+
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['admin-companies', page, limit, filters],
+    queryKey: queryKeys.companies.list({ page, limit, ...filters }),
     queryFn: () =>
       companiesService.getAllCompanies({
         page,
@@ -63,25 +65,9 @@ export default function CompaniesPage() {
       }),
   });
 
-  // Fetch stats
   const { data: stats } = useQuery({
-    queryKey: ['admin-companies-stats'],
+    queryKey: queryKeys.companies.stats,
     queryFn: () => companiesService.getCompanyStats(),
-  });
-
-  // Delete mutation
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => companiesService.deleteCompany(id),
-    onSuccess: (_data, id) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-companies'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-companies-stats'] });
-      toast.success('Company deleted successfully');
-      setSelectedCompanies((prev) => prev.filter((companyId) => companyId !== id));
-    },
-    onError: (error: unknown) => {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || 'Failed to delete company');
-    },
   });
 
   // Handle export
@@ -280,7 +266,8 @@ export default function CompaniesPage() {
                 className="text-destructive"
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this company?')) {
-                    deleteMutation.mutate(company.id);
+                    mutations.delete.mutate(company.id);
+                    setSelectedCompanies((prev) => prev.filter((id) => id !== company.id));
                   }
                 }}
               >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   MoreHorizontal,
@@ -37,12 +37,13 @@ import { UserDialog } from '@/components/users/user-dialog';
 import { UserFiltersComponent, type UserFilters } from '@/components/users/user-filters';
 import { BulkActionsBar } from '@/components/users/bulk-actions-bar';
 import { usersService } from '@/services';
+import { useUserMutations } from '@/hooks/use-user-mutations';
+import { queryKeys } from '@/lib/query-keys';
 import type { User } from '@/types';
 import { toast } from 'sonner';
 import { exportUsersToCSV, exportUsersToJSON } from '@/lib/export-utils';
 
 export default function UsersPage() {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const limit = 20;
@@ -51,9 +52,10 @@ export default function UsersPage() {
   const [filters, setFilters] = useState<UserFilters>({});
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  // Fetch users
+  const mutations = useUserMutations();
+
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['users', page, limit, filters],
+    queryKey: queryKeys.users.list({ page, limit, ...filters }),
     queryFn: () =>
       usersService.getAllUsers({
         page,
@@ -62,38 +64,9 @@ export default function UsersPage() {
       }),
   });
 
-  // Fetch stats
   const { data: stats } = useQuery({
-    queryKey: ['users-stats'],
+    queryKey: queryKeys.users.stats,
     queryFn: () => usersService.getUserStats(),
-  });
-
-  // Delete mutation
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => usersService.deleteUser(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      queryClient.invalidateQueries({ queryKey: ['users-stats'] });
-      toast.success('User deleted successfully');
-    },
-    onError: (error: unknown) => {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || 'Failed to delete user');
-    },
-  });
-
-  // Toggle status mutation
-  const toggleStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      usersService.toggleUserStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User status updated');
-    },
-    onError: (error: unknown) => {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || 'Failed to update status');
-    },
   });
 
   const columns: ColumnDef<User>[] = [
@@ -223,7 +196,7 @@ export default function UsersPage() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  toggleStatusMutation.mutate({
+                  mutations.toggleStatus.mutate({
                     id: user.id,
                     status: user.isActive ? 'inactive' : 'active',
                   })
@@ -246,7 +219,7 @@ export default function UsersPage() {
                 className="text-destructive"
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this user?')) {
-                    deleteMutation.mutate(user.id);
+                    mutations.delete.mutate(user.id);
                   }
                 }}
               >
