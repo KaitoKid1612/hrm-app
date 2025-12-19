@@ -1,80 +1,88 @@
 import { apiClient } from '@/lib/api-client';
 
-export interface DashboardStats {
-  users: {
-    total: number;
-    candidates: number;
-    employers: number;
-    admins: number;
-    growth: number;
+export interface DateRangeParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface DashboardOverview {
+  overview: {
+    totalUsers: number;
+    totalCompanies: number;
+    totalJobs: number;
+    totalApplications: number;
+  };
+  newCounts: {
+    users: number;
+    companies: number;
+    jobs: number;
+    applications: number;
+  };
+  usersByRole: Array<{
+    role: string;
+    count: number;
+  }>;
+  jobs: {
+    active: number;
+    expired: number;
   };
   companies: {
-    total: number;
     verified: number;
     pending: number;
-    growth: number;
   };
-  jobs: {
-    total: number;
-    active: number;
-    closed: number;
-    growth: number;
-  };
-  applications: {
-    total: number;
-    pending: number;
-    accepted: number;
-    rejected: number;
-    growth: number;
+  period: {
+    startDate: string;
+    endDate: string;
   };
 }
 
-export interface ChartData {
-  name: string;
-  value: number;
+export interface DailyStats {
+  date: string;
+  users: number;
+  companies: number;
+  jobs: number;
+  applications: number;
 }
 
 export interface GrowthData {
   month: string;
   users: number;
+  companies: number;
   jobs: number;
   applications: number;
 }
 
+export interface AnalyticsData {
+  period: {
+    startDate: string;
+    endDate: string;
+  };
+  dailyStats: DailyStats[];
+  applicationsByStatus: Array<{
+    status: string;
+    count: number;
+  }>;
+  jobsByCategory: Array<{
+    categoryId: string;
+    categoryName: string;
+    count: number;
+  }>;
+  jobsByLocation: Array<{
+    city: string;
+    count: number;
+  }>;
+}
+
 export const analyticsService = {
   // Get dashboard stats
-  async getDashboardStats(): Promise<DashboardStats> {
-    const response = await apiClient.get<DashboardStats>('/admin/dashboard');
+  async getDashboardStats(params?: DateRangeParams): Promise<DashboardOverview> {
+    const response = await apiClient.get<DashboardOverview>('/admin/dashboard', { params });
     return response.data;
   },
 
   // Get analytics data
-  async getAnalytics(params?: { startDate?: string; endDate?: string }): Promise<unknown> {
-    const response = await apiClient.get('/admin/analytics', { params });
-    return response.data;
-  },
-
-  // Get user growth data
-  async getUserGrowth(period: 'week' | 'month' | 'year' = 'month'): Promise<ChartData[]> {
-    const response = await apiClient.get<ChartData[]>('/analytics/users/growth', {
-      params: { period },
-    });
-    return response.data;
-  },
-
-  // Get job statistics
-  async getJobStats(period: 'week' | 'month' | 'year' = 'month'): Promise<ChartData[]> {
-    const response = await apiClient.get<ChartData[]>('/analytics/jobs/stats', {
-      params: { period },
-    });
-    return response.data;
-  },
-
-  // Get application statistics
-  async getApplicationStats(period: 'week' | 'month' | 'year' = 'month'): Promise<ChartData[]> {
-    const response = await apiClient.get<ChartData[]>('/analytics/applications/stats', {
-      params: { period },
-    });
+  async getAnalytics(params?: DateRangeParams): Promise<AnalyticsData> {
+    const response = await apiClient.get<AnalyticsData>('/admin/analytics', { params });
     return response.data;
   },
 

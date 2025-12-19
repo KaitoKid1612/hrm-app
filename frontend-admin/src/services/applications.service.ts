@@ -1,11 +1,11 @@
-import { apiClient } from '@/lib/api-client';
-import type { Application, PaginatedResponse } from '@/types';
+import { applicationsApi } from '@/api/applications.api';
+import type { Application, PaginatedResponse, ApplicationStatus } from '@/types';
 
 export interface ApplicationsQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: 'PENDING' | 'REVIEWING' | 'ACCEPTED' | 'REJECTED';
+  status?: ApplicationStatus;
   jobId?: string;
   userId?: string;
   sortBy?: string;
@@ -13,48 +13,35 @@ export interface ApplicationsQueryParams {
 }
 
 export interface UpdateApplicationData {
-  status?: 'PENDING' | 'REVIEWING' | 'ACCEPTED' | 'REJECTED';
+  status?: ApplicationStatus;
   notes?: string;
 }
 
 export const applicationsService = {
-  // Get all applications
   async getApplications(params?: ApplicationsQueryParams): Promise<PaginatedResponse<Application>> {
-    const response = await apiClient.get<PaginatedResponse<Application>>('/admin/applications', {
-      params,
-    });
+    const response = await applicationsApi.getAll(params);
     return response.data;
   },
 
-  // Get application by ID
   async getApplicationById(id: string): Promise<Application> {
-    const response = await apiClient.get<Application>(`/admin/applications/${id}`);
+    const response = await applicationsApi.getById(id);
     return response.data;
   },
 
-  // Update application
   async updateApplication(id: string, data: UpdateApplicationData): Promise<Application> {
-    const response = await apiClient.patch<Application>(`/admin/applications/${id}`, data);
+    const response = await applicationsApi.update(id, data);
     return response.data;
   },
 
-  // Delete application
   async deleteApplication(id: string): Promise<void> {
-    await apiClient.delete(`/admin/applications/${id}`);
+    await applicationsApi.delete(id);
   },
 
-  // Change application status
-  async changeStatus(
-    id: string,
-    status: 'PENDING' | 'REVIEWING' | 'ACCEPTED' | 'REJECTED',
-  ): Promise<Application> {
-    const response = await apiClient.patch<Application>(`/admin/applications/${id}/status`, {
-      status,
-    });
+  async changeStatus(id: string, status: ApplicationStatus): Promise<Application> {
+    const response = await applicationsApi.changeStatus(id, status);
     return response.data;
   },
 
-  // Get application stats
   async getApplicationStats(): Promise<{
     total: number;
     pending: number;
@@ -62,7 +49,7 @@ export const applicationsService = {
     accepted: number;
     rejected: number;
   }> {
-    const response = await apiClient.get('/admin/applications/stats/overview');
+    const response = await applicationsApi.getStats();
     return response.data;
   },
 };

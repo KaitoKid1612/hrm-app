@@ -1,15 +1,17 @@
-import { apiClient } from '@/lib/api-client';
-import type { Job, PaginatedResponse } from '@/types';
+import { jobsApi } from '@/api/jobs.api';
+import type { Job, PaginatedResponse, BulkActionRequest } from '@/types';
 
 export interface JobsQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: 'ACTIVE' | 'CLOSED' | 'DRAFT';
+  status?: 'DRAFT' | 'PUBLISHED' | 'CLOSED' | 'ARCHIVED';
   companyId?: string;
   categoryId?: string;
   level?: string;
   type?: string;
+  isHot?: boolean;
+  isActive?: boolean;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
@@ -18,64 +20,80 @@ export interface UpdateJobData {
   title?: string;
   description?: string;
   requirements?: string;
+  responsibilities?: string;
   benefits?: string;
-  salary?: string;
+  niceToHave?: string;
   location?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  workMode?: string;
+  salary?: number;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryType?: string;
+  salaryCurrency?: string;
+  showSalary?: boolean;
   type?: string;
   level?: string;
-  status?: 'ACTIVE' | 'CLOSED' | 'DRAFT';
+  experienceLevel?: string;
+  positions?: number;
+  status?: 'DRAFT' | 'PUBLISHED' | 'CLOSED' | 'ARCHIVED';
+  isHot?: boolean;
+  isActive?: boolean;
+  deadline?: string;
+  companyId?: string;
+  categoryId?: string;
+  skillIds?: string[];
 }
 
 export const jobsService = {
-  // Get all jobs
-  async getJobs(params?: JobsQueryParams): Promise<PaginatedResponse<Job>> {
-    const response = await apiClient.get<PaginatedResponse<Job>>('/jobs', { params });
+  async getAllJobs(params?: JobsQueryParams): Promise<PaginatedResponse<Job>> {
+    const response = await jobsApi.getAll(params);
     return response.data;
   },
 
-  // Get job by ID
   async getJobById(id: string): Promise<Job> {
-    const response = await apiClient.get<Job>(`/jobs/${id}`);
+    const response = await jobsApi.getById(id);
     return response.data;
   },
 
-  // Create job
-  async createJob(data: Partial<Job>): Promise<Job> {
-    const response = await apiClient.post<Job>('/jobs', data);
+  async createJob(data: UpdateJobData): Promise<Job> {
+    const response = await jobsApi.create(data);
     return response.data;
   },
 
-  // Update job
   async updateJob(id: string, data: UpdateJobData): Promise<Job> {
-    const response = await apiClient.patch<Job>(`/jobs/${id}`, data);
+    const response = await jobsApi.update(id, data);
     return response.data;
   },
 
-  // Delete job
   async deleteJob(id: string): Promise<void> {
-    await apiClient.delete(`/jobs/${id}`);
+    await jobsApi.delete(id);
   },
 
-  // Close job
   async closeJob(id: string): Promise<Job> {
-    const response = await apiClient.patch<Job>(`/jobs/${id}/close`);
+    const response = await jobsApi.close(id);
     return response.data;
   },
 
-  // Reopen job
   async reopenJob(id: string): Promise<Job> {
-    const response = await apiClient.patch<Job>(`/jobs/${id}/reopen`);
+    const response = await jobsApi.reopen(id);
     return response.data;
   },
 
-  // Get job stats
+  async bulkAction(data: BulkActionRequest): Promise<{ success: boolean; message: string }> {
+    const response = await jobsApi.bulkAction(data);
+    return response.data;
+  },
+
   async getJobStats(): Promise<{
     total: number;
     active: number;
     closed: number;
     draft: number;
   }> {
-    const response = await apiClient.get('/jobs/stats');
+    const response = await jobsApi.getStats();
     return response.data;
   },
 };

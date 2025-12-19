@@ -66,7 +66,11 @@ export type BulkAction =
   | 'approve'
   | 'reject'
   | 'feature'
-  | 'unfeature';
+  | 'unfeature'
+  | 'publish'
+  | 'close'
+  | 'archive'
+  | 'reopen';
 
 export interface BulkActionRequest {
   ids: string[];
