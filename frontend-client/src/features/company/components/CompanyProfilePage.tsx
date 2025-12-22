@@ -110,12 +110,10 @@ export const CompanyProfilePage = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
-    try {
-      // Upload logo first if there's a new file
-      if (logoFile) {
-        await uploadLogo(logoFile);
-      }
+    console.log(formData);
 
+    try {
+      // First, create/update company profile
       await updateProfile({
         name: formData.name,
         description: formData.description,
@@ -136,6 +134,11 @@ export const CompanyProfilePage = () => {
           twitter: formData.twitter,
         },
       });
+
+      // Then upload logo if there's a new file (after company exists)
+      if (logoFile) {
+        await uploadLogo(logoFile);
+      }
 
       // Clear preview after successful save
       setLogoPreview(null);

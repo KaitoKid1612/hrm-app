@@ -1,5 +1,29 @@
-import { IsString, IsOptional, IsEmail, IsBoolean, IsUrl, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEmail,
+  IsBoolean,
+  IsUrl,
+  IsEnum,
+  IsInt,
+  IsArray,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 import { CompanyType } from '@prisma/client';
+
+export class SocialLinksDto {
+  @IsOptional()
+  @IsString()
+  facebook?: string;
+
+  @IsOptional()
+  @IsString()
+  linkedin?: string;
+
+  @IsOptional()
+  @IsString()
+  twitter?: string;
+}
 
 export class CreateCompanyDto {
   @IsString()
@@ -59,14 +83,23 @@ export class CreateCompanyDto {
   industry?: string;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   foundedYear?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   employeeCount?: number;
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  benefits?: string[];
+
+  @IsOptional()
   @IsString()
-  benefits?: string;
+  culture?: string;
 
   @IsOptional()
   @IsString()
@@ -75,6 +108,9 @@ export class CreateCompanyDto {
   @IsOptional()
   @IsString()
   overtimePolicy?: string;
+
+  @IsOptional()
+  socialLinks?: SocialLinksDto;
 
   @IsOptional()
   @IsUrl()
@@ -156,14 +192,23 @@ export class UpdateCompanyDto {
   industry?: string;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   foundedYear?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   employeeCount?: number;
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  benefits?: string[];
+
+  @IsOptional()
   @IsString()
-  benefits?: string;
+  culture?: string;
 
   @IsOptional()
   @IsString()
@@ -172,6 +217,9 @@ export class UpdateCompanyDto {
   @IsOptional()
   @IsString()
   overtimePolicy?: string;
+
+  @IsOptional()
+  socialLinks?: SocialLinksDto;
 
   @IsOptional()
   @IsUrl()

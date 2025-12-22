@@ -16,9 +16,31 @@ export class CompaniesService {
       throw new ConflictException('Bạn đã có hồ sơ công ty. Mỗi tài khoản chỉ được tạo 1 công ty.');
     }
 
+    const data: any = { ...dto };
+
+    // Parse number fields
+    if (data.foundedYear && typeof data.foundedYear === 'string') {
+      data.foundedYear = parseInt(data.foundedYear, 10);
+    }
+    if (data.employeeCount && typeof data.employeeCount === 'string') {
+      data.employeeCount = parseInt(data.employeeCount, 10);
+    }
+
+    // Remove socialLinks, will map to individual fields
+    delete data.socialLinks;
+
+    // Benefits is now array in schema, no conversion needed
+
+    // Map social links to individual fields
+    if (dto.socialLinks) {
+      data.facebookUrl = dto.socialLinks.facebook || undefined;
+      data.linkedinUrl = dto.socialLinks.linkedin || undefined;
+      data.twitterUrl = dto.socialLinks.twitter || undefined;
+    }
+
     return this.prisma.company.create({
       data: {
-        ...dto,
+        ...data,
         userId,
       },
     });
@@ -65,9 +87,31 @@ export class CompaniesService {
       throw new NotFoundException('Không tìm thấy công ty');
     }
 
+    const data: any = { ...dto };
+
+    // Parse number fields
+    if (data.foundedYear && typeof data.foundedYear === 'string') {
+      data.foundedYear = parseInt(data.foundedYear, 10);
+    }
+    if (data.employeeCount && typeof data.employeeCount === 'string') {
+      data.employeeCount = parseInt(data.employeeCount, 10);
+    }
+
+    // Remove socialLinks, will map to individual fields
+    delete data.socialLinks;
+
+    // Benefits is now array in schema, no conversion needed
+
+    // Map social links to individual fields
+    if (dto.socialLinks) {
+      data.facebookUrl = dto.socialLinks.facebook || undefined;
+      data.linkedinUrl = dto.socialLinks.linkedin || undefined;
+      data.twitterUrl = dto.socialLinks.twitter || undefined;
+    }
+
     return this.prisma.company.update({
       where: { id },
-      data: dto,
+      data,
     });
   }
 }
