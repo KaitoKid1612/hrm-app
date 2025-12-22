@@ -19,7 +19,7 @@ import { CompanyInfoSidebar } from './detail/CompanyInfoSidebar';
 export const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [shareMessage, setShareMessage] = useState('');
 
@@ -30,6 +30,8 @@ export const JobDetailPage = () => {
   const handleApply = () => {
     if (!isAuthenticated) {
       navigate(`${ROUTES.LOGIN}?returnUrl=${ROUTES.JOB_DETAIL.replace(':id', id || '')}`);
+    } else if (user?.role === 'EMPLOYER') {
+      toast.error('Nhà tuyển dụng không thể ứng tuyển');
     } else {
       setIsApplyModalOpen(true);
     }
@@ -43,6 +45,11 @@ export const JobDetailPage = () => {
   const handleSave = async () => {
     if (!isAuthenticated) {
       navigate(`${ROUTES.LOGIN}?returnUrl=${ROUTES.JOB_DETAIL.replace(':id', id || '')}`);
+      return;
+    }
+
+    if (user?.role === 'EMPLOYER') {
+      toast.error('Nhà tuyển dụng không thể lưu việc làm');
       return;
     }
 
@@ -161,6 +168,7 @@ export const JobDetailPage = () => {
                 hasApplied={hasApplied}
                 isSaved={isSaved}
                 isAuthenticated={isAuthenticated}
+                userRole={user?.role}
                 shareMessage={shareMessage}
                 onApply={handleApply}
                 onSave={handleSave}

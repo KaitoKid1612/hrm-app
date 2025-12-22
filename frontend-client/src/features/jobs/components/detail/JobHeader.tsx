@@ -22,6 +22,7 @@ interface JobHeaderProps {
   hasApplied: boolean;
   isSaved: boolean;
   isAuthenticated: boolean;
+  userRole?: string;
   shareMessage: string;
   onApply: () => void;
   onSave: () => void;
@@ -37,6 +38,7 @@ export const JobHeader = ({
   hasApplied,
   isSaved,
   isAuthenticated,
+  userRole,
   shareMessage,
   onApply,
   onSave,
@@ -129,35 +131,44 @@ export const JobHeader = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
-          <Button
-            onClick={onApply}
-            size="lg"
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-lg"
-            disabled={hasApplied}
-          >
-            {hasApplied
-              ? 'Đã ứng tuyển'
-              : isAuthenticated
-                ? 'Ứng tuyển ngay'
-                : 'Đăng nhập để ứng tuyển'}
-          </Button>
-          <Button onClick={onSave} size="lg" variant="outline" className="px-6">
-            {isSaved ? (
-              <BookmarkCheck className="w-5 h-5 text-blue-600" />
-            ) : (
-              <Bookmark className="w-5 h-5" />
-            )}
-          </Button>
-          <Button onClick={onShare} size="lg" variant="outline" className="px-6 relative">
-            <Share2 className="w-5 h-5" />
-            {shareMessage && (
-              <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded whitespace-nowrap shadow-lg">
-                {shareMessage}
-              </span>
-            )}
-          </Button>
-        </div>
+        {userRole === 'EMPLOYER' ? (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="text-amber-800 text-sm">
+              💼 Bạn đang xem với vai trò nhà tuyển dụng. Các tính năng ứng tuyển chỉ dành cho ứng
+              viên.
+            </p>
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <Button
+              onClick={onApply}
+              size="lg"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-lg"
+              disabled={hasApplied}
+            >
+              {hasApplied
+                ? 'Đã ứng tuyển'
+                : isAuthenticated
+                  ? 'Ứng tuyển ngay'
+                  : 'Đăng nhập để ứng tuyển'}
+            </Button>
+            <Button onClick={onSave} size="lg" variant="outline" className="px-6">
+              {isSaved ? (
+                <BookmarkCheck className="w-5 h-5 text-blue-600" />
+              ) : (
+                <Bookmark className="w-5 h-5" />
+              )}
+            </Button>
+            <Button onClick={onShare} size="lg" variant="outline" className="px-6 relative">
+              <Share2 className="w-5 h-5" />
+              {shareMessage && (
+                <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded whitespace-nowrap shadow-lg">
+                  {shareMessage}
+                </span>
+              )}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

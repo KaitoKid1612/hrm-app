@@ -33,6 +33,7 @@ import {
 import { CompanyReviewsPage } from '@/features/reviews';
 import { RecommendedJobsPage } from '@/features/recommendations';
 import ProtectedRoute from '@/routes/ProtectedRoute';
+import RoleProtectedRoute from '@/routes/RoleProtectedRoute';
 import PublicRoute from '@/routes/PublicRoute';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { EmployerDashboardLayout } from '@/components/layout/EmployerDashboardLayout';
@@ -97,11 +98,11 @@ function App() {
           <Route
             path={ROUTES.MY_RESUME}
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRoles={['CANDIDATE']}>
                 <DashboardLayout>
                   <ResumePage />
                 </DashboardLayout>
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
@@ -127,25 +128,25 @@ function App() {
           <Route
             path={ROUTES.SAVED_JOBS}
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRoles={['CANDIDATE']}>
                 <SavedJobsPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
             path={ROUTES.MY_APPLICATIONS}
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRoles={['CANDIDATE']}>
                 <MyApplicationsPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
             path={ROUTES.RECOMMENDED_JOBS}
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRoles={['CANDIDATE']}>
                 <RecommendedJobsPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
 
