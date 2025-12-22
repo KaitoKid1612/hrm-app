@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { CreateInterviewDto, UpdateInterviewDto } from './dto/interview.dto';
 
 @Injectable()
 export class InterviewsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async create(userId: string, createInterviewDto: CreateInterviewDto) {
     const { applicationId, scheduledAt, duration, location, meetingLink, interviewers, notes } =

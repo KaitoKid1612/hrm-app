@@ -190,9 +190,10 @@ model Company {
   industry       String? // Ngành nghề: IT, Finance, Marketing, etc.
   foundedYear    Int? // Năm thành lập
   employeeCount  Int? // Số lượng nhân viên thực tế
-  benefits       String? @db.Text // Tổng quan phúc lợi công ty
-  workingDays    String? @default("Mon-Fri") // Ngày làm việc
-  overtimePolicy String? @db.Text // Chính sách làm thêm giờ
+  benefits       String[] // Array of benefits
+  workingDays    String?  @default("Mon-Fri") // Ngày làm việc
+  overtimePolicy String?  @db.Text // Chính sách làm thêm giờ
+  culture        String?  @db.Text // Văn hóa công ty
 
   // Social Links
   linkedinUrl String?

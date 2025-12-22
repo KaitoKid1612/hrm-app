@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Query,
+  Inject,
 } from '@nestjs/common';
 import { InterviewsService } from './interviews.service';
 import { CreateInterviewDto, UpdateInterviewDto } from './dto/interview.dto';
@@ -20,7 +21,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('EMPLOYER')
 export class InterviewsController {
-  constructor(private readonly interviewsService: InterviewsService) {}
+  constructor(@Inject(InterviewsService) private readonly interviewsService: InterviewsService) {}
 
   @Post()
   create(@Req() req: any, @Body() createInterviewDto: CreateInterviewDto) {

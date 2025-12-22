@@ -14,26 +14,31 @@ import { CreateApplicationDto, UpdateApplicationStatusDto } from './dto/applicat
 import { CreateApplicationNoteDto } from './dto/create-application-note.dto';
 import { UpdateApplicationNoteDto } from './dto/update-application-note.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
+import { Roles } from '@/modules/auth/decorators/roles.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 
 @Controller('applications')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ApplicationsController {
   constructor(
     @Inject(ApplicationsService) private readonly applicationsService: ApplicationsService,
   ) {}
 
   @Post()
+  @Roles('CANDIDATE')
   create(@CurrentUser() user: any, @Body() dto: CreateApplicationDto) {
     return this.applicationsService.create(user.id, dto);
   }
 
   @Get('my-applications')
+  @Roles('CANDIDATE')
   getMyApplications(@CurrentUser() user: any) {
     return this.applicationsService.findByUser(user.id);
   }
 
   @Get('employer/applications')
+  @Roles('EMPLOYER')
   getEmployerApplications(@CurrentUser() user: any) {
     return this.applicationsService.findByEmployer(user.id);
   }
