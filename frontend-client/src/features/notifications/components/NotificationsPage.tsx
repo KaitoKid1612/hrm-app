@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   notificationsService,
   Notification,
@@ -33,6 +34,7 @@ export const NotificationsPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
 
   useEffect(() => {
     loadNotifications();
@@ -101,12 +103,11 @@ export const NotificationsPage = () => {
   };
 
   const handleDeleteAll = async () => {
-    if (!confirm('Bạn có chắc muốn xóa tất cả thông báo?')) return;
-
     try {
       await notificationsService.deleteAll();
       setNotifications([]);
       setUnreadCount(0);
+      setShowDeleteAllDialog(false);
       toast.success('Đã xóa tất cả thông báo');
     } catch (error) {
       toast.error('Có lỗi xảy ra');
@@ -189,7 +190,7 @@ export const NotificationsPage = () => {
                 </Button>
               )}
               {notifications.length > 0 && (
-                <Button variant="outline" size="sm" onClick={handleDeleteAll}>
+                <Button variant="outline" size="sm" onClick={() => setShowDeleteAllDialog(true)}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   Xóa tất cả
                 </Button>
@@ -349,6 +350,18 @@ export const NotificationsPage = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete All Confirmation Dialog */}
+      <ConfirmDialog
+        open={showDeleteAllDialog}
+        onOpenChange={setShowDeleteAllDialog}
+        title="Xác nhận xóa tất cả thông báo"
+        description="Bạn có chắc chắn muốn xóa tất cả thông báo không? Hành động này không thể hoàn tác."
+        confirmText="Xóa tất cả"
+        variant="destructive"
+        onConfirm={handleDeleteAll}
+        icon={<Trash2 className="w-5 h-5" />}
+      />
     </div>
   );
 };

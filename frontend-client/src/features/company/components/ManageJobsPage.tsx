@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useJobManagement } from '../hooks/useJobManagement';
 import { jobManagementService } from '../services/jobManagementService';
 import { toast } from '@/lib/toast';
@@ -37,6 +38,8 @@ export const ManageJobsPage = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteJobId, setDeleteJobId] = useState<string | null>(null);
+  const [closeJobId, setCloseJobId] = useState<string | null>(null);
   const jobsPerPage = 10;
 
   useEffect(() => {
@@ -59,24 +62,22 @@ export const ManageJobsPage = () => {
   }, [searchKeyword, statusFilter]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa tin tuyển dụng này?')) return;
-
     try {
       await jobManagementService.deleteJob(id);
       loadJobs({ status: statusFilter });
       toast.success('Đã xóa tin tuyển dụng');
+      setDeleteJobId(null);
     } catch (error) {
       toast.error(error);
     }
   };
 
   const handleClose = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn đóng tin tuyển dụng này?')) return;
-
     try {
       await jobManagementService.closeJob(id);
       loadJobs({ status: statusFilter });
       toast.success('Đã đóng tin tuyển dụng');
+      setCloseJobId(null);
     } catch (error) {
       toast.error(error);
     }
@@ -239,7 +240,7 @@ export const ManageJobsPage = () => {
                         </Button>
 
                         {job.status === 'ACTIVE' && (
-                          <Button size="sm" variant="outline" onClick={() => handleClose(job.id)}>
+                          <Button size="sm" variant="outline" onClick={() => setCloseJobId(job.id)}>
                             <XCircle className="w-4 h-4 mr-1" />
                             Đóng
                           </Button>
@@ -263,7 +264,7 @@ export const ManageJobsPage = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDelete(job.id)}
+                          onClick={() => setDeleteJobId(job.id)}
                           className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -347,6 +348,30 @@ export const ManageJobsPage = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={!!deleteJobId}
+        onOpenChange={(open) => !open && setDeleteJobId(null)}
+        title="Xác nhận xóa tin tuyển dụng"
+        description="Bạn có chắc chắn muốn xóa tin tuyển dụng này? Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+        variant="destructive"
+        onConfirm={() => deleteJobId && handleDelete(deleteJobId)}
+        icon={<Trash2 className="w-5 h-5" />}
+      />
+
+      {/* Close Confirmation Dialog */}
+      <ConfirmDialog
+        open={!!closeJobId}
+        onOpenChange={(open) => !open && setCloseJobId(null)}
+        title="Xác nhận đóng tin tuyển dụng"
+        description="Bạn có chắc chắn muốn đóng tin tuyển dụng này? Sau khi đóng, ứng viên sẽ không thể ứng tuyển nữa."
+        confirmText="Đóng tin"
+        variant="destructive"
+        onConfirm={() => closeJobId && handleClose(closeJobId)}
+        icon={<XCircle className="w-5 h-5" />}
+      />
     </div>
   );
 };

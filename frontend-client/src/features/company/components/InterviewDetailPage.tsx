@@ -134,7 +134,7 @@ export const InterviewDetailPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Candidate Information</h2>
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
             {interview.application.user.avatar ? (
               <img
                 src={getImageUrl(interview.application.user.avatar)}

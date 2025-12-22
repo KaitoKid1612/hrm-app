@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { applicationService } from '@/features/jobs/services/jobActionsService';
 import { getImageUrl } from '@/lib/image-utils';
 import {
@@ -94,6 +95,8 @@ export const MyApplicationsPage = () => {
   const [error, setError] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
+  const [withdrawAppId, setWithdrawAppId] = useState<string | null>(null);
 
   useEffect(() => {
     loadApplications();
@@ -122,16 +125,16 @@ export const MyApplicationsPage = () => {
     return (applications || []).filter((app) => app.status === status).length;
   };
 
-  const handleWithdraw = async (id: string) => {
-    if (!window.confirm('Bạn có chắc chắn muốn rút đơn ứng tuyển này?')) {
-      return;
-    }
+  const handleWithdraw = async () => {
+    if (!withdrawAppId) return;
 
     try {
-      setWithdrawingId(id);
-      await applicationService.withdrawApplication(id);
+      setWithdrawingId(withdrawAppId);
+      await applicationService.withdrawApplication(withdrawAppId);
       // Reload applications
       loadApplications();
+      setShowWithdrawDialog(false);
+      setWithdrawAppId(null);
     } catch (error) {
       console.error('Error withdrawing application:', error);
       setError('Không thể rút đơn. Vui lòng thử lại.');
@@ -295,7 +298,10 @@ export const MyApplicationsPage = () => {
                         {/* Withdraw button - only show for PENDING or REVIEWING */}
                         {['PENDING', 'REVIEWING'].includes(application.status) && (
                           <Button
-                            onClick={() => handleWithdraw(application.id)}
+                            onClick={() => {
+                              setWithdrawAppId(application.id);
+                              setShowWithdrawDialog(true);
+                            }}
                             variant="outline"
                             size="sm"
                             disabled={withdrawingId === application.id}
@@ -338,6 +344,17 @@ export const MyApplicationsPage = () => {
           </Card>
         )}
       </div>
+
+      <ConfirmDialog
+        open={showWithdrawDialog}
+        onOpenChange={setShowWithdrawDialog}
+        title="Rút đơn ứng tuyển"
+        description="Bạn có chắc chắn muốn rút đơn ứng tuyển này? Hành động này không thể hoàn tác."
+        onConfirm={handleWithdraw}
+        confirmText="Rút đơn"
+        variant="destructive"
+        icon={XCircle}
+      />
     </DashboardLayout>
   );
 };

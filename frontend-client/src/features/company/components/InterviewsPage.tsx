@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useInterviews } from '../hooks/useInterviews';
 import { InterviewStatus } from '../types/interview.types';
 import { getImageUrl } from '@/lib/image-utils';
@@ -56,6 +57,8 @@ export const InterviewsPage = () => {
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<InterviewStatus | 'ALL'>('ALL');
   const { interviews, isLoading, deleteInterview } = useInterviews();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteInterviewId, setDeleteInterviewId] = useState<string | null>(null);
 
   const filteredInterviews =
     statusFilter === 'ALL'
@@ -70,13 +73,15 @@ export const InterviewsPage = () => {
     return format(date, 'MMM d, yyyy');
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this interview?')) {
-      try {
-        await deleteInterview(id);
-      } catch (error) {
-        console.error('Failed to delete interview:', error);
-      }
+  const handleDelete = async () => {
+    if (!deleteInterviewId) return;
+
+    try {
+      await deleteInterview(deleteInterviewId);
+      setShowDeleteDialog(false);
+      setDeleteInterviewId(null);
+    } catch (error) {
+      console.error('Failed to delete interview:', error);
     }
   };
 
@@ -245,7 +250,14 @@ export const InterviewsPage = () => {
                       >
                         View Details
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDelete(interview.id)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setDeleteInterviewId(interview.id);
+                          setShowDeleteDialog(true);
+                        }}
+                      >
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </div>
@@ -256,6 +268,17 @@ export const InterviewsPage = () => {
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Delete Interview"
+        description="Are you sure you want to delete this interview? This action cannot be undone."
+        onConfirm={handleDelete}
+        confirmText="Delete"
+        variant="destructive"
+        icon={<XCircle className="w-5 h-5" />}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/features/auth';
 import {
   settingsService,
@@ -20,6 +21,7 @@ export const SettingsPage = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [isSaving, setSaving] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Profile form
   const [profileForm, setProfileForm] = useState<UpdateProfileRequest>({
@@ -133,10 +135,6 @@ export const SettingsPage = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (!confirm('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!')) {
-      return;
-    }
-
     const confirmText = prompt('Nhập "XOA TAI KHOAN" để xác nhận:');
     if (confirmText !== 'XOA TAI KHOAN') {
       toast.error('Xác nhận không đúng');
@@ -147,6 +145,7 @@ export const SettingsPage = () => {
       setSaving(true);
       await settingsService.deleteAccount();
       toast.success('Đã xóa tài khoản');
+      setShowDeleteDialog(false);
       // Redirect to home after a delay
       setTimeout(() => {
         window.location.href = '/';
@@ -220,8 +219,23 @@ export const SettingsPage = () => {
       )}
 
       {activeTab === 'account' && (
-        <AccountTab user={user} isSaving={isSaving} onDeleteAccount={handleDeleteAccount} />
+        <AccountTab
+          user={user}
+          isSaving={isSaving}
+          onDeleteAccount={() => setShowDeleteDialog(true)}
+        />
       )}
+
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Xóa tài khoản"
+        description="Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác và tất cả dữ liệu của bạn sẽ bị xóa vĩnh viễn."
+        onConfirm={handleDeleteAccount}
+        confirmText="Xóa tài khoản"
+        variant="destructive"
+        icon={Trash2}
+      />
     </div>
   );
 };
