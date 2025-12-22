@@ -131,32 +131,50 @@ export const JobFormBasicInfo = ({ formData, onChange }: JobFormBasicInfoProps) 
         <div>
           <Label>
             <DollarSign className="w-4 h-4 inline mr-1" />
-            Mức lương (VNĐ) <span className="text-red-500">*</span>
+            Mức lương (VNĐ)
           </Label>
-          <div className="grid grid-cols-2 gap-4 mt-2">
-            <div>
-              <Input
-                name="salaryMin"
-                type="number"
-                value={formData.salaryMin}
-                onChange={onChange}
-                required
-                placeholder="Tối thiểu"
-                min="0"
-              />
-            </div>
-            <div>
-              <Input
-                name="salaryMax"
-                type="number"
-                value={formData.salaryMax}
-                onChange={onChange}
-                required
-                placeholder="Tối đa"
-                min="0"
-              />
-            </div>
+
+          {/* Salary Negotiable Checkbox */}
+          <div className="flex items-center gap-2 mt-2 mb-3">
+            <input
+              id="salaryNegotiate"
+              name="salaryNegotiate"
+              type="checkbox"
+              checked={formData.salaryNegotiate}
+              onChange={onChange}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <Label htmlFor="salaryNegotiate" className="cursor-pointer font-normal">
+              Lương thỏa thuận (không hiển thị mức lương cụ thể)
+            </Label>
           </div>
+
+          {!formData.salaryNegotiate && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Input
+                  name="salaryMin"
+                  type="number"
+                  value={formData.salaryMin}
+                  onChange={onChange}
+                  placeholder="Tối thiểu"
+                  min="0"
+                />
+                <p className="text-xs text-gray-500 mt-1">Để trống nếu chỉ có mức tối đa</p>
+              </div>
+              <div>
+                <Input
+                  name="salaryMax"
+                  type="number"
+                  value={formData.salaryMax}
+                  onChange={onChange}
+                  placeholder="Tối đa"
+                  min="0"
+                />
+                <p className="text-xs text-gray-500 mt-1">Để trống nếu chỉ có mức tối thiểu</p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">

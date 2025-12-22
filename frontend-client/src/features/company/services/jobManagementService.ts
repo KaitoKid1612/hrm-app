@@ -11,9 +11,10 @@ export interface JobFormData {
   responsibilities: string[];
   benefits: string[];
   salary: {
-    min: number;
-    max: number;
+    min: number | null;
+    max: number | null;
     currency: string;
+    negotiate?: boolean;
   };
   location: string;
   type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'FREELANCE';
@@ -41,12 +42,35 @@ export interface Job extends JobFormData {
 
 export const jobManagementService = {
   async createJob(data: JobFormData) {
-    const response = await api.post(API_ENDPOINTS.JOBS.CREATE, data);
+    // Transform salary object to flat fields for backend
+    const transformedData = {
+      ...data,
+      salaryMin: data.salary.min,
+      salaryMax: data.salary.max,
+      salaryNegotiate: data.salary.negotiate || false,
+      salary: undefined, // Remove salary object
+    };
+
+    const response = await api.post(API_ENDPOINTS.JOBS.CREATE, transformedData);
     return response.data.data;
   },
 
   async updateJob(id: string, data: Partial<JobFormData>) {
-    const response = await api.patch(API_ENDPOINTS.JOBS.UPDATE(id), data);
+    // Transform salary object to flat fields for backend
+    const transformedData: Partial<JobFormData> & {
+      salaryMin?: number | null;
+      salaryMax?: number | null;
+      salaryNegotiate?: boolean;
+      salary?: undefined;
+    } = { ...data };
+    if (data.salary) {
+      transformedData.salaryMin = data.salary.min;
+      transformedData.salaryMax = data.salary.max;
+      transformedData.salaryNegotiate = data.salary.negotiate || false;
+      delete transformedData.salary;
+    }
+
+    const response = await api.patch(API_ENDPOINTS.JOBS.UPDATE(id), transformedData);
     return response.data.data;
   },
 
@@ -83,7 +107,8 @@ export const jobManagementService = {
 
   async getJobById(id: string) {
     const response = await api.get(API_ENDPOINTS.JOBS.DETAIL(id));
-    return response.data.data;
+    // Backend may return job directly in data, or wrapped in data.data
+    return response.data.data || response.data;
   },
 
   async closeJob(id: string) {

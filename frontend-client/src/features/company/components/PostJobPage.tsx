@@ -48,6 +48,7 @@ export const PostJobPage = () => {
       level: string;
       salaryMin: string;
       salaryMax: string;
+      salaryNegotiate: boolean;
       numberOfPositions: number;
       expiresAt: string;
       isHot: boolean;
@@ -67,9 +68,10 @@ export const PostJobPage = () => {
         responsibilities: data.responsibilities,
         benefits: data.benefits,
         salary: {
-          min: Number(data.formData.salaryMin),
-          max: Number(data.formData.salaryMax),
+          min: data.formData.salaryNegotiate ? null : Number(data.formData.salaryMin) || null,
+          max: data.formData.salaryNegotiate ? null : Number(data.formData.salaryMax) || null,
           currency: 'VND' as const,
+          negotiate: data.formData.salaryNegotiate,
         },
         location: data.formData.location,
         type: data.formData.type as

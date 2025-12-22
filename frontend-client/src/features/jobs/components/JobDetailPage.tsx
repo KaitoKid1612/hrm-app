@@ -81,9 +81,19 @@ export const JobDetailPage = () => {
   };
 
   const formatSalary = (min: number | null, max: number | null) => {
-    if (!min && !max) return 'Thỏa thuận';
-    if (!min) return `Lên đến ${max?.toLocaleString('vi-VN')} VNĐ`;
-    if (!max) return `Từ ${min?.toLocaleString('vi-VN')} VNĐ`;
+    // Check if job has salaryNegotiate flag
+    if (job?.salaryNegotiate) return 'Thỏa thuận';
+
+    // Check if both are null or undefined
+    if (min == null && max == null) return 'Thỏa thuận';
+
+    // If only max exists
+    if (min == null || min === 0) return `Lên đến ${max?.toLocaleString('vi-VN')} VNĐ`;
+
+    // If only min exists
+    if (max == null || max === 0) return `Từ ${min.toLocaleString('vi-VN')} VNĐ`;
+
+    // Both exist
     return `${min.toLocaleString('vi-VN')} - ${max.toLocaleString('vi-VN')} VNĐ`;
   };
 

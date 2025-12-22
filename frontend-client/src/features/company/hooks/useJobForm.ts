@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { JobFormData } from '../services/jobManagementService';
 
 export interface JobFormState {
@@ -9,6 +9,7 @@ export interface JobFormState {
   level: JobFormData['level'];
   salaryMin: string;
   salaryMax: string;
+  salaryNegotiate: boolean;
   numberOfPositions: number;
   expiresAt: string;
   isHot: boolean;
@@ -30,6 +31,7 @@ export const useJobForm = (initialData?: InitialData) => {
     level: 'MIDDLE' as JobFormData['level'],
     salaryMin: '',
     salaryMax: '',
+    salaryNegotiate: false,
     numberOfPositions: 1,
     expiresAt: '',
     isHot: false,
@@ -41,6 +43,25 @@ export const useJobForm = (initialData?: InitialData) => {
     initialData?.responsibilities || [],
   );
   const [benefits, setBenefits] = useState<string[]>(initialData?.benefits || []);
+
+  // Update form data when initialData changes (for edit mode)
+  useEffect(() => {
+    if (initialData?.formData) {
+      setFormData((prev) => ({
+        ...prev,
+        ...initialData.formData,
+      }));
+    }
+    if (initialData?.requirements) {
+      setRequirements(initialData.requirements);
+    }
+    if (initialData?.responsibilities) {
+      setResponsibilities(initialData.responsibilities);
+    }
+    if (initialData?.benefits) {
+      setBenefits(initialData.benefits);
+    }
+  }, [initialData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -83,12 +104,17 @@ export const useJobForm = (initialData?: InitialData) => {
       return 'Vui lòng thêm ít nhất một yêu cầu ứng viên';
     }
 
-    if (!formData.salaryMin || !formData.salaryMax) {
-      return 'Vui lòng nhập mức lương';
-    }
+    // Only validate salary if not negotiable
+    if (!formData.salaryNegotiate) {
+      if (!formData.salaryMin && !formData.salaryMax) {
+        return 'Vui lòng nhập mức lương hoặc chọn "Lương thỏa thuận"';
+      }
 
-    if (Number(formData.salaryMin) >= Number(formData.salaryMax)) {
-      return 'Mức lương tối thiểu phải nhỏ hơn mức lương tối đa';
+      if (formData.salaryMin && formData.salaryMax) {
+        if (Number(formData.salaryMin) >= Number(formData.salaryMax)) {
+          return 'Mức lương tối thiểu phải nhỏ hơn mức lương tối đa';
+        }
+      }
     }
 
     if (!formData.expiresAt) {
