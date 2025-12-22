@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCandidateSearch, useSavedCandidates } from '../hooks/useCandidateSearch';
 import { CandidateDetailModal } from './CandidateDetailModal';
-import { CandidateProfile } from '../services/candidateSearchService';
+import { CandidateProfile, ResumeSkillItem } from '../services/candidateSearchService';
 import { toast } from '@/lib/toast';
 import { getImageUrl } from '@/lib/image-utils';
 import {
@@ -297,12 +297,12 @@ export const SearchCandidatesPage = () => {
                   {candidate.resume?.skills && candidate.resume.skills.length > 0 && (
                     <div className="w-full">
                       <div className="flex flex-wrap gap-2 justify-center">
-                        {candidate.resume.skills.slice(0, 3).map((skill, index) => (
+                        {candidate.resume.skills.slice(0, 3).map((skillItem: ResumeSkillItem) => (
                           <span
-                            key={index}
+                            key={skillItem.id}
                             className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium"
                           >
-                            {skill}
+                            {skillItem.skill.name}
                           </span>
                         ))}
                         {candidate.resume.skills.length > 3 && (

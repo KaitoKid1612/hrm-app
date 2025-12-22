@@ -28,6 +28,7 @@ import { CertificatesModule } from '@/modules/certificates/certificates.module';
 import { BenefitsModule } from '@/modules/benefits/benefits.module';
 import { CompanyFollowersModule } from '@/modules/company-followers/company-followers.module';
 import { JobAlertsModule } from '@/modules/job-alerts/job-alerts.module';
+import { CandidatesModule } from '@/modules/candidates/candidates.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { JobAlertsModule } from '@/modules/job-alerts/job-alerts.module';
     CompanyFollowersModule,
     JobAlertsModule,
     InterviewsModule,
+    CandidatesModule,
   ],
   providers: [RolesGuard],
 })

@@ -11,6 +11,15 @@ export interface CandidateSearchFilters {
   limit?: number;
 }
 
+export interface ResumeSkillItem {
+  id: string;
+  level?: string;
+  skill: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface CandidateProfile {
   id: string;
   userId: string;
@@ -26,7 +35,7 @@ export interface CandidateProfile {
   resume?: {
     id: string;
     title: string;
-    skills: string[];
+    skills: ResumeSkillItem[];
     workExperience?: Array<{
       position: string;
       company: string;

@@ -234,7 +234,7 @@ export const SettingsPage = () => {
         onConfirm={handleDeleteAccount}
         confirmText="Xóa tài khoản"
         variant="destructive"
-        icon={Trash2}
+        icon={<Trash2 className="w-5 h-5" />}
       />
     </div>
   );

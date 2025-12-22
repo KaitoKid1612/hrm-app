@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { CandidateProfile } from '../services/candidateSearchService';
+import { CandidateProfile, ResumeSkillItem } from '../services/candidateSearchService';
 import { getImageUrl } from '@/lib/image-utils';
 import {
   Mail,
@@ -34,7 +34,7 @@ export const CandidateDetailModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="py-4">
           <div className="flex items-center justify-between">
             <DialogTitle>Hồ sơ ứng viên</DialogTitle>
             <Button variant="outline" size="sm" onClick={onToggleSave}>
@@ -130,12 +130,15 @@ export const CandidateDetailModal = ({
                     Kỹ năng
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {candidate.resume.skills.map((skill, index) => (
+                    {candidate.resume.skills.map((skillItem: ResumeSkillItem) => (
                       <span
-                        key={index}
+                        key={skillItem.id}
                         className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium"
                       >
-                        {skill}
+                        {skillItem.skill.name}
+                        {skillItem.level && (
+                          <span className="ml-1 text-xs opacity-75">({skillItem.level})</span>
+                        )}
                       </span>
                     ))}
                   </div>
