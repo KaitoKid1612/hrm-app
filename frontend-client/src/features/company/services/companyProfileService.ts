@@ -72,6 +72,6 @@ export const companyProfileService = {
     const response = await api.post(API_ENDPOINTS.UPLOAD.COMPANY_LOGO, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    return response.data.data;
+    return response.data;
   },
 };

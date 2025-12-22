@@ -33,7 +33,8 @@ export const useCompanyProfile = () => {
   const uploadLogo = async (file: File) => {
     const result = await companyProfileService.uploadLogo(file);
     if (profile) {
-      setProfile({ ...profile, logo: result.url });
+      const updatedProfile = { ...profile, logo: result.url };
+      setProfile(updatedProfile);
     }
     return result;
   };

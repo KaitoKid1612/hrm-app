@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ import { CompanyMediaUpload } from './profile/CompanyMediaUpload';
 import { Building2, Save, Users, Facebook, Linkedin, Twitter, Plus, X } from 'lucide-react';
 
 export const CompanyProfilePage = () => {
-  const { profile, isLoading, updateProfile, uploadLogo } = useCompanyProfile();
+  const { profile, isLoading, updateProfile, uploadLogo, reload } = useCompanyProfile();
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -37,6 +37,32 @@ export const CompanyProfilePage = () => {
 
   const [benefits, setBenefits] = useState<string[]>(profile?.benefits || []);
   const [newBenefit, setNewBenefit] = useState('');
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  // Sync form data with profile when it loads
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.name || '',
+        description: profile.description || '',
+        website: profile.website || '',
+        industry: profile.industry || '',
+        size: profile.size || '',
+        address: profile.address || '',
+        city: profile.city || '',
+        country: profile.country || 'Việt Nam',
+        phone: profile.phone || '',
+        email: profile.email || '',
+        foundedYear: profile.foundedYear || new Date().getFullYear(),
+        culture: profile.culture || '',
+        facebook: profile.socialLinks?.facebook || '',
+        linkedin: profile.socialLinks?.linkedin || '',
+        twitter: profile.socialLinks?.twitter || '',
+      });
+      setBenefits(profile.benefits || []);
+    }
+  }, [profile]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -45,7 +71,7 @@ export const CompanyProfilePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -60,13 +86,11 @@ export const CompanyProfilePage = () => {
       return;
     }
 
-    try {
-      await uploadLogo(file);
-      setSuccessMessage('Cập nhật logo thành công!');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch {
-      setErrorMessage('Có lỗi khi tải logo lên');
-    }
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setLogoPreview(previewUrl);
+    setLogoFile(file);
+    setErrorMessage('');
   };
 
   const handleAddBenefit = () => {
@@ -87,6 +111,11 @@ export const CompanyProfilePage = () => {
     setSuccessMessage('');
 
     try {
+      // Upload logo first if there's a new file
+      if (logoFile) {
+        await uploadLogo(logoFile);
+      }
+
       await updateProfile({
         name: formData.name,
         description: formData.description,
@@ -107,6 +136,13 @@ export const CompanyProfilePage = () => {
           twitter: formData.twitter,
         },
       });
+
+      // Clear preview after successful save
+      setLogoPreview(null);
+      setLogoFile(null);
+
+      // Reload to get updated data
+      await reload();
 
       setSuccessMessage('Cập nhật hồ sơ công ty thành công!');
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -168,7 +204,10 @@ export const CompanyProfilePage = () => {
             <CardTitle>Thông tin cơ bản</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <CompanyMediaUpload logo={profile?.logo} onLogoUpload={handleLogoUpload} />
+            <CompanyMediaUpload
+              logo={logoPreview || profile?.logo}
+              onLogoUpload={handleLogoUpload}
+            />
             <CompanyBasicInfo
               formData={{
                 name: formData.name,

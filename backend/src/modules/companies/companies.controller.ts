@@ -13,15 +13,15 @@ export class CompaniesController {
     return this.companiesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(id);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('my/profile')
   getMyCompany(@CurrentUser() user: any) {
     return this.companiesService.findByUserId(user.id);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.companiesService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
