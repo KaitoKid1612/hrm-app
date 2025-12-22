@@ -47,7 +47,8 @@ services:
     buildCommand: |
       cd frontend-client
       npm install -g pnpm
-      HUSKY=0 pnpm install
+      # Use --ignore-scripts to skip postinstall scripts (axios husky, globals build)
+      pnpm install --ignore-scripts
       pnpm run build
     staticPublishPath: ./frontend-client/dist
     envVars:
