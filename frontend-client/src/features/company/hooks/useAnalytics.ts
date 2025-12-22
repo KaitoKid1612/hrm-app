@@ -12,7 +12,12 @@ export const useCompanyAnalytics = (query?: AnalyticsQuery) => {
       setIsLoading(true);
       setError(null);
       const data = await analyticsService.getCompanyAnalytics(query);
-      setAnalytics(data);
+      if (!data) {
+        setError('Vui lòng tạo hồ sơ công ty trước để xem thống kê');
+        setAnalytics(null);
+      } else {
+        setAnalytics(data);
+      }
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
       setError(error.response?.data?.message || 'Failed to fetch analytics');
