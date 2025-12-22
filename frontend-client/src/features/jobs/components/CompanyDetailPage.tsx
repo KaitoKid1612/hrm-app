@@ -12,6 +12,7 @@ import { useCompanyReviews, useCompanyRating } from '@/features/reviews/hooks/us
 import { ReviewCard } from '@/features/reviews/components/ReviewCard';
 import { RatingOverview } from '@/features/reviews/components/RatingOverview';
 import { WriteReviewModal } from '@/features/reviews/components/WriteReviewModal';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Building2,
   MapPin,
@@ -119,7 +120,11 @@ export const CompanyDetailPage = () => {
       {/* Cover Image */}
       {company.coverImage && (
         <div className="w-full h-48 sm:h-64 bg-gray-200">
-          <img src={company.coverImage} alt={company.name} className="w-full h-full object-cover" />
+          <img
+            src={getImageUrl(company.coverImage)}
+            alt={company.name}
+            className="w-full h-full object-cover"
+          />
         </div>
       )}
 
@@ -131,7 +136,7 @@ export const CompanyDetailPage = () => {
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl border-2 border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 mt-0 sm:mt-0 bg-white shadow-lg">
               {company.logo ? (
                 <img
-                  src={company.logo}
+                  src={getImageUrl(company.logo)}
                   alt={company.name}
                   className="w-full h-full object-contain rounded-xl p-2"
                 />

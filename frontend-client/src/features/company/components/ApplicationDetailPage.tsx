@@ -6,6 +6,7 @@ import { useApplicationDetail } from '../hooks/useApplicationManagement';
 import type { ApplicationDetail } from '../services/applicationManagementService';
 import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   ArrowLeft,
   Mail,
@@ -255,7 +256,7 @@ export const ApplicationDetailPage = () => {
                 <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100">
                   {application.candidate?.avatar ? (
                     <img
-                      src={application.candidate.avatar}
+                      src={getImageUrl(application.candidate.avatar)}
                       alt={application.candidate.fullName}
                       className="w-full h-full object-cover"
                     />

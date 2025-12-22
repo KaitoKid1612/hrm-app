@@ -3,6 +3,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { applicationService } from '@/features/jobs/services/jobActionsService';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   FileText,
   Calendar,
@@ -223,7 +224,7 @@ export const MyApplicationsPage = () => {
                           <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-white shrink-0">
                             {application.job?.company?.logo ? (
                               <img
-                                src={application.job.company.logo}
+                                src={getImageUrl(application.job.company.logo)}
                                 alt={application.job.company.name}
                                 className="w-full h-full object-cover"
                               />

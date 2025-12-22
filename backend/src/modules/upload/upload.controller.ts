@@ -21,25 +21,25 @@ export class UploadController {
   @Post('cv')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCV(@CurrentUser() user: any, @UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadCV(file, user.userId);
+    return this.uploadService.uploadCV(file, user.id);
   }
 
   @Post('avatar')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(@CurrentUser() user: any, @UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadAvatar(file, user.userId);
+    return this.uploadService.uploadAvatar(file, user.id);
   }
 
   @Post('company-logo')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCompanyLogo(@CurrentUser() user: any, @UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadCompanyLogo(file, user.userId);
+    return this.uploadService.uploadCompanyLogo(file, user.id);
   }
 
   @Post('company-cover')
   @UseInterceptors(FileInterceptor('file'))
   async uploadCompanyCover(@CurrentUser() user: any, @UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadCompanyCover(file, user.userId);
+    return this.uploadService.uploadCompanyCover(file, user.id);
   }
 
   @Delete(':publicId')

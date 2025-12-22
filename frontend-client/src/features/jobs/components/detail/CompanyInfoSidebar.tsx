@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Job } from '../../types';
 import { Building2, MapPin, Calendar, Briefcase, Users } from 'lucide-react';
+import { getImageUrl } from '@/lib/image-utils';
 
 interface CompanyInfoSidebarProps {
   job: Job;
@@ -25,7 +26,7 @@ export const CompanyInfoSidebar = ({ job, getJobLevelLabel }: CompanyInfoSidebar
             <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-white">
               {job.company?.logo ? (
                 <img
-                  src={job.company.logo}
+                  src={getImageUrl(job.company.logo)}
                   alt={job.company.name}
                   className="w-full h-full object-cover"
                 />

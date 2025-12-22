@@ -6,6 +6,7 @@ import { useCandidateSearch, useSavedCandidates } from '../hooks/useCandidateSea
 import { CandidateDetailModal } from './CandidateDetailModal';
 import { CandidateProfile } from '../services/candidateSearchService';
 import { toast } from '@/lib/toast';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Search,
   MapPin,
@@ -251,7 +252,7 @@ export const SearchCandidatesPage = () => {
                   <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100">
                     {candidate.avatar ? (
                       <img
-                        src={candidate.avatar}
+                        src={getImageUrl(candidate.avatar)}
                         alt={candidate.fullName}
                         className="w-full h-full object-cover"
                       />

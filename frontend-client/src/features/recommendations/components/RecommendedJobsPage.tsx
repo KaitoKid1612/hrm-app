@@ -3,6 +3,7 @@ import { MainLayout } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useJobRecommendations } from '../hooks/useRecommendations';
+import { getImageUrl } from '@/lib/image-utils';
 import { JobRecommendation } from '../types/recommendation.types';
 import {
   Sparkles,
@@ -103,7 +104,7 @@ const JobRecommendationCard = ({ job, onClick }: JobRecommendationCardProps) => 
           <div className="w-16 h-16 rounded-lg border flex items-center justify-center bg-gray-50 shrink-0">
             {job.company?.logo ? (
               <img
-                src={job.company.logo}
+                src={getImageUrl(job.company.logo)}
                 alt={job.company.name}
                 className="w-full h-full object-contain p-2"
               />

@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { savedJobsService } from '../services/jobActionsService';
 import { toast } from '@/lib/toast';
+import { getImageUrl } from '@/lib/image-utils';
 import { Bookmark, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -103,7 +104,7 @@ export const SavedJobsPage = () => {
                       <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-white shrink-0">
                         {savedJob.job?.company?.logo ? (
                           <img
-                            src={savedJob.job.company.logo}
+                            src={getImageUrl(savedJob.job.company.logo)}
                             alt={savedJob.job.company.name}
                             className="w-full h-full object-cover"
                           />

@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { reviewService } from '../services/reviewService';
 import { toast } from '@/lib/toast';
+import { getImageUrl } from '@/lib/image-utils';
 import { Star, ThumbsUp, User, CheckCircle, Calendar } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 
@@ -51,7 +52,7 @@ export const ReviewCard = ({ review, onUpdate }: ReviewCardProps) => {
                 <User className="w-6 h-6 text-blue-600" />
               ) : review.user?.avatar ? (
                 <img
-                  src={review.user.avatar}
+                  src={getImageUrl(review.user.avatar)}
                   alt={review.user.name}
                   className="w-12 h-12 rounded-full object-cover"
                 />

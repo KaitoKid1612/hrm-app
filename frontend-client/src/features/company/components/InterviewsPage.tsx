@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useInterviews } from '../hooks/useInterviews';
 import { InterviewStatus } from '../types/interview.types';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Calendar,
   Clock,
@@ -163,7 +164,7 @@ export const InterviewsPage = () => {
                       <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                         {interview.application.user.avatar ? (
                           <img
-                            src={interview.application.user.avatar}
+                            src={getImageUrl(interview.application.user.avatar)}
                             alt={interview.application.user.name}
                             className="w-full h-full rounded-full object-cover"
                           />

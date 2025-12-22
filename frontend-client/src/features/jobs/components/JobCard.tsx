@@ -12,6 +12,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants';
+import { getImageUrl } from '@/lib/image-utils';
 
 interface JobCardProps {
   job: Job;
@@ -57,7 +58,7 @@ export const JobCard = ({ job }: JobCardProps) => {
               <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 shrink-0 bg-linear-to-br from-blue-50 to-indigo-50 group-hover:scale-110 transition-transform duration-300">
                 {job.company?.logo ? (
                   <img
-                    src={job.company.logo}
+                    src={getImageUrl(job.company.logo)}
                     alt={job.company.name}
                     className="w-full h-full object-cover"
                   />

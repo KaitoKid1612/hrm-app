@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { User, Camera, Loader2 } from 'lucide-react';
+import { getImageUrl } from '@/lib/image-utils';
 
 interface ProfileAvatarProps {
   avatar?: string;
@@ -29,7 +30,7 @@ export const ProfileAvatar = ({ avatar, isUploading, onAvatarChange }: ProfileAv
         <div className="relative">
           <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-indigo-500 flex items-center justify-center overflow-hidden">
             {avatar ? (
-              <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+              <img src={getImageUrl(avatar)} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               <User className="w-12 h-12 text-white" />
             )}

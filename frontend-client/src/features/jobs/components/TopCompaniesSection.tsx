@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Building2, MapPin, Briefcase } from 'lucide-react';
 import { useTopCompanies } from '../hooks/useCompanies';
+import { getImageUrl } from '@/lib/image-utils';
 
 export const TopCompaniesSection = () => {
   const { companies, isLoading } = useTopCompanies(6);
@@ -44,7 +45,7 @@ export const TopCompaniesSection = () => {
                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
                         {company.logo ? (
                           <img
-                            src={company.logo}
+                            src={getImageUrl(company.logo)}
                             alt={company.name}
                             className="w-full h-full object-contain rounded-xl"
                           />

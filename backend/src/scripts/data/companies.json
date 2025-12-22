@@ -1,7 +1,7 @@
 [
   {
     "name": "Quán Cơm Bình Dân Hoa",
-    "logo": "https://via.placeholder.com/150/FF6B6B/FFFFFF?text=QC",
+    "logo": "https://placehold.co/150x150/FF6B6B/FFFFFF?text=QC",
     "description": "Quán cơm gia đình phục vụ cơm trưa cho công nhân và sinh viên",
     "website": "",
     "email": "quancomhoa@gmail.com",
@@ -15,7 +15,7 @@
   },
   {
     "name": "Phở Việt Nam",
-    "logo": "https://via.placeholder.com/150/4ECDC4/FFFFFF?text=PV",
+    "logo": "https://placehold.co/150x150/4ECDC4/FFFFFF?text=PV",
     "description": "Quán phở truyền thống, chuyên phở bò và phở gà tươi ngon",
     "website": "",
     "email": "phovietnam@gmail.com",
@@ -29,7 +29,7 @@
   },
   {
     "name": "Coffee House 24/7",
-    "logo": "https://via.placeholder.com/150/95E1D3/FFFFFF?text=CH",
+    "logo": "https://placehold.co/150x150/95E1D3/FFFFFF?text=CH",
     "description": "Chuỗi quán cafe phục vụ 24/7, không gian yên tĩnh học tập và làm việc",
     "website": "https://coffeehouse247.vn",
     "email": "hr@coffeehouse247.vn",
@@ -43,7 +43,7 @@
   },
   {
     "name": "Siêu Thị Mini Mart",
-    "logo": "https://via.placeholder.com/150/F38181/FFFFFF?text=MM",
+    "logo": "https://placehold.co/150x150/F38181/FFFFFF?text=MM",
     "description": "Chuỗi siêu thị mini phục vụ nhu cầu thiết yếu hàng ngày",
     "website": "https://minimart.vn",
     "email": "tuyendung@minimart.vn",
@@ -57,7 +57,7 @@
   },
   {
     "name": "Giao Hàng Nhanh Express",
-    "logo": "https://via.placeholder.com/150/AA96DA/FFFFFF?text=GH",
+    "logo": "https://placehold.co/150x150/AA96DA/FFFFFF?text=GH",
     "description": "Dịch vụ giao hàng nhanh trong nội thành và liên tỉnh",
     "website": "https://giaohangnhanh.vn",
     "email": "hr@giaohangnhanh.vn",
@@ -71,7 +71,7 @@
   },
   {
     "name": "Xây Dựng Hoàng Gia",
-    "logo": "https://via.placeholder.com/150/FCBAD3/FFFFFF?text=XD",
+    "logo": "https://placehold.co/150x150/FCBAD3/FFFFFF?text=XD",
     "description": "Công ty xây dựng nhà ở và công trình dân dụng",
     "website": "https://xdhoanggia.vn",
     "email": "tuyendung@xdhoanggia.vn",
@@ -85,7 +85,7 @@
   },
   {
     "name": "Dịch Vụ Vệ Sinh Sạch Sẽ",
-    "logo": "https://via.placeholder.com/150/A8D8EA/FFFFFF?text=VS",
+    "logo": "https://placehold.co/150x150/A8D8EA/FFFFFF?text=VS",
     "description": "Dịch vụ vệ sinh nhà ở, văn phòng, công nghiệp",
     "website": "",
     "email": "vesinhsachse@gmail.com",
@@ -99,7 +99,7 @@
   },
   {
     "name": "Tech Innovation Corp",
-    "logo": "https://via.placeholder.com/150/667BC6/FFFFFF?text=TI",
+    "logo": "https://placehold.co/150x150/667BC6/FFFFFF?text=TI",
     "description": "Công ty công nghệ phát triển phần mềm và ứng dụng di động",
     "website": "https://techinnovation.vn",
     "email": "hr@techinnovation.vn",
@@ -113,7 +113,7 @@
   },
   {
     "name": "Salon Tóc Đẹp",
-    "logo": "https://via.placeholder.com/150/DA7297/FFFFFF?text=ST",
+    "logo": "https://placehold.co/150x150/DA7297/FFFFFF?text=ST",
     "description": "Salon tóc chuyên cắt, uốn, nhuộm và chăm sóc tóc",
     "website": "",
     "email": "salontocdep@gmail.com",
@@ -127,7 +127,7 @@
   },
   {
     "name": "Bảo Vệ An Toàn 24h",
-    "logo": "https://via.placeholder.com/150/6BCB77/FFFFFF?text=BV",
+    "logo": "https://placehold.co/150x150/6BCB77/FFFFFF?text=BV",
     "description": "Dịch vụ bảo vệ chuyên nghiệp cho công ty, nhà máy, siêu thị",
     "website": "https://baoveanoan24h.vn",
     "email": "hr@baoveanoan24h.vn",
@@ -141,7 +141,7 @@
   },
   {
     "name": "Nhà Thuốc Long Châu",
-    "logo": "https://via.placeholder.com/150/4D96FF/FFFFFF?text=NT",
+    "logo": "https://placehold.co/150x150/4D96FF/FFFFFF?text=NT",
     "description": "Chuỗi nhà thuốc uy tín phục vụ cộng đồng",
     "website": "https://nhathuoclongchau.vn",
     "email": "tuyendung@nhathuoclongchau.vn",
@@ -155,7 +155,7 @@
   },
   {
     "name": "Trung Tâm Anh Ngữ Speak Up",
-    "logo": "https://via.placeholder.com/150/FFD93D/000000?text=SU",
+    "logo": "https://placehold.co/150x150/FFD93D/000000?text=SU",
     "description": "Trung tâm dạy tiếng Anh giao tiếp cho mọi lứa tuổi",
     "website": "https://speakup.edu.vn",
     "email": "hr@speakup.edu.vn",
@@ -169,7 +169,7 @@
   },
   {
     "name": "Nhà Máy May Việt Tiến",
-    "logo": "https://via.placeholder.com/150/6BCF7F/FFFFFF?text=NM",
+    "logo": "https://placehold.co/150x150/6BCF7F/FFFFFF?text=NM",
     "description": "Nhà máy sản xuất may mặc xuất khẩu",
     "website": "https://viettienmay.vn",
     "email": "hr@viettienmay.vn",
@@ -183,7 +183,7 @@
   },
   {
     "name": "Kho Hàng Miền Nam",
-    "logo": "https://via.placeholder.com/150/F97B22/FFFFFF?text=KH",
+    "logo": "https://placehold.co/150x150/F97B22/FFFFFF?text=KH",
     "description": "Kho hàng logistics và phân phối",
     "website": "",
     "email": "khohangmn@gmail.com",
@@ -197,7 +197,7 @@
   },
   {
     "name": "Công Ty Marketing 360",
-    "logo": "https://via.placeholder.com/150/9B59B6/FFFFFF?text=M3",
+    "logo": "https://placehold.co/150x150/9B59B6/FFFFFF?text=M3",
     "description": "Công ty marketing digital và quảng cáo truyền thông",
     "website": "https://marketing360.vn",
     "email": "hr@marketing360.vn",

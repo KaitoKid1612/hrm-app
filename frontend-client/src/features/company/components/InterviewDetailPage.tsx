@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { interviewService } from '../services/interviewService';
 import { Interview, InterviewStatus } from '../types/interview.types';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Calendar,
   Clock,
@@ -136,7 +137,7 @@ export const InterviewDetailPage = () => {
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
             {interview.application.user.avatar ? (
               <img
-                src={interview.application.user.avatar}
+                src={getImageUrl(interview.application.user.avatar)}
                 alt={interview.application.user.name}
                 className="w-full h-full rounded-full object-cover"
               />

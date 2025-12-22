@@ -6,6 +6,7 @@ import { EmployerSidebar } from './EmployerSidebar';
 import { Button } from '@/components/ui/button';
 import { LogOut, Bell, User as UserIcon } from 'lucide-react';
 import { ROUTES } from '@/constants';
+import { getImageUrl } from '@/lib/image-utils';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -53,7 +54,11 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   className="w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center hover:shadow-lg transition-shadow"
                 >
                   {user?.avatar ? (
-                    <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full" />
+                    <img
+                      src={getImageUrl(user.avatar)}
+                      alt="Avatar"
+                      className="w-full h-full rounded-full"
+                    />
                   ) : (
                     <UserIcon className="w-5 h-5 text-white" />
                   )}

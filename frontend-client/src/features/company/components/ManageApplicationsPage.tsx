@@ -14,6 +14,7 @@ import {
   formatDateLocale,
   ApplicationStatus,
 } from '@/shared';
+import { getImageUrl } from '@/lib/image-utils';
 
 const statusOptions = [
   { value: '', label: 'Tất cả trạng thái' },
@@ -144,7 +145,7 @@ export const ManageApplicationsPage = () => {
                         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 shrink-0">
                           {application.candidate?.avatar ? (
                             <img
-                              src={application.candidate.avatar}
+                              src={getImageUrl(application.candidate.avatar)}
                               alt={application.candidate.fullName}
                               className="w-full h-full object-cover"
                             />

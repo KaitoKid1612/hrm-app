@@ -4,6 +4,7 @@ import { MainLayout } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { companyService, Company } from '../services/companyService';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Building2,
   Search,
@@ -232,7 +233,7 @@ export const CompanyListPage = () => {
                     <div className="w-16 h-16 rounded-xl border border-gray-200 flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50 shrink-0 group-hover:scale-110 transition-transform duration-300">
                       {company.logo ? (
                         <img
-                          src={company.logo}
+                          src={getImageUrl(company.logo)}
                           alt={company.name}
                           className="w-full h-full object-contain rounded-xl"
                         />

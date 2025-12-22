@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Building2, Upload } from 'lucide-react';
+import { getImageUrl } from '@/lib/image-utils';
 
 interface CompanyMediaUploadProps {
   logo?: string;
@@ -17,7 +18,11 @@ export const CompanyMediaUpload = ({ logo, onLogoUpload }: CompanyMediaUploadPro
       <div className="mt-2 flex items-center gap-6">
         <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
           {logo ? (
-            <img src={logo} alt="Company logo" className="w-full h-full object-cover" />
+            <img
+              src={getImageUrl(logo)}
+              alt="Company logo"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <Building2 className="w-12 h-12 text-gray-400" />
           )}

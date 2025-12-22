@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Job } from '../../types';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   MapPin,
   Briefcase,
@@ -50,7 +51,7 @@ export const JobHeader = ({
           <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
             {job.company?.logo ? (
               <img
-                src={job.company.logo}
+                src={getImageUrl(job.company.logo)}
                 alt={job.company.name}
                 className="w-full h-full object-cover"
               />

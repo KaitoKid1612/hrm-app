@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCompanyAnalytics } from '../hooks/useAnalytics';
 import { TimeRange } from '../types/analytics.types';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   BarChart,
   Bar,
@@ -140,7 +141,7 @@ export const AnalyticsDashboardPage = () => {
         <div className="flex items-center gap-4">
           {analytics.company.logo ? (
             <img
-              src={analytics.company.logo}
+              src={getImageUrl(analytics.company.logo)}
               alt={analytics.company.name}
               className="w-16 h-16 rounded-lg bg-white object-cover"
             />

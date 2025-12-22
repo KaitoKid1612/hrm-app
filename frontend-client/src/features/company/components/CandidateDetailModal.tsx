@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { CandidateProfile } from '../services/candidateSearchService';
+import { getImageUrl } from '@/lib/image-utils';
 import {
   Mail,
   Phone,
@@ -59,7 +60,7 @@ export const CandidateDetailModal = ({
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 shrink-0">
               {candidate.avatar ? (
                 <img
-                  src={candidate.avatar}
+                  src={getImageUrl(candidate.avatar)}
                   alt={candidate.fullName}
                   className="w-full h-full object-cover"
                 />
