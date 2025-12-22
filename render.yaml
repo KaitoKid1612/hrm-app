@@ -47,7 +47,7 @@ services:
     buildCommand: |
       cd frontend-client
       npm install -g pnpm
-      pnpm install
+      HUSKY=0 pnpm install
       pnpm run build
     staticPublishPath: ./frontend-client/dist
     envVars:
@@ -55,6 +55,8 @@ services:
         value: https://vungang-jobs-backend.onrender.com/api
       - key: NODE_ENV
         value: production
+      - key: HUSKY
+        value: '0'
     routes:
       - type: rewrite
         source: /*
