@@ -6,62 +6,75 @@ const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://
 class SocketService {
   private socket: Socket | null = null;
   private listeners: Map<string, Array<(...args: unknown[]) => void>> = new Map();
+  private connectPromise: Promise<void> | null = null;
 
-  connect(token: string) {
+  connect(token: string): Promise<void> {
     if (this.socket?.connected) {
-      return;
+      return Promise.resolve();
     }
 
-    this.socket = io(SOCKET_URL, {
-      auth: {
-        token,
-      },
-      transports: ['websocket', 'polling'],
+    if (this.connectPromise) {
+      return this.connectPromise;
+    }
+
+    this.connectPromise = new Promise<void>((resolve, reject) => {
+      this.socket = io(SOCKET_URL, {
+        auth: {
+          token,
+        },
+        transports: ['websocket', 'polling'],
+      });
+
+      this.socket.on('connect', () => {
+        console.log('Socket connected:', this.socket?.id);
+        this.connectPromise = null;
+        resolve();
+      });
+
+      this.socket.on('disconnect', () => {
+        console.log('Socket disconnected');
+      });
+
+      this.socket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+        this.connectPromise = null;
+        reject(error);
+      });
+
+      // Listen for new messages
+      this.socket.on('message:new', (message: Message) => {
+        this.emit('message:new', message);
+      });
+
+      // Listen for typing indicator
+      this.socket.on(
+        'message:typing',
+        (data: { userId: number; conversationId: number; isTyping: boolean }) => {
+          this.emit('message:typing', data);
+        },
+      );
+
+      // Listen for read receipts
+      this.socket.on('message:read', (data: { conversationId: number; userId: number }) => {
+        this.emit('message:read', data);
+      });
+
+      // Listen for new conversations
+      this.socket.on('conversation:new', (conversation: Conversation) => {
+        this.emit('conversation:new', conversation);
+      });
+
+      // Listen for user online/offline status
+      this.socket.on('user:online', (data: { userId: number }) => {
+        this.emit('user:online', data);
+      });
+
+      this.socket.on('user:offline', (data: { userId: number }) => {
+        this.emit('user:offline', data);
+      });
     });
 
-    this.socket.on('connect', () => {
-      console.log('Socket connected:', this.socket?.id);
-    });
-
-    this.socket.on('disconnect', () => {
-      console.log('Socket disconnected');
-    });
-
-    this.socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-    });
-
-    // Listen for new messages
-    this.socket.on('message:new', (message: Message) => {
-      this.emit('message:new', message);
-    });
-
-    // Listen for typing indicator
-    this.socket.on(
-      'message:typing',
-      (data: { userId: number; conversationId: number; isTyping: boolean }) => {
-        this.emit('message:typing', data);
-      },
-    );
-
-    // Listen for read receipts
-    this.socket.on('message:read', (data: { conversationId: number; userId: number }) => {
-      this.emit('message:read', data);
-    });
-
-    // Listen for new conversations
-    this.socket.on('conversation:new', (conversation: Conversation) => {
-      this.emit('conversation:new', conversation);
-    });
-
-    // Listen for user online/offline status
-    this.socket.on('user:online', (data: { userId: number }) => {
-      this.emit('user:online', data);
-    });
-
-    this.socket.on('user:offline', (data: { userId: number }) => {
-      this.emit('user:offline', data);
-    });
+    return this.connectPromise;
   }
 
   disconnect() {
@@ -72,7 +85,17 @@ class SocketService {
     }
   }
 
-  sendMessage(conversationId: string, content: string) {
+  async sendMessage(conversationId: string, content: string) {
+    // Wait for connection if not connected yet
+    if (!this.socket?.connected) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await this.connect(token);
+      } else {
+        throw new Error('No authentication token found');
+      }
+    }
+
     if (!this.socket?.connected) {
       throw new Error('Socket not connected');
     }
