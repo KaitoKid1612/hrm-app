@@ -9,8 +9,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Injectable, Inject } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/core/prisma/prisma.service';
-import jwt from 'jsonwebtoken';
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;
@@ -29,7 +29,10 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   private connectedUsers: Map<string, string> = new Map(); // userId -> socketId
 
-  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async handleConnection(client: AuthenticatedSocket) {
     try {
@@ -39,8 +42,8 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
         return;
       }
 
-      // Verify JWT token manually
-      const payload = jwt.verify(token, process.env.JWT_SECRET || '') as any;
+      // Verify JWT token using NestJS JwtService
+      const payload = this.jwtService.verify(token) as { sub?: string; userId?: string };
       client.userId = payload.sub || payload.userId;
       if (!client.userId) {
         client.disconnect();

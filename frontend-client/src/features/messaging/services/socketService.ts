@@ -90,17 +90,19 @@ class SocketService {
   }
 
   // Event listener management
-  on(event: string, callback: (...args: unknown[]) => void) {
+  on<T = unknown>(event: string, callback: (data: T) => void) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
-    this.listeners.get(event)?.push(callback);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.listeners.get(event)?.push(callback as any);
   }
 
-  off(event: string, callback: (...args: unknown[]) => void) {
+  off<T = unknown>(event: string, callback: (data: T) => void) {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
-      const index = callbacks.indexOf(callback);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const index = callbacks.indexOf(callback as any);
       if (index > -1) {
         callbacks.splice(index, 1);
       }

@@ -293,7 +293,7 @@ export const MessagingPage = () => {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
+            <div className="divide-y divide-gray-200 max-h-150 overflow-y-auto">
               {conversations.length === 0 ? (
                 <div className="p-6 text-center text-gray-500">
                   <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
@@ -402,7 +402,7 @@ export const MessagingPage = () => {
 
               {/* Messages */}
               <CardContent className="p-4">
-                <div className="h-[450px] overflow-y-auto mb-4 space-y-4">
+                <div className="h-112.5 overflow-y-auto mb-4 space-y-4">
                   {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-500">
                       <div className="text-center">
@@ -526,7 +526,7 @@ export const MessagingPage = () => {
               </CardContent>
             </>
           ) : (
-            <div className="flex items-center justify-center h-full min-h-[600px]">
+            <div className="flex items-center justify-center h-full min-h-150">
               <div className="text-center text-gray-500">
                 <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p className="text-lg">Chọn một cuộc hội thoại để bắt đầu</p>
