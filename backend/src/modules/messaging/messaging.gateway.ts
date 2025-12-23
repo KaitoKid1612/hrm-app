@@ -9,8 +9,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Injectable, Inject } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/prisma/prisma.service';
+import * as jwt from 'jsonwebtoken';
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;
@@ -31,33 +32,53 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   constructor(
     @Inject(PrismaService) private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async handleConnection(client: AuthenticatedSocket) {
+    console.log('=== NEW CONNECTION ATTEMPT ===');
+    console.log('Socket ID:', client.id);
+    console.log('Auth token exists:', !!client.handshake.auth.token);
+
     try {
       const token = client.handshake.auth.token;
       if (!token) {
-        console.log('No token provided');
+        console.log('❌ No token provided');
         client.disconnect();
         return;
       }
 
-      // Verify JWT token using NestJS JwtService
-      const payload = this.jwtService.verify(token) as { sub?: string; userId?: string };
-      client.userId = payload.sub || payload.userId;
-      if (!client.userId) {
-        console.log('No userId in token payload');
+      console.log('Token received:', token.substring(0, 20) + '...');
+
+      // Verify JWT token manually with secret from ConfigService
+      console.log('Attempting JWT verification...');
+      const secret = this.configService.get<string>('JWT_SECRET');
+      if (!secret) {
+        console.log('❌ JWT_SECRET not configured');
         client.disconnect();
         return;
       }
+      const payload = jwt.verify(token, secret) as { sub?: string; userId?: string };
+      console.log('JWT verified successfully. Payload:', payload);
+
+      client.userId = payload.sub || payload.userId;
+      if (!client.userId) {
+        console.log('❌ No userId in token payload');
+        client.disconnect();
+        return;
+      }
+
+      console.log('User ID extracted:', client.userId);
       this.connectedUsers.set(client.userId, client.id);
 
       // Join rooms for all user's conversations
+      console.log('Loading conversations for user...');
       const conversations = await this.prisma.conversationParticipant.findMany({
         where: { userId: client.userId },
         select: { conversationId: true },
       });
+
+      console.log('Found', conversations.length, 'conversations');
 
       conversations.forEach((conv) => {
         client.join(`conversation:${conv.conversationId}`);
@@ -65,9 +86,10 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
 
       // Notify user is online
       this.server.emit('user:online', { userId: client.userId });
-      console.log(`User ${client.userId} connected successfully`);
+      console.log('✅ User', client.userId, 'connected successfully');
     } catch (error) {
-      console.error('Connection error:', error);
+      console.error('❌ Connection error:', error);
+      console.error('Error details:', error instanceof Error ? error.message : error);
       client.disconnect();
     }
   }
