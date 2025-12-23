@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApplicationManagement } from '../hooks/useApplicationManagement';
 import { applicationManagementService } from '../services/applicationManagementService';
+import { StartChatButton } from '@/features/messaging';
 import { toast } from '@/lib/toast';
 import { ROUTES } from '@/constants';
 import { FileText, Search, Mail, Phone, Calendar, Briefcase, User, Eye } from 'lucide-react';
@@ -229,6 +230,18 @@ export const ManageApplicationsPage = () => {
                         <Eye className="w-4 h-4 mr-2" />
                         Xem chi tiết
                       </Button>
+
+                      {/* Chat Button */}
+                      {application.candidate?.id && (
+                        <StartChatButton
+                          recipientId={application.candidate.id}
+                          recipientName={application.candidate.fullName}
+                          jobId={application.job?.id}
+                          size="sm"
+                          variant="ghost"
+                          className="w-full"
+                        />
+                      )}
                     </div>
                   </div>
                 </CardContent>

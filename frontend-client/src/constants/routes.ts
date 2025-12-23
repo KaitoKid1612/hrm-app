@@ -34,6 +34,7 @@ export const ROUTES = {
   COMPANY_SCHEDULE_INTERVIEW: '/company/interviews/schedule',
   COMPANY_ANALYTICS: '/company/analytics',
   NOTIFICATIONS: '/notifications',
+  MESSAGES: '/messages',
 
   // Other
   COMPANIES: '/companies',

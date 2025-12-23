@@ -10,6 +10,7 @@ import {
   UserPlus,
   Calendar,
   BarChart3,
+  MessageSquare,
 } from 'lucide-react';
 import { ROUTES } from '@/constants';
 
@@ -58,6 +59,11 @@ const menuItems = [
     icon: Bell,
     label: 'Thông báo',
     path: ROUTES.NOTIFICATIONS,
+  },
+  {
+    icon: MessageSquare,
+    label: 'Tin nhắn',
+    path: ROUTES.MESSAGES,
   },
   {
     icon: Settings,

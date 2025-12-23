@@ -1,6 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/constants';
-import { LayoutDashboard, Briefcase, FileText, Bookmark, User, Settings, Home } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Briefcase,
+  FileText,
+  Bookmark,
+  User,
+  Settings,
+  Home,
+  MessageSquare,
+} from 'lucide-react';
 
 interface NavItem {
   label: string;
@@ -33,6 +42,11 @@ const navItems: NavItem[] = [
     label: 'Hồ sơ của tôi',
     path: ROUTES.MY_RESUME,
     icon: <User className="w-5 h-5" />,
+  },
+  {
+    label: 'Tin nhắn',
+    path: ROUTES.MESSAGES,
+    icon: <MessageSquare className="w-5 h-5" />,
   },
   {
     label: 'Cài đặt',

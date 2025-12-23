@@ -26,25 +26,14 @@ export class MessagingService {
     // Check if conversation already exists between these users
     const existingConversation = await this.prisma.conversation.findFirst({
       where: {
-        OR: [
-          {
-            userId: userId,
-            participants: {
-              some: {
-                userId: dto.recipientId,
-              },
-            },
-          },
-          {
-            userId: dto.recipientId,
-            participants: {
-              some: {
-                userId: userId,
-              },
-            },
-          },
-        ],
         isGroup: false,
+        participants: {
+          every: {
+            userId: {
+              in: [userId, dto.recipientId],
+            },
+          },
+        },
       },
       include: {
         user: {
@@ -167,7 +156,9 @@ export class MessagingService {
    * Get user's conversations with pagination
    */
   async getUserConversations(userId: string, query: QueryConversationsDto) {
-    const { page = 1, limit = 20, search } = query;
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
+    const { search } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {
@@ -382,7 +373,9 @@ export class MessagingService {
     // Verify user is participant
     await this.getConversationById(userId, conversationId);
 
-    const { page = 1, limit = 50, before } = query;
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 50;
+    const { before } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {

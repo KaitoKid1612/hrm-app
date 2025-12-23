@@ -33,8 +33,8 @@ export class MessagingController {
    * POST /messaging/conversations
    */
   @Post('conversations')
-  async createConversation(@CurrentUser('sub') userId: string, @Body() dto: CreateConversationDto) {
-    return this.messagingService.createConversation(userId, dto);
+  async createConversation(@CurrentUser() user: any, @Body() dto: CreateConversationDto) {
+    return this.messagingService.createConversation(user.id, dto);
   }
 
   /**
@@ -42,11 +42,8 @@ export class MessagingController {
    * GET /messaging/conversations
    */
   @Get('conversations')
-  async getUserConversations(
-    @CurrentUser('sub') userId: string,
-    @Query() query: QueryConversationsDto,
-  ) {
-    return this.messagingService.getUserConversations(userId, query);
+  async getUserConversations(@CurrentUser() user: any, @Query() query: QueryConversationsDto) {
+    return this.messagingService.getUserConversations(user.id, query);
   }
 
   /**
@@ -54,11 +51,8 @@ export class MessagingController {
    * GET /messaging/conversations/:id
    */
   @Get('conversations/:id')
-  async getConversationById(
-    @CurrentUser('sub') userId: string,
-    @Param('id') conversationId: string,
-  ) {
-    return this.messagingService.getConversationById(userId, conversationId);
+  async getConversationById(@CurrentUser() user: any, @Param('id') conversationId: string) {
+    return this.messagingService.getConversationById(user.id, conversationId);
   }
 
   /**
@@ -67,11 +61,11 @@ export class MessagingController {
    */
   @Put('conversations/:id')
   async updateConversation(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Param('id') conversationId: string,
     @Body() dto: UpdateConversationDto,
   ) {
-    return this.messagingService.updateConversation(userId, conversationId, dto);
+    return this.messagingService.updateConversation(user.id, conversationId, dto);
   }
 
   /**
@@ -79,11 +73,8 @@ export class MessagingController {
    * DELETE /messaging/conversations/:id
    */
   @Delete('conversations/:id')
-  async deleteConversation(
-    @CurrentUser('sub') userId: string,
-    @Param('id') conversationId: string,
-  ) {
-    return this.messagingService.deleteConversation(userId, conversationId);
+  async deleteConversation(@CurrentUser() user: any, @Param('id') conversationId: string) {
+    return this.messagingService.deleteConversation(user.id, conversationId);
   }
 
   /**
@@ -92,11 +83,11 @@ export class MessagingController {
    */
   @Post('conversations/:id/messages')
   async sendMessage(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Param('id') conversationId: string,
     @Body() dto: SendMessageDto,
   ) {
-    return this.messagingService.sendMessage(userId, conversationId, dto);
+    return this.messagingService.sendMessage(user.id, conversationId, dto);
   }
 
   /**
@@ -105,11 +96,11 @@ export class MessagingController {
    */
   @Get('conversations/:id/messages')
   async getMessages(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Param('id') conversationId: string,
     @Query() query: QueryMessagesDto,
   ) {
-    return this.messagingService.getMessages(userId, conversationId, query);
+    return this.messagingService.getMessages(user.id, conversationId, query);
   }
 
   /**
@@ -118,11 +109,11 @@ export class MessagingController {
    */
   @Patch('conversations/:id/read')
   async markAsRead(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser() user: any,
     @Param('id') conversationId: string,
     @Body() dto: MarkAsReadDto,
   ) {
-    return this.messagingService.markAsRead(userId, conversationId, dto);
+    return this.messagingService.markAsRead(user.id, conversationId, dto);
   }
 
   /**
@@ -130,7 +121,7 @@ export class MessagingController {
    * GET /messaging/unread-count
    */
   @Get('unread-count')
-  async getUnreadCount(@CurrentUser('sub') userId: string) {
-    return this.messagingService.getUnreadCount(userId);
+  async getUnreadCount(@CurrentUser() user: any) {
+    return this.messagingService.getUnreadCount(user.id);
   }
 }

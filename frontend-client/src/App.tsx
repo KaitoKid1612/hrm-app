@@ -14,6 +14,7 @@ import {
 } from '@/features/jobs';
 import { MyApplicationsPage } from '@/features/applications';
 import { NotificationsPage } from '@/features/notifications';
+import { MessagingPage } from '@/features/messaging';
 import { SettingsPage } from '@/features/settings';
 import {
   EmployerDashboardPage,
@@ -111,6 +112,16 @@ function App() {
               <ProtectedRoute>
                 <DashboardLayout>
                   <NotificationsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.MESSAGES}
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <MessagingPage />
                 </DashboardLayout>
               </ProtectedRoute>
             }
