@@ -38,6 +38,7 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
     try {
       const token = client.handshake.auth.token;
       if (!token) {
+        console.log('No token provided');
         client.disconnect();
         return;
       }
@@ -46,6 +47,7 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
       const payload = this.jwtService.verify(token) as { sub?: string; userId?: string };
       client.userId = payload.sub || payload.userId;
       if (!client.userId) {
+        console.log('No userId in token payload');
         client.disconnect();
         return;
       }
@@ -63,7 +65,9 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
 
       // Notify user is online
       this.server.emit('user:online', { userId: client.userId });
-    } catch {
+      console.log(`User ${client.userId} connected successfully`);
+    } catch (error) {
+      console.error('Connection error:', error);
       client.disconnect();
     }
   }
